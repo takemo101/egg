@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+
+  egg-app:
+    build:
+      context: './docker/apache'
+      args:
+        uid: ${UID}
+    environment:
+      - APACHE_RUN_USER=#${UID}
+      - APACHE_RUN_GROUP=#${UID}
+    volumes:
+      - .:/var/www/html
+    ports:
+      - 80:80
+    restart: always
+    depends_on:
+      - mysql
+      - mailhog
+      - phpmyadmin
+    networks:
+      - egg
+
+  mysql:
+    image: 'mysql/mysql-server:8.0'
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - './mysql:/var/lib/mysql'
+    networks:
+      - egg
+    healthcheck:
+      test: [ 'CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}' ]
+      retries: 3
+      timeout: 5s
+
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - '${FORWARD_MAILHOG_PORT:-1025}:1025'
+      - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
+    networks:
+      - egg
+
+  phpmyadmin:
+    image: 'phpmyadmin/phpmyadmin'
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=${DB_USERNAME}
+      - PMA_PASSWORD=${DB_PASSWORD}
+      - PMA_PORT=${DB_PORT}
+    ports:
+      - 8089:80
+    env_file:
+      - ./.env
+    networks:
+      - egg
+
+  php:
+    image: shin1x1/php-dev:${TEST_PHP_VERSION}-fpm-buster
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/php.ini:/usr/local/etc/php/conf.d/zzmyphp.ini
+    working_dir: /var/www/html
+
+  composer:
+    image: composer:latest
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+
+  phpstan:
+    image: ghcr.io/phpstan/phpstan
+    volumes:
+      - .:/app
+    working_dir: /app
+
+networks:
+  egg:
+    driver: bridge

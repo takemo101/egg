@@ -1,0 +1,15 @@
+# for composer
+/vendor/
+
+# for docker
+/.env
+/mysql
+
+# for phpunit
+.phpunit.result.cache
+
+# keep directory
+!.gitkeep
+
+# other
+/.vscode

@@ -1,0 +1,49 @@
+{
+    "name": "takemo101/egg",
+    "description": "PHP Web Framework Egg",
+    "keywords": [
+        "php",
+        "package",
+        "web",
+        "framework"
+    ],
+    "authors": [
+        {
+            "name": "takemo101",
+            "email": "takemo101@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "homepage": "https://github.com/takemo101/egg",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Takemo101\\Egg\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "test/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^8.1",
+        "ext-json": "*",
+        "monolog/monolog": "^3.2",
+        "altorouter/altorouter": "^2.0",
+        "vlucas/phpdotenv": "^5.5",
+        "symfony/http-foundation": "^6.2",
+        "symfony/error-handler": "^6.2"
+    },
+    "require-dev": {
+        "php": "^8.1",
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^1.4",
+        "symfony/var-dumper": "^6.2"
+    }
+}
