@@ -6,10 +6,11 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // アプリケーションを起動する
 $app = new Takemo101\Egg\Kernel\Application(
-    pathSetting: new Takemo101\Egg\Kernel\ApplicationPathSetting(
-        basePath: $_ENV['APPLICATION_BASE_PATH'] ?? dirname(__DIR__),
+    pathSetting: new Takemo101\Egg\Kernel\ApplicationPath(
+        basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__),
         settingPath: 'setting',
         configPath: 'config',
+        storagePath: 'storage',
     ),
 );
 

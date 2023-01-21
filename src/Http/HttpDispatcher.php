@@ -6,8 +6,10 @@ use Takemo101\Egg\Routing\RouterContract;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Takemo101\Egg\Http\Exception\NotFoundHttpException;
 use Takemo101\Egg\Http\Invoker\RouteActionInvoker;
 use Takemo101\Egg\Routing\RouteMatchResult;
+use Throwable;
 
 /**
  * Webアプリケーションのディスパッチャ
@@ -16,27 +18,34 @@ use Takemo101\Egg\Routing\RouteMatchResult;
 final class HttpDispatcher
 {
     /**
+     * @var RouteActionInvoker
+     */
+    private readonly RouteActionInvoker $invoker;
+
+    /**
      * constructor
      *
      * @param RouterContract $router
-     * @param RouteActionInvoker $invoker
      * @param ResponseSenderContract $sender
+     * @param RootFilters $rootFilters
+     * @param HttpErrorHandlerContract $errorHandler
      * @param ContainerContract $container
      */
     public function __construct(
         private readonly RouterContract $router,
-        private readonly RouteActionInvoker $invoker,
         private readonly ResponseSenderContract $sender,
+        private readonly RootFilters $rootFilters,
+        private readonly HttpErrorHandlerContract $errorHandler,
         private readonly ContainerContract $container,
     ) {
-        //
+        $this->invoker = new RouteActionInvoker($container);
     }
 
     /**
      * http dispatch
      *
      * @param Request $request
-     * @param
+     * @param Response $response
      * @return void
      */
     public function dispatch(
@@ -53,17 +62,31 @@ final class HttpDispatcher
             response: $response,
         );
 
-        if ($result) {
+        try {
+            // ルートに一致するものがなければ404
+            if (!$result) {
+                throw new NotFoundHttpException(
+                    message: 'Route Not Found',
+                );
+            }
+
+            // 一致したルートの処理を実行する
             $this->action(
                 request: $request,
                 response: $response,
                 result: $result,
             );
+        } catch (Throwable $e) {
+            // エラーハンドリングをする
+            $this->error(
+                request: $request,
+                error: $e,
+            );
         }
     }
 
     /**
-     * ルートに一致した処理を実行する
+     * 一致したルートの処理を実行する
      *
      * @param Request $request
      * @param Response $response
@@ -78,8 +101,30 @@ final class HttpDispatcher
         $response = $this->invoker->invoke(
             request: $request,
             response: $response,
-            action: $result->action,
+            action: $result->action->handler,
+            filters: $this->rootFilters->createHttpFilters(
+                $result->action->filters,
+            ),
             parameters: $result->parameters,
+        );
+
+        $this->sender->send($response);
+    }
+
+    /**
+     * エラーハンドリングをする
+     *
+     * @param Request $request
+     * @param Throwable $error
+     * @return void
+     */
+    private function error(
+        Request $request,
+        Throwable $error,
+    ): void {
+        $response = $this->errorHandler->handle(
+            request: $request,
+            error: $error,
         );
 
         $this->sender->send($response);
@@ -96,6 +141,7 @@ final class HttpDispatcher
         Request $request,
         Response $response,
     ): void {
+
         $this->container->instance(
             Request::class,
             $request,

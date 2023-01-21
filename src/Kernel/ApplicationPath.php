@@ -7,7 +7,7 @@ use Takemo101\Egg\Support\Filesystem\PathHelper;
 /**
  * application path setting
  */
-final class ApplicationPathSetting
+final class ApplicationPath
 {
     private readonly PathHelper $helper;
 
@@ -17,11 +17,13 @@ final class ApplicationPathSetting
      * @param string $basePath ベースフルパス
      * @param string $settingPath 設定ディレクトリのベースからの相対パス
      * @param string $configPath コンフィグディレクトリのベースからの相対パス
+     * @param string $storagePath ストレージディレクトリのベースからの相対パス
      */
     public function __construct(
         public readonly string $basePath,
         public readonly string $settingPath,
         public readonly string $configPath,
+        public readonly string $storagePath,
     ) {
         $this->helper = new PathHelper();
     }
@@ -63,5 +65,18 @@ final class ApplicationPathSetting
         return $path
             ? $this->helper->join($this->basePath, $this->configPath, $path)
             : $this->helper->join($this->basePath, $this->configPath);
+    }
+
+    /**
+     * ストレージパス取得
+     *
+     * @param string|null $path
+     * @return string
+     */
+    public function storagePath(?string $path = null): string
+    {
+        return $path
+            ? $this->helper->join($this->basePath, $this->storagePath, $path)
+            : $this->helper->join($this->basePath, $this->storagePath);
     }
 }

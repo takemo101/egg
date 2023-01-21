@@ -11,5 +11,8 @@
 # keep directory
 !.gitkeep
 
+# for application
+/storage/log/*.log
+
 # other
 /.vscode

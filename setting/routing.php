@@ -1,17 +1,29 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Takemo101\Egg\Http\Exception\NotFoundHttpException;
 use Takemo101\Egg\Routing\RouteBuilder;
+use Takemo101\Egg\Support\Injector\ContainerContract;
+use Takemo101\Egg\Support\Log\Loggers;
 
 return function (RouteBuilder $r) {
-    $r->get('/', function (Response $response) {
+    $r->get('/', function (Request $request, Response $response, ContainerContract $container) {
         return $response->setContent('Hello World');
     })
         ->name('home');
 
+    $r->get('/error', fn () => throw new NotFoundHttpException())
+        ->name('error');
+
+    $r->get('/log', function (Loggers $loggers) {
+        $loggers->get('app')->info('test');
+    })
+        ->name('log');
+
     $r->group(function (RouteBuilder $r) {
-        $r->get('/', function () {
-            echo 'index';
+        $r->get('/', function (Request $request, Response $response) {
+            return $response->setContent($request->getSession()->get('test'));
         })
             ->name('index');
 

@@ -2,13 +2,13 @@
 
 namespace Takemo101\Egg\Kernel\Loader;
 
+use Takemo101\Egg\Http\ErrorHandler\HttpErrorHandler;
+use Takemo101\Egg\Http\HttpErrorHandlerContract;
 use Takemo101\Egg\Http\ResponseSender;
 use Takemo101\Egg\Http\ResponseSenderContract;
+use Takemo101\Egg\Http\RootFilters;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\LoaderContract;
-use Takemo101\Egg\Support\Config\ConfigRepository;
-use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
-use Takemo101\Egg\Support\Filesystem\LocalSystem;
 
 /**
  * Http関連
@@ -33,9 +33,24 @@ final class HttpLoader implements LoaderContract
      */
     public function load(): void
     {
+        /** @var mixed[] */
+        $filters = require $this->app
+            ->pathSetting
+            ->settingPath('filter.php');
+
+        $this->app->container->bind(
+            RootFilters::class,
+            fn () => new RootFilters(...$filters),
+        );
+
         $this->app->container->bind(
             ResponseSenderContract::class,
             fn () => new ResponseSender(),
+        );
+
+        $this->app->container->bind(
+            HttpErrorHandlerContract::class,
+            HttpErrorHandler::class,
         );
     }
 }

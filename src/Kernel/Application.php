@@ -7,7 +7,9 @@ use Takemo101\Egg\Kernel\Loader\DependencyLoader;
 use Takemo101\Egg\Kernel\Loader\EnvironmentLoader;
 use Takemo101\Egg\Kernel\Loader\ErrorLoader;
 use Takemo101\Egg\Kernel\Loader\HelperLoader;
+use Takemo101\Egg\Kernel\Loader\LogLoader;
 use Takemo101\Egg\Kernel\Loader\RoutingLoader;
+use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
 use Takemo101\Egg\Support\Filesystem\LocalSystem;
 use Takemo101\Egg\Support\Filesystem\LocalSystemContract;
 use Takemo101\Egg\Support\Filesystem\PathHelper;
@@ -37,10 +39,10 @@ final class Application
     /**
      * constructor
      *
-     * @param ApplicationPathSetting $pathSetting
+     * @param ApplicationPath $pathSetting
      */
     public function __construct(
-        public readonly ApplicationPathSetting $pathSetting,
+        public readonly ApplicationPath $pathSetting,
     ) {
         $this->container = new Container();
 
@@ -55,6 +57,7 @@ final class Application
             HelperLoader::class,
             ConfigLoader::class,
             RoutingLoader::class,
+            LogLoader::class,
         );
 
         $this->register();
@@ -78,8 +81,21 @@ final class Application
         );
 
         $this->container->instance(
-            ApplicationPathSetting::class,
+            ApplicationPath::class,
             $this->pathSetting,
+        );
+
+        $this->container->singleton(
+            ApplicationEnvironment::class,
+            function (ContainerContract $container): ApplicationEnvironment {
+                /** @var ConfigRepositoryContract */
+                $config = $container->make(ConfigRepositoryContract::class);
+
+                return new ApplicationEnvironment(
+                    environment: $config->get('app.env', 'local'),
+                    debug: $config->get('app.debug', true),
+                );
+            },
         );
 
         foreach ([
