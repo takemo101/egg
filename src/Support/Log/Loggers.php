@@ -29,7 +29,7 @@ final class Loggers
         array $factories = [],
     ) {
         foreach ($factories as $key => $factory) {
-            $this->setFactory($key, $factory);
+            $this->addFactory($key, $factory);
         }
     }
 
@@ -40,7 +40,7 @@ final class Loggers
      * @param LoggerFactoryContract $factory
      * @return self
      */
-    public function setFactory(string $key, LoggerFactoryContract $factory): self
+    public function addFactory(string $key, LoggerFactoryContract $factory): self
     {
         $this->factories[$key] = $factory;
 

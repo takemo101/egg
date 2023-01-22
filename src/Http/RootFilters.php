@@ -17,10 +17,10 @@ final class RootFilters
     /**
      * constructor
      *
-     * @param mixed ...$filters
+     * @param object|array|string ...$filters
      */
     public function __construct(
-        mixed ...$filters,
+        object|array|string ...$filters,
     ) {
         $this->filters = Filters::fromPrimitives(...$filters);
     }

@@ -3,6 +3,7 @@
 namespace Takemo101\Egg\Http\Invoker;
 
 use Takemo101\Egg\Support\Injector\ContainerContract;
+use Takemo101\Egg\Support\Shared\CallableCreator;
 
 /**
  * Invokerの抽象クラス

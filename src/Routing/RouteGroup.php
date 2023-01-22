@@ -89,10 +89,10 @@ final class RouteGroup
     /**
      * フィルターの追加
      *
-     * @param mixed $filter
+     * @param object|array|string $filter
      * @return self
      */
-    public function filter(mixed ...$filter): self
+    public function filter(object|array|string ...$filter): self
     {
         $this->filters = $this->filters->join(
             Filters::fromPrimitives(...$filter),

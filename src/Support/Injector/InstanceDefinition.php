@@ -2,6 +2,8 @@
 
 namespace Takemo101\Egg\Support\Injector;
 
+use Error;
+
 /**
  * 依存注入するための定義
  */
@@ -13,7 +15,7 @@ final class InstanceDefinition implements DefinitionContract
      * @param mixed $instance
      */
     public function __construct(
-        private readonly mixed $instance,
+        private mixed $instance,
     ) {
         //
     }
@@ -30,5 +32,30 @@ final class InstanceDefinition implements DefinitionContract
         array $options = [],
     ) {
         return $this->instance;
+    }
+
+    /**
+     * インスタンスは生成済みか？
+     *
+     * @return boolean
+     */
+    public function isBuilded(): bool
+    {
+        return true;
+    }
+
+    /**
+     * インスタンスの更新
+     *
+     * @param mixed $instance
+     * @return void
+     * @throws Error
+     */
+    public function update($instance): void
+    {
+        if (!($instance instanceof $this->instance))
+            throw new Error('error: instance type error!');
+
+        $this->instance = $instance;
     }
 }

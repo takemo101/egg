@@ -21,8 +21,8 @@ $app->addLoader(
 $app->boot();
 
 // ルーティングを処理する
-/** @var Takemo101\Egg\Http\HttpDispatcher */
-$dispatcher = $app->container->make(Takemo101\Egg\Http\HttpDispatcher::class);
+/** @var Takemo101\Egg\Http\HttpDispatcherContract */
+$dispatcher = $app->container->make(Takemo101\Egg\Http\HttpDispatcherContract::class);
 $dispatcher->dispatch(
     request: Symfony\Component\HttpFoundation\Request::createFromGlobals(),
     response: new Symfony\Component\HttpFoundation\Response(),

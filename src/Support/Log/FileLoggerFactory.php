@@ -86,13 +86,11 @@ final class FileLoggerFactory implements LoggerFactoryContract
      */
     protected function createPath(): string
     {
-        $filename = date('Ymd') . '-' . $this->filename;
-
         return $this->applicationPath->storagePath(
             sprintf(
                 '%s/%s',
                 $this->path,
-                $filename,
+                $this->filename,
             ),
         );
     }

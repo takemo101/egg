@@ -57,13 +57,13 @@ final class RouteBuilder
      *
      * @param HttpMethod[] $methods
      * @param string $path
-     * @param mixed $handler
+     * @param object|array|string $handler
      * @return RouteNode
      */
     public function map(
         array $methods,
         string $path,
-        mixed $handler,
+        object|array|string $handler,
     ): RouteNode {
         $node = new RouteNode(
             methods: new HttpMethods(...$methods),
@@ -80,10 +80,10 @@ final class RouteBuilder
      * create get method route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param object|array|string $handler
      * @return RouteNode
      */
-    public function get(string $path, mixed $handler): RouteNode
+    public function get(string $path, object|array|string $handler): RouteNode
     {
         return $this->map(HttpMethod::toGetMethods(), $path, $handler);
     }
@@ -92,10 +92,10 @@ final class RouteBuilder
      * create post method route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param object|array|string $handler
      * @return RouteNode
      */
-    public function post(string $path, mixed $handler): RouteNode
+    public function post(string $path, object|array|string $handler): RouteNode
     {
         return $this->map([HttpMethod::Post], $path, $handler);
     }
@@ -104,10 +104,10 @@ final class RouteBuilder
      * create put method route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param object|array|string $handler
      * @return RouteNode
      */
-    public function put(string $path, mixed $handler): RouteNode
+    public function put(string $path, object|array|string $handler): RouteNode
     {
         return $this->map([HttpMethod::Put], $path, $handler);
     }
@@ -116,10 +116,10 @@ final class RouteBuilder
      * create delete method route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param object|array|string $handler
      * @return RouteNode
      */
-    public function delete(string $path, mixed $handler): RouteNode
+    public function delete(string $path, object|array|string $handler): RouteNode
     {
         return $this->map([HttpMethod::Delete], $path, $handler);
     }
@@ -128,10 +128,10 @@ final class RouteBuilder
      * create patch method route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param object|array|string $handler
      * @return RouteNode
      */
-    public function patch(string $path, mixed $handler): RouteNode
+    public function patch(string $path, object|array|string $handler): RouteNode
     {
         return $this->map([HttpMethod::Patch], $path, $handler);
     }
@@ -140,10 +140,10 @@ final class RouteBuilder
      * create options method route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param object|array|string $handler
      * @return RouteNode
      */
-    public function options(string $path, mixed $handler): RouteNode
+    public function options(string $path, object|array|string $handler): RouteNode
     {
         return $this->map([HttpMethod::Options], $path, $handler);
     }
@@ -152,10 +152,10 @@ final class RouteBuilder
      * create any method route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param object|array|string $handler
      * @return RouteNode
      */
-    public function any(string $path, mixed $handler): RouteNode
+    public function any(string $path, object|array|string $handler): RouteNode
     {
         return $this->map(HttpMethod::cases(), $path, $handler);
     }

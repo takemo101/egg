@@ -48,7 +48,7 @@ final class LogLoader implements LoaderContract
                 $applicationPath = $container->make(ApplicationPath::class);
 
                 /** @var array<string,string> */
-                $filenames = $config->get('log.filenames', []);
+                $filenames = $config->get('log.filename', []);
 
                 /** @var array<string,LoggerFactoryContract> */
                 $factories = [];

@@ -3,6 +3,8 @@
 namespace Takemo101\Egg\Kernel\Loader;
 
 use Takemo101\Egg\Http\ErrorHandler\HttpErrorHandler;
+use Takemo101\Egg\Http\HttpDispatcher;
+use Takemo101\Egg\Http\HttpDispatcherContract;
 use Takemo101\Egg\Http\HttpErrorHandlerContract;
 use Takemo101\Egg\Http\ResponseSender;
 use Takemo101\Egg\Http\ResponseSenderContract;
@@ -51,6 +53,11 @@ final class HttpLoader implements LoaderContract
         $this->app->container->bind(
             HttpErrorHandlerContract::class,
             HttpErrorHandler::class,
+        );
+
+        $this->app->container->bind(
+            HttpDispatcherContract::class,
+            HttpDispatcher::class,
         );
     }
 }

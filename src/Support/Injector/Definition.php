@@ -4,6 +4,7 @@ namespace Takemo101\Egg\Support\Injector;
 
 use Closure;
 use Error;
+use RuntimeException;
 
 /**
  * 依存注入するための定義
@@ -78,5 +79,32 @@ final class Definition implements DefinitionContract
         }
 
         return $result;
+    }
+
+    /**
+     * インスタンスは生成済みか？
+     *
+     * @return boolean
+     */
+    public function isBuilded(): bool
+    {
+        return !is_null($this->instance);
+    }
+
+    /**
+     * インスタンスの更新
+     *
+     * @param mixed $instance
+     * @return void
+     * @throws Error
+     */
+    public function update($instance): void
+    {
+        if ($this->instance) {
+            if (!($instance instanceof $this->instance))
+                throw new Error('error: instance type error!');
+
+            $this->instance = $instance;
+        }
     }
 }

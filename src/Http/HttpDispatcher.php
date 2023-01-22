@@ -12,10 +12,9 @@ use Takemo101\Egg\Routing\RouteMatchResult;
 use Throwable;
 
 /**
- * Webアプリケーションのディスパッチャ
- * ルーティングの結果を元にアクションを呼び出す
+ * Httpディスパッチャの基本的な実装
  */
-final class HttpDispatcher
+final class HttpDispatcher implements HttpDispatcherContract
 {
     /**
      * @var RouteActionInvoker

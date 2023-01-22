@@ -1,10 +1,10 @@
 <?php
 
-namespace Takemo101\Egg\Http\Invoker;
+namespace Takemo101\Egg\Support\Shared;
 
 use RuntimeException;
-use Takemo101\Egg\Routing\Shared\Handler;
 use Takemo101\Egg\Support\Injector\ContainerContract;
+use Takemo101\Egg\Support\Shared\Functional;
 
 /**
  * callableを作成する
@@ -23,39 +23,39 @@ final class CallableCreator
     }
 
     /**
-     * Handlerからコールバックを作成する
+     * Functionalからコールバックを作成する
      *
-     * @param Handler $handler
+     * @param Functional $function
      * @return callable
      * @throws RuntimeException
      */
-    public function create(Handler $handler): callable
+    public function create(Functional $function): callable
     {
-        if ($handler->isClosure()) {
-            return $handler->toClosure();
+        if ($function->isClosure()) {
+            return $function->toClosure();
         }
 
-        if ($handler->isObject()) {
-            $object = $handler->toObject();
+        if ($function->isObject()) {
+            $object = $function->toObject();
 
             return $this->objectToCallable($object);
         }
 
-        if ($handler->isArray()) {
-            $array = $handler->toArray();
+        if ($function->isArray()) {
+            $array = $function->toArray();
 
             return $this->checkCallable($array);
         }
 
-        if ($handler->isString()) {
-            $object = $this->container->make($handler->toString());
+        if ($function->isString()) {
+            $object = $this->container->make($function->toString());
 
-            if (!is_object($object)) throw new RuntimeException('error! invalid handler string');
+            if (!is_object($object)) throw new RuntimeException('error! invalid callable string');
 
             return $this->objectToCallable($object);
         }
 
-        return $this->checkCallable($handler->handler);
+        return $this->checkCallable($function->callable);
     }
 
     /**
@@ -80,20 +80,20 @@ final class CallableCreator
             }
         }
 
-        throw new RuntimeException('error! invalid handler object');
+        throw new RuntimeException('error! invalid callable object');
     }
 
     /**
      * callableをチェックして返す
      *
-     * @param mixed $collable
+     * @param mixed $callable
      * @return callable
      * @throws RuntimeException
      */
-    private function checkCallable(mixed $collable): callable
+    private function checkCallable(mixed $callable): callable
     {
-        if (is_callable($collable)) return $collable;
+        if (is_callable($callable)) return $callable;
 
-        throw new RuntimeException('error! invalid handler');
+        throw new RuntimeException('error! invalid callable');
     }
 }

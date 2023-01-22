@@ -3,7 +3,6 @@
 namespace Takemo101\Egg\Support\Injector;
 
 use Closure;
-use Error;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 
 /**
@@ -22,4 +21,19 @@ interface DefinitionContract
         ObjectResolver $resolver,
         array $options = [],
     );
+
+    /**
+     * インスタンスは生成済みか？
+     *
+     * @return boolean
+     */
+    public function isBuilded(): bool;
+
+    /**
+     * インスタンスの更新
+     *
+     * @param mixed $instance
+     * @return void
+     */
+    public function update($instance): void;
 }

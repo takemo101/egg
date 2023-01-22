@@ -6,6 +6,7 @@ use Takemo101\Egg\Kernel\Loader\ConfigLoader;
 use Takemo101\Egg\Kernel\Loader\DependencyLoader;
 use Takemo101\Egg\Kernel\Loader\EnvironmentLoader;
 use Takemo101\Egg\Kernel\Loader\ErrorLoader;
+use Takemo101\Egg\Kernel\Loader\FunctionLoader;
 use Takemo101\Egg\Kernel\Loader\HelperLoader;
 use Takemo101\Egg\Kernel\Loader\LogLoader;
 use Takemo101\Egg\Kernel\Loader\RoutingLoader;
@@ -56,6 +57,7 @@ final class Application
             DependencyLoader::class,
             HelperLoader::class,
             ConfigLoader::class,
+            FunctionLoader::class,
             RoutingLoader::class,
             LogLoader::class,
         );

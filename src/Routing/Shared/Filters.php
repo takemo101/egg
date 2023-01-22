@@ -73,10 +73,10 @@ final class Filters
     /**
      * 値からインスタンスを生成
      *
-     * @param mixed ...$primitives
+     * @param object|array|string ...$primitives
      * @return self
      */
-    public static function fromPrimitives(mixed ...$primitives): self
+    public static function fromPrimitives(object|array|string ...$primitives): self
     {
         /** @var Handler[] */
         $handlers = [];

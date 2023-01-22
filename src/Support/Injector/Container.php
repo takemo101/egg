@@ -4,8 +4,10 @@ namespace Takemo101\Egg\Support\Injector;
 
 use Closure;
 use LogicException;
+use Takemo101\Egg\Support\Hook\Hook;
 use Takemo101\Egg\Support\Injector\Resolver\ArgumentNameResolver;
 use Takemo101\Egg\Support\Injector\Resolver\DefaultResolver;
+use Takemo101\Egg\Support\StaticContainer;
 
 /**
  * DIコンテナでインスタンスを管理するクラス
@@ -36,6 +38,11 @@ class Container implements ContainerContract
      */
     private readonly ObjectResolver $objectResolver;
 
+    /**
+     * @var Hook
+     */
+    private readonly Hook $hook;
+
     public function __construct(
         ?ArgumentResolvers $resolvers = null
     ) {
@@ -52,6 +59,19 @@ class Container implements ContainerContract
         $this->objectResolver = new ObjectResolver(
             container: $this,
             resolvers: $resolvers,
+        );
+
+        $this->hook = new Hook(
+            container: $this,
+        );
+
+        $this->instance(
+            Hook::class,
+            $this->hook,
+        );
+        StaticContainer::set(
+            'hook',
+            $this->hook,
         );
     }
 
@@ -82,7 +102,18 @@ class Container implements ContainerContract
      */
     public function instance(string $label, mixed $instance)
     {
-        $this->binds[$label] = new InstanceDefinition($instance);
+        $definition = new InstanceDefinition($instance);
+
+        $this->binds[$label] = $definition;
+
+        // インスタンス追加時にフックを実行
+        if ($this->hook->hasTag($label)) {
+            $this->applyHookFilter(
+                label: $label,
+                definition: $definition,
+                data: $instance,
+            );
+        }
 
         return $this;
     }
@@ -168,7 +199,19 @@ class Container implements ContainerContract
 
         $definition = $this->binds[$label];
 
-        return $definition->resolve($this->objectResolver, $options);
+        $builded = $definition->isBuilded();
+        $result = $definition->resolve($this->objectResolver, $options);
+
+        // 初期化時にフックを実行
+        if (!$builded && $this->hook->hasTag($label)) {
+            $result = $this->applyHookFilter(
+                label: $label,
+                definition: $definition,
+                data: $result,
+            );
+        }
+
+        return $result;
     }
 
     /**
@@ -184,5 +227,26 @@ class Container implements ContainerContract
             callable: $callable,
             options: $options
         );
+    }
+
+    /**
+     * フックのフィルター処理実行して
+     * 依存注入定義のインスタンスを更新する
+     *
+     * @param string $label
+     * @param DefinitionContract $definition
+     * @param mixed $data
+     * @return mixed
+     */
+    private function applyHookFilter(
+        string $label,
+        DefinitionContract $definition,
+        mixed $data,
+    ) {
+        $data = $this->hook->applyFilter($label, $data);
+
+        $definition->update($data);
+
+        return $data;
     }
 }
