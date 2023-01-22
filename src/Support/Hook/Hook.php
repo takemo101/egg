@@ -105,7 +105,9 @@ final class Hook
      */
     public function applyFilter(string $tag, $parameter): mixed
     {
-        if (!isset($this->filters[$tag])) throw new RuntimeException("{$tag} is not registered");
+        if (!isset($this->filters[$tag])) {
+            throw new RuntimeException("{$tag} is not registered");
+        }
 
         $result = $parameter;
 
@@ -135,7 +137,9 @@ final class Hook
      */
     public function doAction(string $tag, $parameter): void
     {
-        if (!isset($this->filters[$tag])) throw new RuntimeException("{$tag} is not registered");
+        if (!isset($this->filters[$tag])) {
+            throw new RuntimeException("{$tag} is not registered");
+        }
 
         $filters = $this->filters[$tag];
 
