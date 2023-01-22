@@ -7,8 +7,8 @@ namespace Takemo101\Egg\Support\Filesystem;
  */
 enum ExtractType: int
 {
-    const Dirname = PATHINFO_DIRNAME;
-    const Basename = PATHINFO_BASENAME;
-    const Extention = PATHINFO_EXTENSION;
-    const Filename = PATHINFO_FILENAME;
+    public const Dirname = PATHINFO_DIRNAME;
+    public const Basename = PATHINFO_BASENAME;
+    public const Extention = PATHINFO_EXTENSION;
+    public const Filename = PATHINFO_FILENAME;
 }

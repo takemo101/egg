@@ -13,6 +13,7 @@
 
 # for application
 /storage/log/*.log
+/.php-cs-fixer.cache
 
 # other
 /.vscode

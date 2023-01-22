@@ -41,7 +41,9 @@ final class StringHelper
     {
         $replace = preg_replace(self::ProtocolRegex, '', $string);
 
-        if (!is_string($replace)) throw new InvalidArgumentException('error: is not string!');
+        if (!is_string($replace)) {
+            throw new InvalidArgumentException('error: is not string!');
+        }
 
         return $replace;
     }
@@ -57,7 +59,9 @@ final class StringHelper
     {
         $replace = preg_replace('/\/.*/', '', $string);
 
-        if (!is_string($replace)) throw new InvalidArgumentException('error: is not string!');
+        if (!is_string($replace)) {
+            throw new InvalidArgumentException('error: is not string!');
+        }
 
         return $replace;
     }
@@ -92,7 +96,9 @@ final class StringHelper
      */
     public static function parseProtocol(string $string): ?string
     {
-        if (!preg_match(self::ProtocolRegex, $string, $matches)) return null;
+        if (!preg_match(self::ProtocolRegex, $string, $matches)) {
+            return null;
+        }
 
         return $matches[1];
     }

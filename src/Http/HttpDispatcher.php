@@ -140,7 +140,6 @@ final class HttpDispatcher implements HttpDispatcherContract
         Request $request,
         Response $response,
     ): void {
-
         $this->container->instance(
             Request::class,
             $request,

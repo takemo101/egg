@@ -101,8 +101,9 @@ final class Definition implements DefinitionContract
     public function update($instance): void
     {
         if ($this->instance) {
-            if (!($instance instanceof $this->instance))
+            if (!($instance instanceof $this->instance)) {
                 throw new Error('error: instance type error!');
+            }
 
             $this->instance = $instance;
         }

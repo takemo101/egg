@@ -28,9 +28,13 @@ final class HookAction
      */
     private function createUniqueKey(HookFunction $function): string
     {
-        if ($function->isString()) return $function->toString();
+        if ($function->isString()) {
+            return $function->toString();
+        }
 
-        if ($function->isObject()) return spl_object_hash($function->toObject());
+        if ($function->isObject()) {
+            return spl_object_hash($function->toObject());
+        }
 
         if (!$function->isArray()) {
             throw new RuntimeException('error: invalid function');

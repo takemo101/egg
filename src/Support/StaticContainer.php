@@ -36,7 +36,9 @@ final class StaticContainer
      */
     public static function instance(): self
     {
-        if (self::$instance) return self::$instance;
+        if (self::$instance) {
+            return self::$instance;
+        }
 
         return self::$instance = new self();
     }
@@ -52,7 +54,9 @@ final class StaticContainer
     {
         $object = self::instance()->container->get($key);
 
-        if (is_object($object)) return $object;
+        if (is_object($object)) {
+            return $object;
+        }
 
         throw new RuntimeException("{$key} is not object");
     }

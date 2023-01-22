@@ -25,7 +25,6 @@ final class ArgumentNameResolver implements ArgumentResolverContract
         array $arguments,
         array $options = []
     ): array {
-
         // パラメータから引数を取得する
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();

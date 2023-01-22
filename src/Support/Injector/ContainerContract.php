@@ -9,7 +9,6 @@ use Closure;
  */
 interface ContainerContract
 {
-
     /**
      * 別名の設定
      *

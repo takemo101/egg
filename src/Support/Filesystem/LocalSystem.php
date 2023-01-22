@@ -127,7 +127,7 @@ final class LocalSystem implements LocalSystemContract
      * @param integer $permission
      * @return boolean
      */
-    public function chmod(string $path, int $permission = 0755): bool
+    public function chmod(string $path, int $permission = 0o755): bool
     {
         return chmod($path, $permission);
     }
@@ -349,7 +349,7 @@ final class LocalSystem implements LocalSystemContract
      * @param boolean $recursive
      * @return boolean
      */
-    public function makeDirectory(string $path, int $permission = 0755, bool $recursive = true): bool
+    public function makeDirectory(string $path, int $permission = 0o755, bool $recursive = true): bool
     {
         return mkdir($path, $permission, $recursive);
     }
@@ -379,7 +379,7 @@ final class LocalSystem implements LocalSystemContract
             return false;
         }
 
-        $this->makeDirectory($to, 0777);
+        $this->makeDirectory($to, 0o777);
 
         $paths = $this->glob($this->helper->join($from, "*"));
 
@@ -420,7 +420,7 @@ final class LocalSystem implements LocalSystemContract
                 if (!$this->deleteDirectory($target, $keep)) {
                     return false;
                 }
-            } else if (!$this->delete($target)) {
+            } elseif (!$this->delete($target)) {
                 return false;
             }
         }

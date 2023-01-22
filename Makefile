@@ -72,3 +72,7 @@ phpstan: ## phpstan analyse
 .PHONY: analyze
 analyze: ## ./vendor/bin/phpstan analyse
 	docker compose run --rm php ./vendor/bin/phpstan analyse --memory-limit=1G
+
+.PHONY: fix
+fix: ## ./vendor/bin/php-cs-fixer fix
+	docker compose run --rm php ./vendor/bin/php-cs-fixer fix -v --diff

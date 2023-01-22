@@ -25,7 +25,6 @@ final class DefaultResolver implements ArgumentResolverContract
         array $arguments,
         array $options = []
     ): array {
-
         // パラメータから引数を取得する
         foreach ($parameters as $parameter) {
             // 可変長引数の場合は例外
@@ -41,13 +40,13 @@ final class DefaultResolver implements ArgumentResolverContract
                 if (!is_null($class = $parameter->getDeclaringClass())) {
                     if ($name === 'self') {
                         $name = $class->getName();
-                    } else if ($name === 'parent' && $parent = $class->getParentClass()) {
+                    } elseif ($name === 'parent' && $parent = $class->getParentClass()) {
                         $name = $parent->getName();
                     }
                 }
 
                 $arguments[$parameter->getName()] = $container->make($name);
-            } else if ($parameter->isDefaultValueAvailable()) {
+            } elseif ($parameter->isDefaultValueAvailable()) {
                 $arguments[$parameter->getName()] = $parameter->getDefaultValue();
             }
         }

@@ -47,7 +47,9 @@ final class RouteBuilder
         call_user_func($callback, $this);
 
         // グルーピングが完了した親のグループをカレントに設定する
-        if ($group->hasParent()) $this->current = $group->parent();
+        if ($group->hasParent()) {
+            $this->current = $group->parent();
+        }
 
         return $group;
     }

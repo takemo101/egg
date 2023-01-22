@@ -2,7 +2,6 @@
 
 namespace Takemo101\Egg\Kernel;
 
-
 /**
  * bootstrapで実行するLoader
  */

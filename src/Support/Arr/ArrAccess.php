@@ -74,7 +74,6 @@ class ArrAccess implements IteratorContract, JsonSerializable
         $result = [];
 
         foreach ($array as $key => $value) {
-
             if (is_array($value)) {
                 $result = array_merge($result, $this->dotting($value, $prepend . $key . static::DotSeparator));
             } else {
@@ -94,7 +93,6 @@ class ArrAccess implements IteratorContract, JsonSerializable
      */
     public function set(string $key, $value): static
     {
-
         $keys = explode(static::DotSeparator, $key);
 
         $result = &$this->array;
@@ -205,7 +203,6 @@ class ArrAccess implements IteratorContract, JsonSerializable
         $result = &$this->array;
 
         foreach ((array)$keys as $key) {
-
             $parts = explode(static::DotSeparator, $key);
 
             while (count($parts) > 1) {

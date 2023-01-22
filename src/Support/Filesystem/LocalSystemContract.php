@@ -65,7 +65,7 @@ interface LocalSystemContract
      * @param integer $permission
      * @return boolean
      */
-    public function chmod(string $path, int $permission = 0755): bool;
+    public function chmod(string $path, int $permission = 0o755): bool;
 
     /**
      * ファイルコピー
@@ -216,7 +216,7 @@ interface LocalSystemContract
      * @param boolean $recursive
      * @return boolean
      */
-    public function makeDirectory(string $path, int $permission = 0755, bool $recursive = true): bool;
+    public function makeDirectory(string $path, int $permission = 0o755, bool $recursive = true): bool;
 
     /**
      * ディレクトリ移動

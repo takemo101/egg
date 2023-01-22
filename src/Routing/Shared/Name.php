@@ -18,7 +18,9 @@ final class Name implements Equatable
     public function __construct(
         public readonly string $name,
     ) {
-        if (empty($name)) throw new InvalidArgumentException('error: name is empty!');
+        if (empty($name)) {
+            throw new InvalidArgumentException('error: name is empty!');
+        }
     }
 
     /**

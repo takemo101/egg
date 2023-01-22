@@ -35,15 +35,18 @@ final class AltoRouterAdapter implements RouterContract
     ): ?RouteMatchResult {
         $route = $this->router->match($uri, $method);
 
-        if (!$route) return null;
+        if (!$route) {
+            return null;
+        }
 
         /** @var mixed */
         $action = $route['target'];
 
         // target には RouteAction が入っている想定なので
         // それ以外の型が入っていた場合はエラー
-        if (!($action instanceof RouteAction))
+        if (!($action instanceof RouteAction)) {
             throw new RuntimeException('error! target is not RouteAction');
+        }
 
         /** @var array<string,mixed> */
         $parameters = $route['params'] ?? [];

@@ -63,7 +63,7 @@ final class FileLoggerFactory implements LoggerFactoryContract
             maxFiles: 0,
             level: $this->level,
             bubble: true,
-            filePermission: 0777,
+            filePermission: 0o777,
         );
 
         $handler->setFormatter(

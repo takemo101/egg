@@ -36,7 +36,7 @@ final class PathHelper
         foreach ($args as $component) {
             $components = [
                 ...$components,
-                ...array_filter(explode(empty($this->separator) ? DIRECTORY_SEPARATOR : $this->separator, $component))
+                ...array_filter(explode(empty($this->separator) ? DIRECTORY_SEPARATOR : $this->separator, $component)),
             ];
         }
 

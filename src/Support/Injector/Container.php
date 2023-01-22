@@ -46,7 +46,7 @@ class Container implements ContainerContract
     public function __construct(
         ?ArgumentResolvers $resolvers = null
     ) {
-        $resolvers = $resolvers ?? new ArgumentResolvers(
+        $resolvers ??= new ArgumentResolvers(
             new DefaultResolver(),
             new ArgumentNameResolver(),
         );
@@ -127,7 +127,7 @@ class Container implements ContainerContract
      */
     public function singleton(string $label, Closure|string|null $callback = null)
     {
-        $callback = $callback ?? $label;
+        $callback ??= $label;
 
         $this->binds[$label] = new Definition($callback, true);
 
@@ -143,7 +143,7 @@ class Container implements ContainerContract
      */
     public function bind(string $label, Closure|string|null $callback = null)
     {
-        $callback = $callback ?? $label;
+        $callback ??= $label;
 
         $this->binds[$label] = new Definition($callback);
 

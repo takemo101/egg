@@ -25,7 +25,9 @@ final class Domain implements Equatable
     ) {
         // ドメインを取得して空かどうか検証する
         $domain = StringHelper::trimSeparator($domain);
-        if (empty($domain)) throw new InvalidArgumentException('error: domain is empty!');
+        if (empty($domain)) {
+            throw new InvalidArgumentException('error: domain is empty!');
+        }
 
         $this->domain = $domain;
     }

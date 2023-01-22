@@ -14,7 +14,7 @@ class ConfigRepository implements ConfigRepositoryContract
     /**
      * @var string
      */
-    const ConfigExt = '.php';
+    public const ConfigExt = '.php';
 
     /**
      * @var array<string,string|mixed[]>
@@ -76,7 +76,9 @@ class ConfigRepository implements ConfigRepositoryContract
                 ->join($directory, "*{$ext}"),
         );
 
-        if (empty($paths)) return;
+        if (empty($paths)) {
+            return;
+        }
 
         foreach ($paths as $path) {
             $key = $this->createKeyStringByPath($path);
@@ -114,14 +116,17 @@ class ConfigRepository implements ConfigRepositoryContract
      */
     private function resolve(string|array $config = []): array
     {
-        if (!is_string($config)) return $config;
+        if (!is_string($config)) {
+            return $config;
+        }
 
         $result = require $config;
 
         // 配列ではない場合は
         // コンフィグデータではないのでエラー
-        if (!is_array($result))
+        if (!is_array($result)) {
             throw new RuntimeException("error!: config file must return array!");
+        }
 
         return $result;
     }

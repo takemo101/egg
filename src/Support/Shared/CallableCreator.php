@@ -50,7 +50,9 @@ final class CallableCreator
         if ($function->isString()) {
             $object = $this->container->make($function->toString());
 
-            if (!is_object($object)) throw new RuntimeException('error! invalid callable string');
+            if (!is_object($object)) {
+                throw new RuntimeException('error! invalid callable string');
+            }
 
             return $this->objectToCallable($object);
         }
@@ -66,13 +68,14 @@ final class CallableCreator
      */
     private function objectToCallable(object $object): callable
     {
-        if (is_callable($object)) return $object;
+        if (is_callable($object)) {
+            return $object;
+        }
 
         foreach ([
             'handle',
             '__invoke',
         ] as $method) {
-
             $set = [$object, $method];
 
             if (method_exists($object, $method)) {
@@ -92,7 +95,9 @@ final class CallableCreator
      */
     private function checkCallable(mixed $callable): callable
     {
-        if (is_callable($callable)) return $callable;
+        if (is_callable($callable)) {
+            return $callable;
+        }
 
         throw new RuntimeException('error! invalid callable');
     }

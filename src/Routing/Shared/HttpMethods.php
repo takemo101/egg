@@ -28,12 +28,16 @@ final class HttpMethods
         foreach ($methods as $m) {
             if (
                 in_array($m, $tempMethods, true)
-            ) continue;
+            ) {
+                continue;
+            }
 
             $tempMethods[] = $m;
         }
 
-        if (empty($tempMethods)) throw new InvalidArgumentException('error: methods is empty!');
+        if (empty($tempMethods)) {
+            throw new InvalidArgumentException('error: methods is empty!');
+        }
 
         $this->methods = $tempMethods;
     }

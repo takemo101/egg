@@ -56,10 +56,13 @@ final class Loggers
      */
     public function get(string $key): LoggerInterface
     {
-        if (isset($this->loggers[$key])) return $this->loggers[$key];
+        if (isset($this->loggers[$key])) {
+            return $this->loggers[$key];
+        }
 
-        if (!isset($this->factories[$key]))
+        if (!isset($this->factories[$key])) {
             throw new RuntimeException("error: [key={$key}] is not exists!");
+        }
 
         $logger = $this->factories[$key]->create($key);
 

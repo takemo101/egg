@@ -38,7 +38,7 @@ final class Bootstrap
         $this->loaders = array_unique(
             [
                 ...$this->loaders,
-                ...$loaders
+                ...$loaders,
             ]
         );
 

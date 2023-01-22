@@ -31,7 +31,6 @@ final class RouteActionInvoker extends AbstractInvoker
         Filters $filters,
         array $parameters,
     ): Response {
-
         $next = $this->createActionClosure(
             action: $action,
             parameters: $parameters,
