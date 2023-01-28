@@ -22,6 +22,7 @@ class AppTestCase extends PHPUnitTestCase
         $this->app = new Application(
             pathSetting: new ApplicationPath(
                 basePath: dirname(__DIR__),
+                dotenv: '.testing.env',
             ),
         );
 

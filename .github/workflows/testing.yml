@@ -8,7 +8,7 @@ on:
 
 jobs:
   testing:
-    name: Simple DTO (PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
+    name: Egg (PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false
