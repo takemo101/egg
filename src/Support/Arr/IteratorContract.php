@@ -8,6 +8,12 @@ use IteratorAggregate;
 
 /**
  * 配列のイテレート機能
+ *
+ * @template TKey of array-key
+ * @template TValue
+ *
+ * @extends ArrayAccess<TKey,TValue>
+ * @extends IteratorAggregate<TKey,TValue>
  */
 interface IteratorContract extends
     ArrayAccess,
@@ -15,16 +21,9 @@ interface IteratorContract extends
     IteratorAggregate
 {
     /**
-     * 自身をコピー
-     *
-     * @return self
-     */
-    public function clone();
-
-    /**
      * 要素を全て返す
      *
-     * @return array
+     * @return array<string,TValue>
      */
     public function all(): array;
 

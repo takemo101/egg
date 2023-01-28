@@ -6,6 +6,10 @@ use JsonSerializable;
 
 /**
  * array access class
+ *
+ * @template TValue
+ *
+ * @implements IteratorContract<string,TValue>
  */
 class ArrAccess implements IteratorContract, JsonSerializable
 {
@@ -16,9 +20,9 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * construct
      *
-     * @param array $array
+     * @param array<string,TValue> $array
      */
-    public function __construct(
+    final public function __construct(
         array $array = []
     ) {
         $this->array = $array;
@@ -40,7 +44,7 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * ドット記法での配列を返す
      *
-     * @return array
+     * @return array<string,TValue>
      */
     public function dot(): array
     {
@@ -50,7 +54,7 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * ドット記法 => 値 を配列に直す
      *
-     * @param array $array
+     * @param array<string,TValue> $array
      * @return static
      */
     public function undot(array $array): static
@@ -65,9 +69,9 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * ドット記法での配列を返す
      *
-     * @param array $array
+     * @param array<string,TValue> $array
      * @param string $prepend
-     * @return array
+     * @return array<string,TValue>
      */
     protected function dotting(array $array, string $prepend = ''): array
     {
@@ -128,7 +132,7 @@ class ArrAccess implements IteratorContract, JsonSerializable
      *
      * @param string $key
      * @param mixed $default
-     * @return mixed
+     * @return TValue
      */
 
     public function get(string $key, $default = null)
@@ -139,10 +143,10 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * 配列値をドット記法で取得
      *
-     * @param array $array
+     * @param array<string,TValue> $array
      * @param string $key
      * @param mixed $default
-     * @return mixed
+     * @return TValue
      */
     protected function dotget(array $array, string $key, $default = null)
     {
@@ -172,7 +176,7 @@ class ArrAccess implements IteratorContract, JsonSerializable
      *
      * @param string $value
      * @param string|null $key
-     * @return array
+     * @return TValue[]
      */
     public function pluck(string $value, ?string $key = null): array
     {
@@ -195,7 +199,7 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * 指定したキーの配列を削除する
      *
-     * @param string|array $keys
+     * @param string|string[] $keys
      * @return static
      */
     public function forget($keys): static
@@ -222,8 +226,8 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * 指定したキーを除外した配列を返す
      *
-     * @param string|array $keys
-     * @return array
+     * @param string|string[] $keys
+     * @return mixed[]
      */
     public function except($keys): array
     {
@@ -236,8 +240,8 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * 指定したキーの配列だけを返す
      *
-     * @param string|array
-     * @return array
+     * @param string|string[] $keys
+     * @return mixed[]
      */
     public function only($keys): array
     {
@@ -250,8 +254,8 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * 指定したキーが見つかった配列だけを返す
      *
-     * @param string|array $keys
-     * @return array
+     * @param string|string[] $keys
+     * @return mixed[]
      */
     public function missing($keys): array
     {
@@ -280,7 +284,7 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * 配列を全て取得
      *
-     * @return array
+     * @return array<string,TValue>
      */
     public function all(): array
     {
@@ -290,7 +294,7 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * 全ての配列を返す
      *
-     * @return array
+     * @return mixed[]
      */
     public function toArray(): array
     {
@@ -311,7 +315,7 @@ class ArrAccess implements IteratorContract, JsonSerializable
     /**
      * factory
      *
-     * @param array $array
+     * @param array<string,TValue> $array
      * @return static
      */
     public static function of(array $array = []): static

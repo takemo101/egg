@@ -54,7 +54,7 @@ final class ObjectResolver
     /**
      * オブジェクト生成を解決
      *
-     * @param string $class
+     * @param class-string $class
      * @param array<string,mixed> $options
      * @throws Error|InvalidArgumentException
      * @return object

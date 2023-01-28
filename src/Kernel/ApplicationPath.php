@@ -18,12 +18,14 @@ final class ApplicationPath
      * @param string $settingPath 設定ディレクトリのベースからの相対パス
      * @param string $configPath コンフィグディレクトリのベースからの相対パス
      * @param string $storagePath ストレージディレクトリのベースからの相対パス
+     * @param string|null $dotenv dotenvファイルのベースからの相対パス（ファイル名を含む）
      */
     public function __construct(
         public readonly string $basePath,
-        public readonly string $settingPath,
-        public readonly string $configPath,
-        public readonly string $storagePath,
+        public readonly string $settingPath = 'setting',
+        public readonly string $configPath = 'config',
+        public readonly string $storagePath = 'storage',
+        public readonly ?string $dotenv = null,
     ) {
         $this->helper = new PathHelper();
     }

@@ -16,10 +16,10 @@ interface HttpDispatcherContract
      *
      * @param Request $request
      * @param Response $response
-     * @return void
+     * @return Response
      */
     public function dispatch(
         Request $request,
         Response $response,
-    ): void;
+    ): Response;
 }

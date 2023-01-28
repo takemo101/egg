@@ -14,14 +14,13 @@ abstract class Functional
     /**
      * constructor
      *
-     * @param object|array|string $callable
+     * @param object|mixed[]|string $callable
      * @throws RuntimeException
      */
     public function __construct(
         public readonly object|array|string $callable,
     ) {
-        if (!(
-            $this->isObject()
+        if (!($this->isObject()
             || $this->isArray()
             || $this->isString()
         )) {
@@ -117,7 +116,7 @@ abstract class Functional
     /**
      * 配列に変換
      *
-     * @return array
+     * @return mixed[]
      * @throws RuntimeException
      */
     public function toArray(): array

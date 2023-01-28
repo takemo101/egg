@@ -17,7 +17,7 @@ final class HttpMethods
     /**
      * constructor
      *
-     * @param callable ...$methods
+     * @param HttpMethod ...$methods
      * @throws InvalidArgumentException
      */
     public function __construct(

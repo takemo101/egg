@@ -16,7 +16,6 @@ final class Path implements Equatable
      * constructor
      *
      * @param string $path
-     * @throws InvalidArgumentException
      */
     public function __construct(
         string $path = '',

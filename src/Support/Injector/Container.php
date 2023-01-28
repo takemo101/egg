@@ -4,10 +4,8 @@ namespace Takemo101\Egg\Support\Injector;
 
 use Closure;
 use LogicException;
-use Takemo101\Egg\Support\Hook\Hook;
 use Takemo101\Egg\Support\Injector\Resolver\ArgumentNameResolver;
 use Takemo101\Egg\Support\Injector\Resolver\DefaultResolver;
-use Takemo101\Egg\Support\StaticContainer;
 
 /**
  * DIコンテナでインスタンスを管理するクラス
@@ -39,13 +37,16 @@ class Container implements ContainerContract
     private readonly ObjectResolver $objectResolver;
 
     /**
-     * @var Hook
+     * @var DefinitionDataFilters
      */
-    private readonly Hook $hook;
+    private readonly DefinitionDataFilters $filters;
 
     public function __construct(
+        ?DefinitionDataFilters $filters = null,
         ?ArgumentResolvers $resolvers = null
     ) {
+        $this->filters = $filters ?? new DefinitionDataFilters();
+
         $resolvers ??= new ArgumentResolvers(
             new DefaultResolver(),
             new ArgumentNameResolver(),
@@ -61,17 +62,9 @@ class Container implements ContainerContract
             resolvers: $resolvers,
         );
 
-        $this->hook = new Hook(
-            container: $this,
-        );
-
         $this->instance(
-            Hook::class,
-            $this->hook,
-        );
-        StaticContainer::set(
-            'hook',
-            $this->hook,
+            DefinitionDataFilters::class,
+            $this->filters,
         );
     }
 
@@ -106,14 +99,11 @@ class Container implements ContainerContract
 
         $this->binds[$label] = $definition;
 
-        // インスタンス追加時にフックを実行
-        if ($this->hook->hasTag($label)) {
-            $this->applyHookFilter(
-                label: $label,
-                definition: $definition,
-                data: $instance,
-            );
-        }
+        $this->filters->filter(
+            label: $label,
+            definition: $definition,
+            data: $instance,
+        );
 
         return $this;
     }
@@ -178,7 +168,7 @@ class Container implements ContainerContract
      * クラスまたはラベル名から依存性を解決した値を取得する
      *
      * @param string $label
-     * @param array $options
+     * @param mixed[] $options
      * @return mixed
      */
     public function make(string $label, array $options = [])
@@ -203,8 +193,8 @@ class Container implements ContainerContract
         $result = $definition->resolve($this->objectResolver, $options);
 
         // 初期化時にフックを実行
-        if (!$builded && $this->hook->hasTag($label)) {
-            $result = $this->applyHookFilter(
+        if (!$builded) {
+            $result = $this->filters->filter(
                 label: $label,
                 definition: $definition,
                 data: $result,
@@ -218,7 +208,7 @@ class Container implements ContainerContract
      * callableから依存性を解決した値を取得する
      *
      * @param callable $callable
-     * @param array<string,mixed> $options
+     * @param mixed[] $options
      * @return mixed
      */
     public function call(callable $callable, array $options = [])
@@ -227,26 +217,5 @@ class Container implements ContainerContract
             callable: $callable,
             options: $options
         );
-    }
-
-    /**
-     * フックのフィルター処理実行して
-     * 依存注入定義のインスタンスを更新する
-     *
-     * @param string $label
-     * @param DefinitionContract $definition
-     * @param mixed $data
-     * @return mixed
-     */
-    private function applyHookFilter(
-        string $label,
-        DefinitionContract $definition,
-        mixed $data,
-    ) {
-        $data = $this->hook->applyFilter($label, $data);
-
-        $definition->update($data);
-
-        return $data;
     }
 }

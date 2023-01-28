@@ -6,6 +6,7 @@ use Error;
 use Takemo101\Egg\Support\Injector\ArgumentResolverContract;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 use ReflectionParameter;
+use ReflectionNamedType;
 
 final class DefaultResolver implements ArgumentResolverContract
 {
@@ -32,6 +33,7 @@ final class DefaultResolver implements ArgumentResolverContract
                 throw new Error('resolve argument parameter error');
             }
 
+            /** @var ReflectionNamedType|null */
             $type = $parameter->getType();
 
             if ($type && !$type->isBuiltin()) {

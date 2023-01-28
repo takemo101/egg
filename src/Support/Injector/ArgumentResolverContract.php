@@ -12,14 +12,14 @@ interface ArgumentResolverContract
     /**
      * リフレクション引数を引数値に変換する
      *
-     * @param Container $container
+     * @param ContainerContract $container
      * @param ReflectionParameter[] $parameters
-     * @param array $arguments
-     * @param array $options
-     * @return array
+     * @param mixed[] $arguments
+     * @param mixed[] $options
+     * @return mixed[]
      */
     public function resolve(
-        Container $container,
+        ContainerContract $container,
         array $parameters,
         array $arguments,
         array $options = []

@@ -44,7 +44,7 @@ final class RouteNode
     /**
      * フィルターの追加
      *
-     * @param object|array|string $filter
+     * @param object|mixed[]|string $filter
      * @return self
      */
     public function filter(object|array|string ...$filter): self

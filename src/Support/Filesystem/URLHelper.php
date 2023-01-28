@@ -80,12 +80,15 @@ final class URLHelper
      */
     public function toPath(string $url): string
     {
+        /** @var string */
+        $parse = parse_url(
+            $url,
+            PHP_URL_PATH,
+        );
+
         return $this->isURL($url) ?
             ltrim(
-                parse_url(
-                    $url,
-                    PHP_URL_PATH,
-                ),
+                $parse,
                 self::PathSeparator,
             ) :
             $url;

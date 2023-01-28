@@ -21,7 +21,7 @@ final class StaticContainer
     /**
      * constructor
      *
-     * @param ArrAccess $container
+     * @param ArrAccess<mixed> $container
      */
     private function __construct(
         public readonly ArrAccess $container = new ArrAccess(),

@@ -39,6 +39,15 @@ final class ArgumentNameResolver implements ArgumentResolverContract
             }
         }
 
+        // パラメータが存在しているが引数が存在しない場合はオプションから引数を取得する
+        if (count($parameters) && count($arguments) === 0) {
+            foreach ($parameters as $i => $parameter) {
+                if (isset($options[$i])) {
+                    $arguments[$name] = $options[$i];
+                }
+            }
+        }
+
         return $arguments;
     }
 }

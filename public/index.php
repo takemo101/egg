@@ -8,9 +8,6 @@ require __DIR__ . '/../vendor/autoload.php';
 $app = new Takemo101\Egg\Kernel\Application(
     pathSetting: new Takemo101\Egg\Kernel\ApplicationPath(
         basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__),
-        settingPath: 'setting',
-        configPath: 'config',
-        storagePath: 'storage',
     ),
 );
 
@@ -20,10 +17,7 @@ $app->addLoader(
 
 $app->boot();
 
-// ルーティングを処理する
-/** @var Takemo101\Egg\Http\HttpDispatcherContract */
-$dispatcher = $app->container->make(Takemo101\Egg\Http\HttpDispatcherContract::class);
-$dispatcher->dispatch(
-    request: Symfony\Component\HttpFoundation\Request::createFromGlobals(),
-    response: new Symfony\Component\HttpFoundation\Response(),
-);
+// リクエストを処理をする
+/** @var Takemo101\Egg\Http\HttpSimpleProcess */
+$process = $app->container->make(Takemo101\Egg\Http\HttpSimpleProcess::class);
+$process->process();

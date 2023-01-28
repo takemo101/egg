@@ -30,8 +30,6 @@ final class DependencyLoader implements LoaderContract
      */
     public function load(): void
     {
-        StaticContainer::set('app', $this->app);
-
         /** @var Closure */
         $dependency = require $this->app
             ->pathSetting

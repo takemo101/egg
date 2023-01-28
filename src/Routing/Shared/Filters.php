@@ -5,7 +5,7 @@ namespace Takemo101\Egg\Routing\Shared;
 /**
  * @immutable
  */
-final class Filters
+class Filters
 {
     /**
      * @var Handler[]
@@ -17,7 +17,7 @@ final class Filters
      *
      * @param Handler ...$filters
      */
-    public function __construct(
+    final public function __construct(
         Handler ...$filters,
     ) {
         $this->filters = $filters;
@@ -73,10 +73,10 @@ final class Filters
     /**
      * 値からインスタンスを生成
      *
-     * @param object|array|string ...$primitives
-     * @return self
+     * @param object|mixed[]|string ...$primitives
+     * @return static
      */
-    public static function fromPrimitives(object|array|string ...$primitives): self
+    public static function fromPrimitives(object|array|string ...$primitives): static
     {
         /** @var Handler[] */
         $handlers = [];
@@ -85,6 +85,6 @@ final class Filters
             $handlers[] = new Handler($primitive);
         }
 
-        return new self(...$handlers);
+        return new static(...$handlers);
     }
 }

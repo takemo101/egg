@@ -16,7 +16,7 @@ final class Loggers
     private array $factories;
 
     /**
-     * @var array<string,LoggerInterface> $factories
+     * @var array<string,LoggerInterface>
      */
     private array $loggers = [];
 

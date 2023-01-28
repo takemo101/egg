@@ -11,6 +11,7 @@ use Takemo101\Egg\Routing\RouterContract;
 use Takemo101\Egg\Routing\RouterFactoryContract;
 use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
 use Takemo101\Egg\Support\Injector\ContainerContract;
+use Closure;
 
 /**
  * ルーティング関連

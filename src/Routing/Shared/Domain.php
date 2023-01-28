@@ -12,6 +12,11 @@ final class Domain implements Equatable
     /**
      * @var string
      */
+    public const Nothing = '*';
+
+    /**
+     * @var string
+     */
     public readonly string $domain;
 
     /**
@@ -40,6 +45,12 @@ final class Domain implements Equatable
      */
     public function toURNString(Path $path): string
     {
+        // どれにも当てはまらないルートを表す特殊文字列の場合は
+        // その特殊文字列を返す
+        if ($this->domain === self::Nothing) {
+            return self::Nothing;
+        }
+
         $domain = $this->domain . StringHelper::PathSeparator;
         return $path->isEmpty()
             ? $domain
@@ -81,5 +92,15 @@ final class Domain implements Equatable
         $uri = StringHelper::trimPath($uri);
 
         return new self($uri);
+    }
+
+    /**
+     * どれにも当てはまらないルートを表すドメインを生成する
+     *
+     * @return self
+     */
+    public static function nothing(): self
+    {
+        return new self(self::Nothing);
     }
 }

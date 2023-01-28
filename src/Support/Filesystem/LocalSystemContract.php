@@ -171,10 +171,10 @@ interface LocalSystemContract
      * ファイル情報抽出
      *
      * @param string $path
-     * @param ExtractType $option
+     * @param integer $option
      * @return string
      */
-    public function extract(string $path, ExtractType $option = ExtractType::Basename): string;
+    public function extract(string $path, int $option = PATHINFO_BASENAME): string;
 
     /**
      * ファイルパーミッション取得
@@ -204,7 +204,7 @@ interface LocalSystemContract
      * パスを捜索
      *
      * @param string $pattern
-     * @return null|array
+     * @return null|string[]
      */
     public function glob(string $pattern): ?array;
 

@@ -135,7 +135,7 @@ class ConfigRepository implements ConfigRepositoryContract
      * データを取得
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed $default
      * @return mixed
      */
     public function get(string $key, $default = null)

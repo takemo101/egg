@@ -2,13 +2,12 @@
 
 namespace Takemo101\Egg\Http;
 
-use Takemo101\Egg\Routing\RouterContract;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Takemo101\Egg\Http\Exception\NotFoundHttpException;
+use Takemo101\Egg\Http\Filter\RouteActionFilter;
 use Takemo101\Egg\Http\Invoker\RouteActionInvoker;
-use Takemo101\Egg\Routing\RouteMatchResult;
+use Takemo101\Egg\Routing\Shared\Handler;
 use Throwable;
 
 /**
@@ -24,16 +23,12 @@ final class HttpDispatcher implements HttpDispatcherContract
     /**
      * constructor
      *
-     * @param RouterContract $router
-     * @param ResponseSenderContract $sender
-     * @param RootFilters $rootFilters
+     * @param RootFilters $filters
      * @param HttpErrorHandlerContract $errorHandler
      * @param ContainerContract $container
      */
     public function __construct(
-        private readonly RouterContract $router,
-        private readonly ResponseSenderContract $sender,
-        private readonly RootFilters $rootFilters,
+        private readonly RootFilters $filters,
         private readonly HttpErrorHandlerContract $errorHandler,
         private readonly ContainerContract $container,
     ) {
@@ -45,69 +40,37 @@ final class HttpDispatcher implements HttpDispatcherContract
      *
      * @param Request $request
      * @param Response $response
-     * @return void
+     * @return Response
      */
     public function dispatch(
         Request $request,
         Response $response,
-    ): void {
-        $result = $this->router->match(
-            uri: $request->getUri(),
-            method: $request->getMethod(),
-        );
-
+    ): Response {
         $this->register(
             request: $request,
             response: $response,
         );
 
         try {
-            // ルートに一致するものがなければ404
-            if (!$result) {
-                throw new NotFoundHttpException(
-                    message: 'Route Not Found',
-                );
-            }
-
-            // 一致したルートの処理を実行する
-            $this->action(
+            // ルートフィルターからルーティングの実行までの処理を実行する
+            $response = $this->invoker->invoke(
                 request: $request,
                 response: $response,
-                result: $result,
+                action: new Handler(fn (Response $response) => $response),
+                filters: $this->filters->add(
+                    // このフィルタを追加しないとルーティングが実行されない
+                    new Handler(RouteActionFilter::class),
+                ),
             );
         } catch (Throwable $e) {
             // エラーハンドリングをする
-            $this->error(
+            $response = $this->error(
                 request: $request,
                 error: $e,
             );
         }
-    }
 
-    /**
-     * 一致したルートの処理を実行する
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param RouteMatchResult $result
-     * @return void
-     */
-    private function action(
-        Request $request,
-        Response $response,
-        RouteMatchResult $result,
-    ): void {
-        $response = $this->invoker->invoke(
-            request: $request,
-            response: $response,
-            action: $result->action->handler,
-            filters: $this->rootFilters->createHttpFilters(
-                $result->action->filters,
-            ),
-            parameters: $result->parameters,
-        );
-
-        $this->sender->send($response);
+        return $response;
     }
 
     /**
@@ -115,18 +78,18 @@ final class HttpDispatcher implements HttpDispatcherContract
      *
      * @param Request $request
      * @param Throwable $error
-     * @return void
+     * @return Response
      */
     private function error(
         Request $request,
         Throwable $error,
-    ): void {
+    ): Response {
         $response = $this->errorHandler->handle(
             request: $request,
             error: $error,
         );
 
-        $this->sender->send($response);
+        return $response;
     }
 
     /**

@@ -10,7 +10,7 @@ use Takemo101\Egg\Support\Arr\ArrAccess;
 final class Environment
 {
     /**
-     * @var ArrAccess
+     * @var ArrAccess<mixed>
      */
     private readonly ArrAccess $env;
 
@@ -35,7 +35,9 @@ final class Environment
     public function get(string $key, $default = null): mixed
     {
         /** @var string */
-        $value = $this->env->get($key, $default);
+        $value = isset($_ENV[$key])
+            ? $_ENV[$key]
+            : $this->env->get($key, $default);
 
         $lower = strtolower($value);
 
@@ -44,7 +46,7 @@ final class Environment
             'false', '(false)' => false,
             'empty', '(empty)' => '',
             'null', '(null)' => null,
-            preg_match('/\A([\'"])(.*)\1\z/', $value, $matches) => $matches[2],
+            preg_match('/\A([\'"])(.*)\1\z/', $value, $matches) !== false => $matches[2], /* @phpstan-ignore-line */
             default => $value,
         };
     }

@@ -32,6 +32,7 @@ final class EnvironmentLoader implements LoaderContract
     {
         $data = Dotenv::createImmutable(
             $this->app->pathSetting->basePath(),
+            $this->app->pathSetting->dotenv,
         )
             ->load();
 

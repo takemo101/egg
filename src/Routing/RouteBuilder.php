@@ -2,6 +2,7 @@
 
 namespace Takemo101\Egg\Routing;
 
+use Takemo101\Egg\Routing\Shared\Domain;
 use Takemo101\Egg\Routing\Shared\Handler;
 use Takemo101\Egg\Routing\Shared\HttpMethod;
 use Takemo101\Egg\Routing\Shared\HttpMethods;
@@ -59,7 +60,7 @@ final class RouteBuilder
      *
      * @param HttpMethod[] $methods
      * @param string $path
-     * @param object|array|string $handler
+     * @param object|mixed[]|string $handler
      * @return RouteNode
      */
     public function map(
@@ -82,7 +83,7 @@ final class RouteBuilder
      * create get method route
      *
      * @param string $path
-     * @param object|array|string $handler
+     * @param object|mixed[]|string $handler
      * @return RouteNode
      */
     public function get(string $path, object|array|string $handler): RouteNode
@@ -94,7 +95,7 @@ final class RouteBuilder
      * create post method route
      *
      * @param string $path
-     * @param object|array|string $handler
+     * @param object|mixed[]|string $handler
      * @return RouteNode
      */
     public function post(string $path, object|array|string $handler): RouteNode
@@ -106,7 +107,7 @@ final class RouteBuilder
      * create put method route
      *
      * @param string $path
-     * @param object|array|string $handler
+     * @param object|mixed[]|string $handler
      * @return RouteNode
      */
     public function put(string $path, object|array|string $handler): RouteNode
@@ -118,7 +119,7 @@ final class RouteBuilder
      * create delete method route
      *
      * @param string $path
-     * @param object|array|string $handler
+     * @param object|mixed[]|string $handler
      * @return RouteNode
      */
     public function delete(string $path, object|array|string $handler): RouteNode
@@ -130,7 +131,7 @@ final class RouteBuilder
      * create patch method route
      *
      * @param string $path
-     * @param object|array|string $handler
+     * @param object|mixed[]|string $handler
      * @return RouteNode
      */
     public function patch(string $path, object|array|string $handler): RouteNode
@@ -142,7 +143,7 @@ final class RouteBuilder
      * create options method route
      *
      * @param string $path
-     * @param object|array|string $handler
+     * @param object|mixed[]|string $handler
      * @return RouteNode
      */
     public function options(string $path, object|array|string $handler): RouteNode
@@ -154,11 +155,27 @@ final class RouteBuilder
      * create any method route
      *
      * @param string $path
-     * @param object|array|string $handler
+     * @param object|mixed[]|string $handler
      * @return RouteNode
      */
     public function any(string $path, object|array|string $handler): RouteNode
     {
         return $this->map(HttpMethod::cases(), $path, $handler);
+    }
+
+    /**
+     * create all route
+     *
+     * @param object|mixed[]|string $handler
+     * @return void
+     */
+    public function nothing(object|array|string $handler): void
+    {
+        $this->root->node(new RouteNode(
+            methods: new HttpMethods(...HttpMethod::cases()),
+            path: new Path(),
+            handler: new Handler($handler),
+            domain: Domain::nothing(),
+        ));
     }
 }

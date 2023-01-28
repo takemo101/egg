@@ -81,7 +81,7 @@ final class HookFilter
      * callableな値からフィルタを作成
      *
      * @param integer $priority
-     * @param object|array|string $function
+     * @param object|mixed[]|string $function
      * @return self
      */
     public static function fromCallable(

@@ -6,7 +6,9 @@ use Closure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Takemo101\Egg\Support\Injector\ContainerContract;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+use Takemo101\Egg\Kernel\Application;
 
 /**
  * セッションを利用するためのフィルタ
@@ -16,10 +18,10 @@ class SessionFilter
     /**
      * constructor
      *
-     * @param ContainerContract $container
+     * @param Application $app
      */
     public function __construct(
-        private readonly ContainerContract $container,
+        private readonly Application $app,
     ) {
         //
     }
@@ -34,7 +36,11 @@ class SessionFilter
      */
     public function handle(Request $request, Response $response, Closure $next): Response
     {
-        $session = new Session();
+        $session = new Session(
+            $this->app->env()->is('testing')
+                ? new MockArraySessionStorage()
+                : new NativeSessionStorage(),
+        );
 
         $request->setSession($session);
 
@@ -53,7 +59,7 @@ class SessionFilter
      */
     private function register(Session $session): void
     {
-        $this->container->instance(Session::class, $session);
-        $this->container->alias(Session::class, 'session');
+        $this->app->container->instance(Session::class, $session);
+        $this->app->container->alias(Session::class, 'session');
     }
 }

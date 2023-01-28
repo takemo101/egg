@@ -8,7 +8,7 @@ use Traversable;
 trait HasIterator
 {
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $array = [];
 
@@ -61,19 +61,9 @@ trait HasIterator
     }
 
     /**
-     * 自身をコピー
-     *
-     * @return self
-     */
-    public function clone()
-    {
-        return clone $this;
-    }
-
-    /**
      * 要素を全て返す
      *
-     * @return array
+     * @return mixed[]
      */
     public function all(): array
     {

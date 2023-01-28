@@ -51,7 +51,7 @@ final class HookAction
     /**
      * callableな値から生成する
      *
-     * @param object|array|string $callable
+     * @param object|mixed[]|string $callable
      * @return self
      */
     public static function fromCallable(object|array|string $callable): self

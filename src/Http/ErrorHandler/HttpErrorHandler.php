@@ -33,7 +33,7 @@ class HttpErrorHandler implements HttpErrorHandlerContract
      * エラーハンドリングをしてレスポンスを返す
      *
      * @param Request $request
-     * @param Throwable $e
+     * @param Throwable $error
      * @return Response
      */
     public function handle(Request $request, Throwable $error): Response

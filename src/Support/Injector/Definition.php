@@ -65,15 +65,17 @@ final class Definition implements DefinitionContract
         ObjectResolver $resolver,
         array $options = [],
     ) {
-        if ($this->callback instanceof Closure) {
-            $result = ($this->callback)($resolver->container());
+        $callback = $this->callback;
+
+        if ($callback instanceof Closure) {
+            $result = ($callback)($resolver->container());
 
             if (is_null($result)) {
                 throw new Error('error: build type error!');
             }
         } else {
             $result = $resolver->resolve(
-                class: $this->callback,
+                class: $callback,
                 options: $options
             );
         }

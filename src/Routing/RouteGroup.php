@@ -76,7 +76,7 @@ final class RouteGroup
     /**
      * パスの追加
      *
-     * @param callable $filter
+     * @param string $path
      * @return self
      */
     public function path(string $path): self
@@ -89,7 +89,7 @@ final class RouteGroup
     /**
      * フィルターの追加
      *
-     * @param object|array|string $filter
+     * @param object|mixed[]|string $filter
      * @return self
      */
     public function filter(object|array|string ...$filter): self

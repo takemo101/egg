@@ -41,7 +41,7 @@ final class CallableResolver
      * 呼び出しを解決
      *
      * @param callable $callable
-     * @param array<string,mixed>
+     * @param mixed[] $options
      * @throws Error|InvalidArgumentException
      * @return mixed
      */

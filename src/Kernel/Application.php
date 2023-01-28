@@ -8,6 +8,7 @@ use Takemo101\Egg\Kernel\Loader\EnvironmentLoader;
 use Takemo101\Egg\Kernel\Loader\ErrorLoader;
 use Takemo101\Egg\Kernel\Loader\FunctionLoader;
 use Takemo101\Egg\Kernel\Loader\HelperLoader;
+use Takemo101\Egg\Kernel\Loader\HookLoader;
 use Takemo101\Egg\Kernel\Loader\LogLoader;
 use Takemo101\Egg\Kernel\Loader\RoutingLoader;
 use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
@@ -16,6 +17,7 @@ use Takemo101\Egg\Support\Filesystem\LocalSystemContract;
 use Takemo101\Egg\Support\Filesystem\PathHelper;
 use Takemo101\Egg\Support\Injector\Container;
 use Takemo101\Egg\Support\Injector\ContainerContract;
+use Takemo101\Egg\Support\StaticContainer;
 
 /**
  * application
@@ -54,6 +56,7 @@ final class Application
         $this->bootstrap->addLoader(
             EnvironmentLoader::class,
             ErrorLoader::class,
+            HookLoader::class,
             DependencyLoader::class,
             HelperLoader::class,
             ConfigLoader::class,
@@ -72,6 +75,9 @@ final class Application
      */
     private function register(): void
     {
+        StaticContainer::set('app', $this);
+        StaticContainer::set('container', $this->container);
+
         $this->container->instance(
             ContainerContract::class,
             $this->container,
@@ -93,9 +99,14 @@ final class Application
                 /** @var ConfigRepositoryContract */
                 $config = $container->make(ConfigRepositoryContract::class);
 
+                /** @var string */
+                $environment = $config->get('app.env', 'local');
+                /** @var boolean */
+                $debug = $config->get('app.debug', true);
+
                 return new ApplicationEnvironment(
-                    environment: $config->get('app.env', 'local'),
-                    debug: $config->get('app.debug', true),
+                    environment: $environment,
+                    debug: $debug,
                 );
             },
         );
@@ -122,6 +133,29 @@ final class Application
         $this->bootstrap->addLoader(...$loaders);
 
         return $this;
+    }
+
+    /**
+     * 環境情報を返す
+     *
+     * @return ApplicationEnvironment
+     */
+    public function env(): ApplicationEnvironment
+    {
+        /** @var ApplicationEnvironment */
+        $environment = $this->container->make(ApplicationEnvironment::class);
+
+        return $environment;
+    }
+
+    /**
+     * アプリケーションが実行済みか？
+     *
+     * @return boolean
+     */
+    public function isBooted(): bool
+    {
+        return $this->isBooted;
     }
 
     /**

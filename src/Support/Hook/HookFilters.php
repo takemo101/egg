@@ -44,7 +44,8 @@ final class HookFilters
     /**
      * 優先度とcallableな値からフィルタ削除
      *
-     * @param integer ...$priorities
+     * @param integer ...$priority
+     * @param object|mixed[]|string $function
      * @return self
      */
     public function remove(int $priority, object|array|string $function): self

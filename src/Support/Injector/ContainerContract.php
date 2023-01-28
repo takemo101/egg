@@ -72,8 +72,8 @@ interface ContainerContract
      * callableから依存性を解決した値を取得する
      *
      * @param callable $callable
-     * @param array $options
-     * @return mixed
+     * @param mixed[] $options
+     * @return mixed[]
      */
     public function call(callable $callable, array $options = []);
 }

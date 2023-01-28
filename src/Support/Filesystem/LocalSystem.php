@@ -280,13 +280,13 @@ final class LocalSystem implements LocalSystemContract
      * ファイル情報抽出
      *
      * @param string $path
-     * @param ExtractType $option
+     * @param integer $option
      * @throws LocalSystemException
      * @return string
      */
-    public function extract(string $path, ExtractType $option = ExtractType::Basename): string
+    public function extract(string $path, int $option = PATHINFO_BASENAME): string
     {
-        return pathinfo($path, $option->value);
+        return pathinfo($path, $option);
     }
 
     /**
@@ -332,7 +332,7 @@ final class LocalSystem implements LocalSystemContract
      * パスを捜索
      *
      * @param string $pattern
-     * @return null|array
+     * @return null|string[]
      */
     public function glob(string $pattern): ?array
     {

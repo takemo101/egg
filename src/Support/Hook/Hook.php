@@ -33,7 +33,7 @@ final class Hook
      * フックの登録
      *
      * @param string $tag
-     * @param object|array|string $function
+     * @param object|mixed[]|string $function
      * @param integer $priority
      * @return self
      */
@@ -65,7 +65,7 @@ final class Hook
      * フックの削除
      *
      * @param string $tag
-     * @param object|array|string $function
+     * @param object|mixed[]|string $function
      * @param integer $priority
      * @return self
      */
@@ -106,7 +106,7 @@ final class Hook
     public function applyFilter(string $tag, $parameter): mixed
     {
         if (!isset($this->filters[$tag])) {
-            throw new RuntimeException("{$tag} is not registered");
+            return $parameter;
         }
 
         $result = $parameter;

@@ -35,14 +35,14 @@ final class HttpLoader implements LoaderContract
      */
     public function load(): void
     {
-        /** @var mixed[] */
+        /** @var array<object|mixed[]|string> */
         $filters = require $this->app
             ->pathSetting
             ->settingPath('filter.php');
 
         $this->app->container->bind(
             RootFilters::class,
-            fn () => new RootFilters(...$filters),
+            fn () => RootFilters::fromPrimitives(...$filters),
         );
 
         $this->app->container->bind(

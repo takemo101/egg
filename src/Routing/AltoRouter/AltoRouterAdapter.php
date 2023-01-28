@@ -28,6 +28,7 @@ final class AltoRouterAdapter implements RouterContract
      * @param string $uri
      * @param string $method
      * @return RouteMatchResult|null
+     * @throws RuntimeException
      */
     public function match(
         string $uri,
@@ -40,7 +41,9 @@ final class AltoRouterAdapter implements RouterContract
         }
 
         /** @var mixed */
-        $action = $route['target'];
+        $action = isset($route['target'])
+            ? $route['target']
+            : throw new RuntimeException('error! target is not found');
 
         // target には RouteAction が入っている想定なので
         // それ以外の型が入っていた場合はエラー
@@ -67,8 +70,9 @@ final class AltoRouterAdapter implements RouterContract
      * 名前からルートURIを取得
      *
      * @param string $name
-     * @param array<string,mixed> $parameter
+     * @param array<string,mixed> $parameters
      * @return string
+     * @throws RuntimeException
      */
     public function route(
         string $name,

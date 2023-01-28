@@ -2,6 +2,8 @@
 
 namespace Takemo101\Egg\Routing;
 
+use RuntimeException;
+
 /**
  * ルートを選択する
  */
@@ -25,6 +27,7 @@ interface RouterContract
      * @param string $name
      * @param array<string,mixed> $parameter
      * @return string
+     * @throws RuntimeException
      */
     public function route(
         string $name,

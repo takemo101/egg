@@ -11,17 +11,6 @@ use Takemo101\Egg\Kernel\LoaderContract;
 final class HelperLoader implements LoaderContract
 {
     /**
-     * constructor
-     *
-     * @param Application $app
-     */
-    public function __construct(
-        private readonly Application $app,
-    ) {
-        //
-    }
-
-    /**
      * ロード処理をする
      *
      * @return void

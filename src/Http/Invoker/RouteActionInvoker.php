@@ -21,7 +21,7 @@ final class RouteActionInvoker extends AbstractInvoker
      * @param Response $response
      * @param Handler $action
      * @param Filters $filters
-     * @param array $parameters
+     * @param mixed[] $parameters
      * @return Response
      */
     public function invoke(
@@ -29,7 +29,7 @@ final class RouteActionInvoker extends AbstractInvoker
         Response $response,
         Handler $action,
         Filters $filters,
-        array $parameters,
+        array $parameters = [],
     ): Response {
         $next = $this->createActionClosure(
             action: $action,
@@ -49,7 +49,7 @@ final class RouteActionInvoker extends AbstractInvoker
      * アクションのクロージャーを作成する
      *
      * @param Handler $action
-     * @param array $parameters
+     * @param mixed[] $parameters
      * @return Closure
      */
     private function createActionClosure(
@@ -75,7 +75,7 @@ final class RouteActionInvoker extends AbstractInvoker
      *
      * @param Closure $next
      * @param Filters $filters
-     * @param array $parameters
+     * @param mixed[] $parameters
      * @return Closure
      */
     private function createFiltersClosure(
@@ -104,20 +104,5 @@ final class RouteActionInvoker extends AbstractInvoker
         }
 
         return $next;
-    }
-
-    /**
-     * コールバックからの出力結果を比較して
-     * レスポンスでない場合は、通常のレスポンスを返す
-     *
-     * @param mixed $result
-     * @param Response $response
-     * @return Response
-     */
-    private function orResponse(mixed $result, Response $response): Response
-    {
-        return $result && ($result instanceof Response)
-            ? $result
-            : $response;
     }
 }

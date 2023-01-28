@@ -53,11 +53,16 @@ final class LogLoader implements LoaderContract
                 /** @var array<string,LoggerFactoryContract> */
                 $factories = [];
 
+                /** @var string */
+                $path = $config->get('log.path', 'log');
+                /** @var Level */
+                $level = $config->get('log.level', Level::Debug);
+
                 foreach ($filenames as $key => $filename) {
                     $factories[$key] = new FileLoggerFactory(
-                        path: $config->get('log.path', 'log'),
+                        path: $path,
                         filename: $filename,
-                        level: $config->get('log.level', Level::Debug),
+                        level: $level,
                         applicationPath: $applicationPath,
                     );
                 }

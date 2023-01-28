@@ -11,18 +11,20 @@ use Takemo101\Egg\Support\StaticContainer;
 $hook = StaticContainer::get('hook');
 
 $hook->register(
-    Loggers::class,
-    fn (Loggers $loggers): Loggers => $loggers,
+    RouteBuilder::class,
+    function (RouteBuilder $r) {
+        $r->get('/phpinfo', function (Response $response) {
+            phpinfo();
+        })
+            ->name('phpinfo');
+
+        return $r;
+    },
 );
 
 $hook->register(
-    RouteBuilder::class,
-    function (RouteBuilder $r) {
-        $r->get('/hook', function (Response $response) {
-            return $response->setContent('hook');
-        })
-            ->name('hook');
-
-        return $r;
+    'after-response',
+    function (Response $response) {
+        return $response;
     },
 );

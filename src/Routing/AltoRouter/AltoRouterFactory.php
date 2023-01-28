@@ -10,7 +10,6 @@ use Takemo101\Egg\Routing\RouterFactoryContract;
 use Takemo101\Egg\Routing\Shared\Domain;
 use Takemo101\Egg\Routing\Shared\HttpMethod;
 use Takemo101\Egg\Routing\Shared\HttpMethods;
-use RuntimeException;
 use Takemo101\Egg\Routing\Shared\StringHelper;
 
 /**
@@ -24,13 +23,18 @@ final class AltoRouterFactory implements RouterFactoryContract
     public const HttpMethodSeparator = '|';
 
     /**
+     * @var string
+     */
+    public const DefaultBaseURL = 'http://localhost';
+
+    /**
      * constructor
      *
      * @param string $baseURL
      * @param array<string,string> $matchTypes
      */
     public function __construct(
-        private readonly string $baseURL,
+        private readonly string $baseURL = self::DefaultBaseURL,
         private readonly array $matchTypes = [],
     ) {
         //
@@ -40,7 +44,7 @@ final class AltoRouterFactory implements RouterFactoryContract
      * RouteBuilderからRouterを生成する
      *
      * @param RouteBuilder $builder
-     * @return Router
+     * @return RouterContract
      */
     public function create(RouteBuilder $builder): RouterContract
     {
@@ -50,7 +54,7 @@ final class AltoRouterFactory implements RouterFactoryContract
         );
 
         $router = new AltoRouter(
-            basePath: StringHelper::parseProtocol($this->baseURL),
+            basePath: StringHelper::parseProtocol($this->baseURL) ?? 'http://',
             matchTypes: $this->matchTypes,
         );
 

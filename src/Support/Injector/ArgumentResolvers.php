@@ -2,22 +2,19 @@
 
 namespace Takemo101\Egg\Support\Injector;
 
-use InvalidArgumentException;
-use Error;
-use ReflectionClass;
 use ReflectionParameter;
 use Takemo101\Egg\Support\Injector\ArgumentResolverContract;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 
 /**
- * 色々な引数を解決するクラス
+ * 引数の解決処理コレクション
  */
 final class ArgumentResolvers
 {
     /**
      * argument resolver
      *
-     * @var ArgumentResolver[]
+     * @var ArgumentResolverContract[]
      */
     private readonly array $resolvers;
 
@@ -36,8 +33,8 @@ final class ArgumentResolvers
      *
      * @param ContainerContract $container
      * @param ReflectionParameter[] $parameters
-     * @param array $options
-     * @return array
+     * @param mixed[] $options
+     * @return mixed[]
      */
     public function resolve(
         ContainerContract $container,
@@ -45,6 +42,7 @@ final class ArgumentResolvers
         array $options = []
     ): array {
         $arguments = [];
+
         foreach ($this->resolvers as $resolver) {
             $arguments = $resolver->resolve(
                 container: $container,
