@@ -2,14 +2,14 @@
 
 namespace Test\Kernel;
 
+use PHPUnit\Framework\TestCase;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\ApplicationPath;
-use Test\AppTestCase;
 
 /**
  * application test
  */
-class ApplicationTest extends AppTestCase
+class ApplicationTest extends TestCase
 {
     /**
      * @test
@@ -19,6 +19,7 @@ class ApplicationTest extends AppTestCase
         $app = new Application(
             pathSetting: new ApplicationPath(
                 basePath: dirname(__DIR__, 2),
+                dotenv: '.testing.env',
             ),
         );
 
