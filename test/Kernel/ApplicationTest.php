@@ -2,14 +2,14 @@
 
 namespace Test\Kernel;
 
-use PHPUnit\Framework\TestCase;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\ApplicationPath;
+use Test\AppTestCase;
 
 /**
  * application test
  */
-class ApplicationTest extends TestCase
+class ApplicationTest extends AppTestCase
 {
     /**
      * @test
