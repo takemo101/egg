@@ -1,8 +1,8 @@
 # Egg
 
-[![Testing](https://github.com/takemo101/egg/actions/workflows/testing.yml/badge.svg)](https://github.com/takemo101/simple-dto/actions/workflows/testing.yml)
-[![PHPStan](https://github.com/takemo101/egg/actions/workflows/phpstan.yml/badge.svg)](https://github.com/takemo101/simple-dto/actions/workflows/phpstan.yml)
-[![Validate Composer](https://github.com/takemo101/egg/actions/workflows/composer.yml/badge.svg)](https://github.com/takemo101/simple-dto/actions/workflows/composer.yml)
+[![Testing](https://github.com/takemo101/egg/actions/workflows/testing.yml/badge.svg)](https://github.com/takemo101/egg/actions/workflows/testing.yml)
+[![PHPStan](https://github.com/takemo101/egg/actions/workflows/phpstan.yml/badge.svg)](https://github.com/takemo101/egg/actions/workflows/phpstan.yml)
+[![Validate Composer](https://github.com/takemo101/egg/actions/workflows/composer.yml/badge.svg)](https://github.com/takemo101/egg/actions/workflows/composer.yml)
 
 
 卵のようにどんな料理にもマッチする、、、  
