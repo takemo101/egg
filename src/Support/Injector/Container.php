@@ -47,10 +47,7 @@ class Container implements ContainerContract
     ) {
         $this->filters = $filters ?? new DefinitionDataFilters();
 
-        $resolvers ??= new ArgumentResolvers(
-            new DefaultResolver(),
-            new ArgumentNameResolver(),
-        );
+        $resolvers ??= ArgumentResolvers::default();
 
         $this->callableResolver = new CallableResolver(
             container: $this,

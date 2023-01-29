@@ -3,6 +3,7 @@
 namespace Takemo101\Egg\Support\Shared;
 
 use RuntimeException;
+use Takemo101\Egg\Routing\Shared\Handler;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 use Takemo101\Egg\Support\Shared\Functional;
 
@@ -44,14 +45,14 @@ final class CallableCreator
         if ($function->isArray()) {
             $array = $function->toArray();
 
-            return $this->checkCallable($array);
+            return $this->arrayToCallable($array);
         }
 
         if ($function->isString()) {
             $object = $this->container->make($function->toString());
 
             if (!is_object($object)) {
-                throw new RuntimeException('error! invalid callable string');
+                throw new RuntimeException('error: invalid callable string!');
             }
 
             return $this->objectToCallable($object);
@@ -59,6 +60,37 @@ final class CallableCreator
 
         return $this->checkCallable($function->callable);
     }
+
+    /**
+     * 配列からコールバックを作成する
+     *
+     * @param mixed[] $array
+     * @return callable
+     * @throws RuntimeException
+     */
+    private function arrayToCallable(array $array): callable
+    {
+        if (is_callable($array)) {
+            return $array;
+        }
+
+        $first = $array[0] ?? throw new RuntimeException('error: array is empty!');
+
+        if (is_string($first)) {
+            $first = $this->container->make($first);
+        }
+
+        if (!is_object($first)) {
+            throw new RuntimeException('error: invalid callable array!');
+        }
+
+        if ($second = $array[1] ?? false) {
+            return $this->checkCallable([$first, $second]);
+        }
+
+        return $this->objectToCallable($first);
+    }
+
 
     /**
      * オブジェクトからコールバックを作成する
@@ -83,7 +115,7 @@ final class CallableCreator
             }
         }
 
-        throw new RuntimeException('error! invalid callable object');
+        throw new RuntimeException('error: invalid callable object!');
     }
 
     /**
@@ -99,6 +131,6 @@ final class CallableCreator
             return $callable;
         }
 
-        throw new RuntimeException('error! invalid callable');
+        throw new RuntimeException('error: invalid callable!');
     }
 }

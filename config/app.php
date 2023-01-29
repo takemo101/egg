@@ -15,4 +15,14 @@ return [
 
     // base url
     'url' => env('BASE_URL', 'http://localhost'),
+
+    // routing
+    'routing' => [
+
+        // routing match types
+        'match-types' => [
+            // 'id' => '[0-9]+',
+        ],
+    ],
+
 ];

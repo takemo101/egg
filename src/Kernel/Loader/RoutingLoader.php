@@ -66,11 +66,18 @@ final class RoutingLoader implements LoaderContract
         $this->app->container->singleton(
             RouterFactoryContract::class,
             function (ContainerContract $container): RouterFactoryContract {
+                /** @var ConfigRepositoryContract */
+                $repository = $container->make(ConfigRepositoryContract::class);
+
+                /** @var array<string,string> */
+                $matchTypes = $repository->get('app.routing.match-types', []);
+
                 /** @var URLSetting */
                 $setting = $container->make(URLSetting::class);
 
                 return new AltoRouterFactory(
                     baseURL: $setting->url(),
+                    matchTypes: $matchTypes,
                 );
             },
         );
