@@ -5,6 +5,8 @@ namespace Takemo101\Egg\Support\Injector;
 use ReflectionParameter;
 use Takemo101\Egg\Support\Injector\ArgumentResolverContract;
 use Takemo101\Egg\Support\Injector\ContainerContract;
+use Takemo101\Egg\Support\Injector\Resolver\ArgumentNameResolver;
+use Takemo101\Egg\Support\Injector\Resolver\DefaultResolver;
 
 /**
  * 引数の解決処理コレクション
@@ -53,5 +55,18 @@ final class ArgumentResolvers
         }
 
         return $arguments;
+    }
+
+    /**
+     * デフォルトの引数解決処理を返す
+     *
+     * @return self
+     */
+    public static function default(): self
+    {
+        return new self(
+            new DefaultResolver(),
+            new ArgumentNameResolver(),
+        );
     }
 }
