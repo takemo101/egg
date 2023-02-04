@@ -7,6 +7,7 @@ use Takemo101\Egg\Kernel\LoaderContract;
 use Takemo101\Egg\Support\Hook\Hook;
 use Takemo101\Egg\Support\Hook\HookDefinitionDataFilter;
 use Takemo101\Egg\Support\Injector\DefinitionDataFilters;
+use Takemo101\Egg\Support\Shared\CallableCreator;
 use Takemo101\Egg\Support\StaticContainer;
 
 /**
@@ -32,7 +33,7 @@ final class HookLoader implements LoaderContract
      */
     public function load(): void
     {
-        $hook = new Hook($this->app->container);
+        $hook = new Hook(new CallableCreator($this->app->container));
 
         $this->app->container->instance(Hook::class, $hook);
 

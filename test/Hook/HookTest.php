@@ -5,6 +5,7 @@ namespace Test\Hook;
 use PHPUnit\Framework\TestCase;
 use Takemo101\Egg\Support\Hook\Hook;
 use Takemo101\Egg\Support\Injector\Container;
+use Takemo101\Egg\Support\Shared\CallableCreator;
 
 /**
  * hook test
@@ -17,7 +18,7 @@ class HookTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->hook =  new Hook(new Container());
+        $this->hook =  new Hook(new CallableCreator(new Container()));
     }
 
     /**

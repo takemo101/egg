@@ -12,21 +12,16 @@ use Takemo101\Egg\Support\Shared\CallableCreator;
 final class Hook
 {
     /**
-     * @var CallableCreator
-     */
-    private readonly CallableCreator $creator;
-
-    /**
      * constructor
      *
-     * @param ContainerContract $container
+     * @param CallableCreator $creator
      * @param array<string,HookFilters> $filters
      */
     public function __construct(
-        private readonly ContainerContract $container,
+        private readonly CallableCreator $creator,
         private array $filters = []
     ) {
-        $this->creator = new CallableCreator($container);
+        //
     }
 
     /**
@@ -120,7 +115,7 @@ final class Hook
                 $result = call_user_func_array(
                     $callable,
                     // フィルタ出力がnullの場合は初期パラメータを渡す
-                    [$result ?? $parameter, $this->container],
+                    [$result ?? $parameter],
                 );
             }
         }
@@ -150,7 +145,7 @@ final class Hook
                 call_user_func_array(
                     $callable,
                     // フィルタ出力がnullの場合は初期パラメータを渡す
-                    [$parameter, $this->container],
+                    [$parameter],
                 );
             }
         }
