@@ -36,6 +36,8 @@ final class DefaultResolver implements ArgumentResolverContract
             /** @var ReflectionNamedType|null */
             $type = $parameter->getType();
 
+            $parameterName = $parameter->getName();
+
             if ($type && !$type->isBuiltin()) {
                 $name = $type->getName();
 
@@ -47,9 +49,9 @@ final class DefaultResolver implements ArgumentResolverContract
                     }
                 }
 
-                $arguments[$parameter->getName()] = $container->make($name);
+                $arguments[$parameterName] = $container->make($name);
             } elseif ($parameter->isDefaultValueAvailable()) {
-                $arguments[$parameter->getName()] = $parameter->getDefaultValue();
+                $arguments[$parameterName] = $parameter->getDefaultValue();
             }
         }
 
