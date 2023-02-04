@@ -41,9 +41,8 @@ final class AltoRouterAdapter implements RouterContract
         }
 
         /** @var mixed */
-        $action = isset($route['target'])
-            ? $route['target']
-            : throw new RuntimeException('error! target is not found');
+        $action = $route['target']
+            ?? throw new RuntimeException('error! target is not found');
 
         // target には RouteAction が入っている想定なので
         // それ以外の型が入っていた場合はエラー

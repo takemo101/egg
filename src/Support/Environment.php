@@ -35,9 +35,8 @@ final class Environment
     public function get(string $key, $default = null): mixed
     {
         /** @var string */
-        $value = isset($_ENV[$key])
-            ? $_ENV[$key]
-            : $this->env->get($key, $default);
+        $value = $_ENV[$key]
+            ?? $this->env->get($key, $default);
 
         $lower = strtolower($value);
 

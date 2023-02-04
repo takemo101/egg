@@ -22,11 +22,11 @@ class ConsoleDispatcherTest extends AppTestCase
         /** @var ConsoleDispatcher */
         $dispatcher = $this->app->container->make(ConsoleDispatcher::class);
 
-        $statusCode = $dispatcher->dispatch(
+        $exitCode = $dispatcher->dispatch(
             input: new StringInput('version'),
             output: new NullOutput(),
         );
 
-        $this->assertEquals($statusCode, Command::SUCCESS, 'ステータスコードがSUCCESSで正常');
+        $this->assertEquals($exitCode, Command::SUCCESS, '終了コードがSUCCESSで正常');
     }
 }

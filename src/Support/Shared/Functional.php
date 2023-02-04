@@ -20,7 +20,8 @@ abstract class Functional
     public function __construct(
         public readonly object|array|string $callable,
     ) {
-        if (!($this->isObject()
+        if (!(
+            $this->isObject()
             || $this->isArray()
             || $this->isString()
         )) {

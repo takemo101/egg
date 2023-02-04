@@ -16,7 +16,7 @@ interface ConsoleDispatcherContract
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return integer コマンドの実行結果のステータスコード
+     * @return integer コマンドの実行結果の終了コード
      */
     public function dispatch(
         InputInterface $input,
