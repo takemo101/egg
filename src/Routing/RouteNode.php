@@ -4,12 +4,12 @@ namespace Takemo101\Egg\Routing;
 
 use Takemo101\Egg\Routing\Shared\Domain;
 use Takemo101\Egg\Routing\Shared\Filters;
-use Takemo101\Egg\Routing\Shared\Handler;
 use Takemo101\Egg\Routing\Shared\HttpMethods;
 use Takemo101\Egg\Routing\Shared\Name;
 use Takemo101\Egg\Routing\Shared\Path;
 use Takemo101\Egg\Routing\Shared\RouteAction;
 use Takemo101\Egg\Routing\Shared\URN;
+use Takemo101\Egg\Support\Shared\Handler;
 
 /**
  * ルート組み立てのためのノード

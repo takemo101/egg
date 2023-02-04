@@ -7,7 +7,7 @@ use Takemo101\Egg\Routing\Shared\Name;
 use Takemo101\Egg\Routing\Shared\Path;
 use Exception;
 use Takemo101\Egg\Routing\Shared\Filters;
-use Takemo101\Egg\Routing\Shared\Handler;
+use Takemo101\Egg\Support\Shared\Handler;
 
 /**
  * ルート組み立てのためのグループ

@@ -3,7 +3,7 @@
 namespace Takemo101\Egg\Support\Shared;
 
 use RuntimeException;
-use Takemo101\Egg\Routing\Shared\Handler;
+use Takemo101\Egg\Support\Shared\Handler;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 use Takemo101\Egg\Support\Shared\Functional;
 
@@ -16,9 +16,11 @@ final class CallableCreator
      * constructor
      *
      * @param ContainerContract $container
+     * @param string[] $handleMethods
      */
     public function __construct(
-        protected readonly ContainerContract $container,
+        private readonly ContainerContract $container,
+        private readonly array $handleMethods = ['handle', '__invoke'],
     ) {
         //
     }
@@ -104,10 +106,7 @@ final class CallableCreator
             return $object;
         }
 
-        foreach ([
-            'handle',
-            '__invoke',
-        ] as $method) {
+        foreach ($this->handleMethods as $method) {
             $set = [$object, $method];
 
             if (method_exists($object, $method)) {

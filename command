@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 define('APP_START_TIME', microtime(true));
@@ -16,3 +17,8 @@ $app->addLoader(
 );
 
 $app->boot();
+
+// コマンドを処理をする
+/** @var Takemo101\Egg\Console\ConsoleSimpleProcess */
+$process = $app->container->make(Takemo101\Egg\Console\ConsoleSimpleProcess::class);
+$process->process();

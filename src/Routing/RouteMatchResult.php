@@ -2,7 +2,7 @@
 
 namespace Takemo101\Egg\Routing;
 
-use Takemo101\Egg\Routing\Shared\Handler;
+use Takemo101\Egg\Support\Shared\Handler;
 use Takemo101\Egg\Routing\Shared\HttpMethod;
 use Takemo101\Egg\Routing\Shared\RouteAction;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Takemo101\Egg\Routing\Shared;
+namespace Takemo101\Egg\Support\Shared;
 
 use Takemo101\Egg\Support\Shared\Functional;
 

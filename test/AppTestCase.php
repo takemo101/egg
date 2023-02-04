@@ -5,6 +5,7 @@ namespace Test;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\ApplicationPath;
+use Takemo101\Egg\Kernel\Loader\ConsoleLoader;
 use Takemo101\Egg\Kernel\Loader\HttpLoader;
 
 /**
@@ -28,6 +29,7 @@ class AppTestCase extends PHPUnitTestCase
 
         $this->app->addLoader(
             HttpLoader::class,
+            ConsoleLoader::class,
         );
 
         $this->app->boot();

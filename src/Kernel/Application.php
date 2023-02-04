@@ -25,6 +25,16 @@ use Takemo101\Egg\Support\StaticContainer;
 final class Application
 {
     /**
+     * @var string
+     */
+    public const Name = 'Egg';
+
+    /**
+     * @var string
+     */
+    public const Version = '0.0.3';
+
+    /**
      * @var ContainerContract
      */
     public readonly ContainerContract $container;

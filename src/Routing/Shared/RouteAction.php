@@ -2,6 +2,8 @@
 
 namespace Takemo101\Egg\Routing\Shared;
 
+use Takemo101\Egg\Support\Shared\Handler;
+
 /**
  * @immutable
  */

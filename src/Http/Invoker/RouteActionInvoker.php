@@ -6,7 +6,7 @@ use Closure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Takemo101\Egg\Routing\Shared\Filters;
-use Takemo101\Egg\Routing\Shared\Handler;
+use Takemo101\Egg\Support\Shared\Handler;
 use Takemo101\Egg\Routing\Shared\RouteAction;
 
 /**

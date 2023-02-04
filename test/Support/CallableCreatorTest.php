@@ -3,7 +3,7 @@
 namespace Test\Support;
 
 use PHPUnit\Framework\TestCase;
-use Takemo101\Egg\Routing\Shared\Handler;
+use Takemo101\Egg\Support\Shared\Handler;
 use Takemo101\Egg\Support\Injector\Container;
 use Takemo101\Egg\Support\Shared\CallableCreator;
 

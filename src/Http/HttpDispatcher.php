@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Takemo101\Egg\Http\Filter\RouteActionFilter;
 use Takemo101\Egg\Http\Invoker\RouteActionInvoker;
-use Takemo101\Egg\Routing\Shared\Handler;
+use Takemo101\Egg\Support\Shared\Handler;
 use Throwable;
 
 /**
