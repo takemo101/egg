@@ -51,10 +51,13 @@ abstract class EggCommand extends Command
             $this->container->instance(InputInterface::class, $input);
             $this->container->instance(OutputInterface::class, $output);
 
-            return $this->container->call([$this, 'handle'], [
+            /** @var integer */
+            $exitCode = $this->container->call([$this, 'handle'], [
                 'input' => $input,
                 'output' => $output,
             ]);
+
+            return $exitCode;
         }
 
         return self::SUCCESS;

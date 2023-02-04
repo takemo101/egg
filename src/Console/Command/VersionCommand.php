@@ -12,6 +12,8 @@ final class VersionCommand extends EggCommand
 {
     /**
      * Configures the current command.
+     *
+     * @return void
      */
     protected function configure()
     {
@@ -24,7 +26,7 @@ final class VersionCommand extends EggCommand
      * コマンド実行
      *
      * @param OutputInterface $output
-     * @return void
+     * @return integer
      */
     public function handle(OutputInterface $output)
     {

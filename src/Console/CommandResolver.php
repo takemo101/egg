@@ -26,7 +26,7 @@ final class CommandResolver
      * コマンドクラスに解決する
      * 解決できない場合はnullを返す
      *
-     * @param class-string|object ...$commands
+     * @param class-string|object $command
      * @return Command|null
      */
     public function resolve(string|object $command): ?Command

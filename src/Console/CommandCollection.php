@@ -8,7 +8,7 @@ namespace Takemo101\Egg\Console;
 final class CommandCollection
 {
     /** @var array<class-string|object> */
-    public readonly array $commands;
+    public array $commands;
 
     /**
      * constructor
@@ -29,13 +29,14 @@ final class CommandCollection
      */
     public function add(string|object ...$commands): self
     {
+        /** @var array<class-string|object> */
+        $tempCommands = [
+            ...$this->commands,
+            ...$commands,
+        ];
+
         // 重複を削除して配列をマージする
-        $this->commands = array_unique(
-            [
-                ...$this->commands,
-                ...$commands,
-            ],
-        );
+        $this->commands = $tempCommands;
 
         return $this;
     }
