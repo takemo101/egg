@@ -6,11 +6,240 @@
 
 
 卵のようにどんな料理にもマッチする、、、  
-そんな、PHPのWebフレームワークです（笑）
+そんな、PHPなんちゃってWebフレームワークです（笑）  
+  
+色々な機能は、Symfonyのコンポーネントを利用して実装しています（便利ですね！）
 
 ## インストール
 ```bash
 composer require takemo101/egg
 ```
 ## 使い方
-今後追記予定？
+基本的には、以下機能を利用することができます。
+1. Httpリクエストとレスポンスを扱う機能
+2. コンソールコマンドを扱う機能
+3. Httpとコンソールを制御するアプリケーション機能
+
+新しい機能などを追加したい場合は、アプリケーション機能のDIコンテナを利用してください。
+
+#### Httpリクエストとレスポンスを扱う機能
+ドキュメントルートの```index.php```に以下のように記述してください。
+```php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+// アプリケーションのインスタンスを作成
+$app = new Takemo101\Egg\Kernel\Application(
+    pathSetting: new Takemo101\Egg\Kernel\ApplicationPath(
+        basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__),
+    ),
+);
+
+// Http用のローダー（Httpで必要な読み込み処理をするクラス）を追加
+$app->addLoader(
+    Takemo101\Egg\Kernel\Loader\HttpLoader::class,
+);
+
+// アプリケーションを起動
+$app->boot();
+
+// Httpリクエストとレスポンスを扱うプロセスを実行
+// プロセスのインスタンスはDIコンテナから取得する
+/** @var Takemo101\Egg\Http\HttpSimpleProcess */
+$process = $app->container->make(Takemo101\Egg\Http\HttpSimpleProcess::class);
+$process->process();
+```
+
+#### コンソールを扱う機能
+コマンドを実行するルートの```xxx.php```に以下のように記述してください。
+```php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+// アプリケーションを起動する
+$app = new Takemo101\Egg\Kernel\Application(
+    pathSetting: new Takemo101\Egg\Kernel\ApplicationPath(
+        basePath: $_ENV['APP_BASE_PATH'] ?? __DIR__,
+    ),
+);
+
+// Console用のローダー（Consoleで必要な読み込み処理をするクラス）を追加
+// ちなみにコンソールの処理は、おなじみのsymfony/consoleを利用しています
+$app->addLoader(
+    Takemo101\Egg\Kernel\Loader\ConsoleLoader::class,
+);
+
+$app->boot();
+
+// コンソールコマンドのプロセスを実行
+// プロセスのインスタンスはDIコンテナから取得する
+/** @var Takemo101\Egg\Console\ConsoleSimpleProcess */
+$process = $app->container->make(Takemo101\Egg\Console\ConsoleSimpleProcess::class);
+$process->process();
+```
+
+## その他サポート
+アプリケーションの初期設定などは、以下のディレクトリから設定を行うことができます。
+1. ```./config```ディレクトリには、アプリケーションで参照できる、色々な設定を記述することができます。
+2. ```./setting```ディレクトリには、アプリケーションで必要な初期設定を記述することができます。
+
+#### コンフィグ
+```./config```ディレクトリに```xxx.php```のような適当な名前のファイルを作成し、以下のように記述してください。
+```php
+<?php
+
+// 連想配列で設定を記述する
+return [
+    'key' => 'value',
+];
+```
+以上のような、連想配列を返すファイルを作成すると、```config('xxx.key')```のように、アプリケーション内で設定を参照することができます。
+
+#### DIコンテナ
+```./setting/dependency.php```では、DIコンテナのインスタンスを受け取る関数を記述することができるので、インスタンスに依存関係を設定してください。
+```php
+<?php
+
+use Takemo101\Egg\Support\Injector\ContainerContract;
+
+return function (ContainerContract $c) {
+    // 単純にインスタンスを作成する依存設定の場合は、bindメソッドを利用する
+    $c->bind(
+        XXXRepository::class,
+        fn () => new XXXRepositoryImpl(
+            db: $c->make(DB::class),
+        ),
+    );
+
+    // シングルトンでインスタンスを作成する依存設定の場合は、singletonメソッドを利用する
+    $c->singleton(
+        XXXQueryService::class,
+        fn () => new XXXQueryServiceImpl(
+            db: $c->make(DB::class),
+        ),
+    );
+};
+
+```
+
+#### ルーティング
+```./setting/routing.php```では、ルーティングを構築するインスタンスを受け取る関数を記述することができるので、インスタンスにルートを設定してください。
+```php
+<?php
+
+use Takemo101\Egg\Routing\RouteBuilder;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+return function (RouteBuilder $r) {
+
+    // リクエストとレスポンスはSymfonyのものを利用しています
+    $r->get(
+        '/', 
+        function (Request $request, Response $response) {
+            return $response->setContent('home');
+        },
+    )
+        ->filter(XXXFilter::class) // フィルタ（ミドルウェア）を設定することができます
+        ->name('home'); // 名付けておくと、ルート名を利用してURLを生成することができます
+
+    // ルートのグルーピングもできます
+    $r->group(function (RouteBuilder $r) {
+        // ルート解析はAltoRouterを利用しているので
+        // プレースホルダーを利用してパラメータを取得することができます
+        $r->get('/[i:id]', function (int $id) {
+            echo $id;
+        })
+            ->name('show'); 
+
+        // 配列（callable）でコントローラーを指定することもできます
+        $r->put('/[i:id]/edit', [EditController::class, 'edit']])
+            ->name('edit');
+    })
+        ->path('group') // ルートグループのパスプレフィックスを設定できます。
+        ->name('group.');
+};
+
+```
+
+#### フィルタ（ミドルウェア）
+```./setting/filter.php```では、ルート全体に適用するフィルタ（ミドルウェア）を設定することができます。
+```php
+<?php
+
+use Takemo101\Egg\Http\Filter\MethodOverrideFilter;
+use Takemo101\Egg\Http\Filter\SessionFilter;
+
+/**
+ * フィルタクラス名orインスタンスorCallableを配列で返す
+ * 
+ * @return array<object|mixed[]|class-string>
+ */
+return [
+    MethodOverrideFilter::class, // リクエストメソッドを上書きするフィルタ
+    SessionFilter::class, // Sessionを利用するフィルタ
+];
+```
+
+#### コマンド
+```./setting/command.php```では、コマンドを設定できます。
+```php
+<?php
+
+use Takemo101\Egg\Console\Command\VersionCommand;
+
+/**
+ * コマンドクラス名orインスタンスを配列で返す
+ * 
+ * @return array<object|class-string>
+ */
+return [
+    VersionCommand::class, // バージョンを表示するコマンド
+];
+```
+
+#### フック
+```./setting/function.php```では、フック処理などを設定できます（WordPressのfunctions.phpのようなイメージ）
+```php
+
+use Symfony\Component\HttpFoundation\Response;
+use Takemo101\Egg\Routing\RouteBuilder;
+use Takemo101\Egg\Support\Hook\Hook;
+use Takemo101\Egg\Support\StaticContainer;
+
+/** 
+ * StaticContainerからは特定のインスタンスをキーワードで取得できる
+ * 'hook'キーワードでHookインスタンスを取得する
+ * Hookインスタンスはフック処理を登録するためのものです
+ * 
+ * @var Hook
+ */
+$hook = StaticContainer::get('hook');
+
+// RouteBuilderに処理をフックすることで
+// ルートを追加できる
+$hook->register(
+    RouteBuilder::class,
+    function (RouteBuilder $r) {
+        $r->get('/phpinfo', function (Response $response) {
+            phpinfo();
+        })
+            ->name('phpinfo');
+
+        return $r;
+    },
+);
+
+// レスポンス返却前に処理をフックすることで
+// レスポンスを加工できる
+$hook->register(
+    'after-response',
+    function (Response $response) {
+        return $response;
+    },
+);
+
+
+```
