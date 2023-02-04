@@ -117,10 +117,10 @@ final class Hook
             foreach ($filter->actions as $action) {
                 $callable = $this->creator->create($action->function);
 
-                $result = $this->container->call(
-                    callable: $callable,
+                $result = call_user_func_array(
+                    $callable,
                     // フィルタ出力がnullの場合は初期パラメータを渡す
-                    options: [$result ?? $parameter],
+                    [$result ?? $parameter, $this->container],
                 );
             }
         }
@@ -147,9 +147,10 @@ final class Hook
             foreach ($filter->actions as $action) {
                 $callable = $this->creator->create($action->function);
 
-                $this->container->call(
-                    callable: $callable,
-                    options: [$parameter],
+                call_user_func_array(
+                    $callable,
+                    // フィルタ出力がnullの場合は初期パラメータを渡す
+                    [$parameter, $this->container],
                 );
             }
         }
