@@ -4,8 +4,6 @@ namespace Takemo101\Egg\Support\Injector;
 
 use Closure;
 use LogicException;
-use Takemo101\Egg\Support\Injector\Resolver\ArgumentNameResolver;
-use Takemo101\Egg\Support\Injector\Resolver\DefaultResolver;
 
 /**
  * DIコンテナでインスタンスを管理するクラス
@@ -25,6 +23,13 @@ class Container implements ContainerContract
      * @var array<string,string>
      */
     private array $aliases = [];
+
+    /**
+     * injection aliases
+     *
+     * @var array<string,DefinitionLabels>
+     */
+    private array $classAliases = [];
 
     /**
      * @var CallableResolver
@@ -67,6 +72,8 @@ class Container implements ContainerContract
 
     /**
      * 別名の設定
+     * instanceで別名を設定する場合は、
+     * instanceよりも先に設定する必要がある
      *
      * @param string $class
      * @param string $alias
@@ -80,7 +87,40 @@ class Container implements ContainerContract
 
         $this->aliases[$alias] = $class;
 
+        /** @var DefinitionLabels */
+        $labels = isset($this->classAliases[$class])
+            ? $this->classAliases[$class]->add($alias)
+            : new DefinitionLabels($class, $alias);
+
+        $this->classAliases[$class] = $labels;
+
         return $this;
+    }
+
+    /**
+     * 別名を取得する
+     *
+     * @param string $alias
+     * @return string
+     */
+    private function toAlias(string $alias): string
+    {
+        return isset($this->aliases[$alias])
+            ? $this->toAlias($this->aliases[$alias])
+            : $alias;
+    }
+
+    /**
+     * 別名ラベルコレクションを取得する
+     *
+     * @param string $alias
+     * @return DefinitionLabels
+     */
+    private function toLabels(string $alias): DefinitionLabels
+    {
+        $alias = $this->toAlias($alias);
+
+        return $this->classAliases[$alias] ?? new DefinitionLabels($alias);
     }
 
     /**
@@ -88,7 +128,7 @@ class Container implements ContainerContract
      *
      * @param string $label
      * @param mixed $instance
-     * @return mixed
+     * @return self
      */
     public function instance(string $label, mixed $instance)
     {
@@ -96,8 +136,10 @@ class Container implements ContainerContract
 
         $this->binds[$label] = $definition;
 
+        $labels = $this->toLabels($label);
+
         $this->filters->filter(
-            label: $label,
+            labels: $labels,
             definition: $definition,
             data: $instance,
         );
@@ -170,10 +212,9 @@ class Container implements ContainerContract
      */
     public function make(string $label, array $options = [])
     {
+        $label = $this->toAlias($label);
+
         if (!isset($this->binds[$label])) {
-            if (isset($this->aliases[$label])) {
-                return $this->make($this->aliases[$label]);
-            }
 
             if (class_exists($label)) {
                 return $this
@@ -191,8 +232,12 @@ class Container implements ContainerContract
 
         // 初期化時にフックを実行
         if (!$builded) {
+
+            // 関連するラベルを取得
+            $labels = $this->toLabels($label);
+
             $result = $this->filters->filter(
-                label: $label,
+                labels: $labels,
                 definition: $definition,
                 data: $result,
             );

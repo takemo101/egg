@@ -11,10 +11,12 @@ interface ContainerContract
 {
     /**
      * 別名の設定
+     * instanceで別名を設定する場合は、
+     * instanceよりも先に設定する必要がある
      *
      * @param string $class
      * @param string $alias
-     * @return mixed
+     * @return self
      */
     public function alias(string $class, string $alias);
 
@@ -23,7 +25,7 @@ interface ContainerContract
      *
      * @param string $label
      * @param mixed $instance
-     * @return mixed
+     * @return self
      */
     public function instance(string $label, mixed $instance);
 
@@ -32,7 +34,7 @@ interface ContainerContract
      *
      * @param string $label
      * @param Closure|string|null $callback
-     * @return mixed
+     * @return self
      */
     public function singleton(string $label, Closure|string|null $callback = null);
 
@@ -41,7 +43,7 @@ interface ContainerContract
      *
      * @param string $label
      * @param Closure|string|null $callback
-     * @return mixed
+     * @return self
      */
     public function bind(string $label, Closure|string|null $callback = null);
 
@@ -56,7 +58,7 @@ interface ContainerContract
     /**
      * 全てのバインディングを開放
      *
-     * @return mixed
+     * @return self
      */
     public function clear();
 

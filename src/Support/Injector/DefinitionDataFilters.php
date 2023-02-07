@@ -5,7 +5,7 @@ namespace Takemo101\Egg\Support\Injector;
 /**
  * 依存注入定義の解決時のフィルタ処理コレクション
  */
-final class DefinitionDataFilters implements DefinitionDataFilterContract
+final class DefinitionDataFilters
 {
     /**
      * @var DefinitionDataFilterContract[]
@@ -39,24 +39,27 @@ final class DefinitionDataFilters implements DefinitionDataFilterContract
      * 依存注入定義の解決時に
      * 定義されたデータをフィルタ処理する
      *
-     * @param string $label
+     * @param DefinitionLabels $labels
      * @param DefinitionContract $definition
      * @param mixed $data
      * @return mixed
      */
     public function filter(
-        string $label,
+        DefinitionLabels $labels,
         DefinitionContract $definition,
         mixed $data,
     ) {
         $result = $data;
 
-        foreach ($this->filters as $filter) {
-            $result = $filter->filter(
-                label: $label,
-                definition: $definition,
-                data: $result,
-            );
+        // ラベル毎にフィルタ処理を行う
+        foreach ($labels->labels as $label) {
+            foreach ($this->filters as $filter) {
+                $result = $filter->filter(
+                    label: $label,
+                    definition: $definition,
+                    data: $result,
+                );
+            }
         }
 
         return $result;

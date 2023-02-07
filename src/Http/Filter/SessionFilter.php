@@ -59,7 +59,8 @@ class SessionFilter
      */
     private function register(Session $session): void
     {
-        $this->app->container->instance(Session::class, $session);
-        $this->app->container->alias(Session::class, 'session');
+        $this->app->container
+            ->alias(Session::class, 'session')
+            ->instance(Session::class, $session);
     }
 }
