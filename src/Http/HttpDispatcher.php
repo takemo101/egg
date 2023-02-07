@@ -103,22 +103,24 @@ final class HttpDispatcher implements HttpDispatcherContract
         Request $request,
         Response $response,
     ): void {
-        $this->container->instance(
-            Request::class,
-            $request,
-        );
-        $this->container->alias(
-            Request::class,
-            'request',
-        );
+        $this->container
+            ->alias(
+                Request::class,
+                'request',
+            )
+            ->instance(
+                Request::class,
+                $request,
+            );
 
-        $this->container->instance(
-            Response::class,
-            $response,
-        );
-        $this->container->alias(
-            Response::class,
-            'response',
-        );
+        $this->container
+            ->alias(
+                Response::class,
+                'response',
+            )
+            ->instance(
+                Response::class,
+                $response,
+            );
     }
 }

@@ -144,7 +144,6 @@ final class Hook
 
                 call_user_func_array(
                     $callable,
-                    // フィルタ出力がnullの場合は初期パラメータを渡す
                     [$parameter],
                 );
             }

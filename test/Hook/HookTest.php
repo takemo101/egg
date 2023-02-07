@@ -4,7 +4,9 @@ namespace Test\Hook;
 
 use PHPUnit\Framework\TestCase;
 use Takemo101\Egg\Support\Hook\Hook;
+use Takemo101\Egg\Support\Hook\HookDefinitionDataFilter;
 use Takemo101\Egg\Support\Injector\Container;
+use Takemo101\Egg\Support\Injector\DefinitionDataFilters;
 use Takemo101\Egg\Support\Shared\CallableCreator;
 
 /**
@@ -61,5 +63,113 @@ class HookTest extends TestCase
         $this->hook->doAction('test-b', $testB);
 
         $this->assertEquals($testB, $this->result, 'アクションBの実行値と結果が一致する');
+    }
+
+    /**
+     * @test
+     */
+    public function DIでのフィルタの実行__OK()
+    {
+        [$container, $hook] = $this->createMockInstance();
+
+        $container->bind(HookTargetClass::class, fn () => new HookTargetClass('a'));
+
+        $data = 'b';
+
+        $hook->register(HookTargetClass::class, fn (HookTargetClass $target) => $target->setA($data));
+
+        $target = $container->make(HookTargetClass::class);
+
+        $this->assertEquals(
+            $data,
+            $target->getA(),
+            'フィルタの実行値と結果が一致する',
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function DIでのフィルタを別名で実行__OK()
+    {
+        [$container, $hook] = $this->createMockInstance();
+
+        $container->bind(HookTargetClass::class, fn () => new HookTargetClass('a'));
+        $container->alias(HookTargetClass::class, 'target');
+
+        $data = 'b';
+
+        $hook->register('target', fn (HookTargetClass $target) => $target->setA($data));
+
+
+        $target = $container->make(HookTargetClass::class);
+
+        $this->assertEquals(
+            $data,
+            $target->getA(),
+            'フィルタの実行値と結果が一致する',
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function DIでのフィルタをinstanceで実行__OK()
+    {
+        [$container, $hook] = $this->createMockInstance();
+
+        $data = 'b';
+        $hook->register('target', fn (HookTargetClass $target) => $target->setA($data));
+
+        $container->alias(HookTargetClass::class, 'target');
+        $container->instance(HookTargetClass::class, new HookTargetClass('a'));
+
+        $target = $container->make(HookTargetClass::class);
+
+        $this->assertEquals(
+            $data,
+            $target->getA(),
+            'フィルタの実行値と結果が一致する',
+        );
+    }
+
+    /**
+     * テスト用のモックを作成
+     *
+     * @return array{0:Container,1:Hook}
+     */
+    private function createMockInstance(): array
+    {
+        $filters = new DefinitionDataFilters();
+        $container = new Container($filters);
+        $hook = new Hook(new CallableCreator($container));
+
+        $filters->add(new HookDefinitionDataFilter($hook));
+
+        return [
+            $container,
+            $hook,
+        ];
+    }
+}
+
+class HookTargetClass
+{
+    public function __construct(
+        private string $a,
+    ) {
+        //
+    }
+
+    public function getA()
+    {
+        return $this->a;
+    }
+
+    public function setA(string $a)
+    {
+        $this->a = $a;
+
+        return $this;
     }
 }

@@ -4,7 +4,6 @@ namespace Takemo101\Egg\Support\Injector;
 
 use Closure;
 use Error;
-use RuntimeException;
 
 /**
  * 依存注入するための定義
