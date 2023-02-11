@@ -169,18 +169,18 @@ return function (RouteBuilder $r) {
 ```php
 <?php
 
+use Takemo101\Egg\Http\Filter\CsrfFilter;
 use Takemo101\Egg\Http\Filter\MethodOverrideFilter;
 use Takemo101\Egg\Http\Filter\SessionFilter;
+use Takemo101\Egg\Http\RootFilters;
 
-/**
- * フィルタクラス名orインスタンスorCallableを配列で返す
- * 
- * @return array<object|mixed[]|class-string>
- */
-return [
-    MethodOverrideFilter::class, // リクエストメソッドを上書きするフィルタ
-    SessionFilter::class, // Sessionを利用するフィルタ
-];
+return function (RootFilters $filters) {
+    $filters->add(
+        MethodOverrideFilter::class, // リクエストメソッドを上書きするフィルタ
+        SessionFilter::class, // Sessionを利用するフィルタ
+        CsrfFilter::class, // Csrf対策のフィルタ
+    );
+};
 ```
 
 #### コマンド
@@ -189,15 +189,14 @@ return [
 <?php
 
 use Takemo101\Egg\Console\Command\VersionCommand;
+use Takemo101\Egg\Console\Commands;
 
-/**
- * コマンドクラス名orインスタンスを配列で返す
- * 
- * @return array<object|class-string>
- */
-return [
-    VersionCommand::class, // バージョンを表示するコマンド
-];
+return function (Commands $commands) {
+    $commands->add(
+        VersionCommand::class,　// バージョンを表示するコマンド
+    );
+};
+
 ```
 
 #### フック

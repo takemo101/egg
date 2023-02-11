@@ -11,6 +11,7 @@ use Takemo101\Egg\Http\ResponseSenderContract;
 use Takemo101\Egg\Http\RootFilters;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\LoaderContract;
+use Takemo101\Egg\Support\Shared\CallObject;
 
 /**
  * Http関連
@@ -35,14 +36,21 @@ final class HttpLoader implements LoaderContract
      */
     public function load(): void
     {
-        /** @var array<object|mixed[]|string> */
-        $filters = require $this->app
+        $filters = new RootFilters();
+
+        /** @var object */
+        $filter = require $this->app
             ->pathSetting
             ->settingPath('filter.php');
 
+        (new CallObject($filter))->bootAndCall(
+            $this->app->container,
+            $filters,
+        );
+
         $this->app->container->bind(
             RootFilters::class,
-            fn () => RootFilters::fromPrimitives(...$filters),
+            fn () => $filters,
         );
 
         $this->app->container->bind(

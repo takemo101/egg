@@ -11,7 +11,7 @@ use Takemo101\Egg\Routing\RouterContract;
 use Takemo101\Egg\Routing\RouterFactoryContract;
 use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
 use Takemo101\Egg\Support\Injector\ContainerContract;
-use Closure;
+use Takemo101\Egg\Support\Shared\CallObject;
 
 /**
  * ルーティング関連
@@ -36,7 +36,7 @@ final class RoutingLoader implements LoaderContract
      */
     public function load(): void
     {
-        /** @var Closure */
+        /** @var object */
         $routing = require $this->app
             ->pathSetting
             ->settingPath('routing.php');
@@ -48,7 +48,10 @@ final class RoutingLoader implements LoaderContract
             $builder,
         );
 
-        $routing($builder);
+        (new CallObject($routing))->bootAndCall(
+            $this->app->container,
+            $builder,
+        );
 
         $this->app->container->singleton(
             URLSetting::class,

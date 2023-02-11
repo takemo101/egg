@@ -1,10 +1,10 @@
 <?php
 
 use Takemo101\Egg\Console\Command\VersionCommand;
+use Takemo101\Egg\Console\Commands;
 
-/**
- * @return array<object|class-string>
- */
-return [
-    VersionCommand::class,
-];
+return function (Commands $commands) {
+    $commands->add(
+        VersionCommand::class,
+    );
+};

@@ -3,7 +3,6 @@
 namespace Takemo101\Egg\Support\Shared;
 
 use RuntimeException;
-use Takemo101\Egg\Support\Shared\Handler;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 use Takemo101\Egg\Support\Shared\Functional;
 

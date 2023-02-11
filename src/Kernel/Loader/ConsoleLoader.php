@@ -2,13 +2,14 @@
 
 namespace Takemo101\Egg\Kernel\Loader;
 
-use Takemo101\Egg\Console\CommandCollection;
+use Takemo101\Egg\Console\Commands;
 use Takemo101\Egg\Console\ConsoleDispatcher;
 use Takemo101\Egg\Console\ConsoleDispatcherContract;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\LoaderContract;
 use Symfony\Component\Console\Application as SymphonyConsoleApplication;
 use Takemo101\Egg\Console\CommandResolver;
+use Takemo101\Egg\Support\Shared\CallObject;
 
 /**
  * Console関連
@@ -33,14 +34,21 @@ final class ConsoleLoader implements LoaderContract
      */
     public function load(): void
     {
-        /** @var array<object|class-string> */
-        $commands = require $this->app
+        $commands = Commands::empty();
+
+        /** @var object */
+        $command = require $this->app
             ->pathSetting
             ->settingPath('command.php');
 
+        (new CallObject($command))->bootAndCall(
+            $this->app->container,
+            $commands,
+        );
+
         $this->app->container->bind(
-            CommandCollection::class,
-            fn () => new CommandCollection(...$commands),
+            Commands::class,
+            fn () => $commands,
         );
 
         $this->app->container->bind(
@@ -61,7 +69,7 @@ final class ConsoleLoader implements LoaderContract
             ConsoleDispatcherContract::class,
             fn () => new ConsoleDispatcher(
                 application: $this->app->container->make(SymphonyConsoleApplication::class),
-                commands: $this->app->container->make(CommandCollection::class),
+                commands: $this->app->container->make(Commands::class),
                 resolver: new CommandResolver($this->app->container),
             ),
         );

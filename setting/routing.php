@@ -4,12 +4,20 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Takemo101\Egg\Http\Exception\NotFoundHttpException;
+use Takemo101\Egg\Http\Filter\CsrfFilter;
 use Takemo101\Egg\Routing\RouteBuilder;
 use Takemo101\Egg\Support\Log\Loggers;
 
 return function (RouteBuilder $r) {
-    $r->get('/', function (Request $request, Response $response) {
-        return $response->setContent('home');
+    $r->get('/', function (Request $request, Response $response, CsrfFilter $csrf) {
+        return $response->setContent('
+            <form action="/" method="POST">
+                <input type="hidden" name="' . CsrfFilter::TokenKey . '" value="' . $csrf->token() .  '">
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" name="name" value="a">
+                <input type="submit" value="put">
+            </form>
+        ');
     })
         ->name('home');
 
