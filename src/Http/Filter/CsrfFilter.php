@@ -58,7 +58,6 @@ class CsrfFilter
         }
 
         return $next($request, $response);
-        ;
     }
 
     /**

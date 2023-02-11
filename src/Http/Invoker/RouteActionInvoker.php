@@ -5,15 +5,35 @@ namespace Takemo101\Egg\Http\Invoker;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Takemo101\Egg\Http\Resolver\ResponseResolvers;
 use Takemo101\Egg\Routing\Shared\Filters;
 use Takemo101\Egg\Support\Shared\Handler;
-use Takemo101\Egg\Routing\Shared\RouteAction;
+use Takemo101\Egg\Support\Injector\ContainerContract;
+use Takemo101\Egg\Support\Shared\CallableCreator;
 
 /**
  * 対象ルートのアクションを実行する
  */
-final class RouteActionInvoker extends AbstractInvoker
+final class RouteActionInvoker
 {
+    /**
+     * @var CallableCreator
+     */
+    private readonly CallableCreator $creator;
+
+    /**
+     * constructor
+     *
+     * @param ContainerContract $container
+     * @param ResponseResolvers $resolvers
+     */
+    public function __construct(
+        private readonly ContainerContract $container,
+        private readonly ResponseResolvers $resolvers,
+    ) {
+        $this->creator = new CallableCreator($container);
+    }
+
     /**
      * アクションの実行
      *
@@ -39,10 +59,12 @@ final class RouteActionInvoker extends AbstractInvoker
         $next = $this->createFiltersClosure(
             next: $next,
             filters: $filters,
-            parameters: $parameters,
         );
 
-        return $this->orResponse($next($request, $response), $response);
+        return $this->orResponse(
+            response: $response,
+            result: $next($request, $response),
+        );
     }
 
     /**
@@ -66,7 +88,14 @@ final class RouteActionInvoker extends AbstractInvoker
                 ],
             );
 
-            return $this->orResponse($result, $response);
+            return $this->orResponse(
+                response: $response,
+                result: $this->resolvers->resolve(
+                    request: $request,
+                    response: $response,
+                    result: $result,
+                ),
+            );
         };
     }
 
@@ -75,13 +104,11 @@ final class RouteActionInvoker extends AbstractInvoker
      *
      * @param Closure $next
      * @param Filters $filters
-     * @param mixed[] $parameters
      * @return Closure
      */
     private function createFiltersClosure(
         Closure $next,
         Filters $filters,
-        array $parameters,
     ): Closure {
         // フィルターは追加した順に並んでいるので
         // 逆順で実行する
@@ -99,10 +126,31 @@ final class RouteActionInvoker extends AbstractInvoker
                     ],
                 );
 
-                return $this->orResponse($result, $response);
+                return $this->orResponse(
+                    response: $response,
+                    result: $result,
+                );
             };
         }
 
         return $next;
+    }
+
+
+    /**
+     * コールバックからの出力結果を比較して
+     * レスポンスでない場合は、通常のレスポンスを返す
+     *
+     * @param Response $response
+     * @param mixed $result
+     * @return Response
+     */
+    protected function orResponse(
+        Response $response,
+        mixed $result,
+    ): Response {
+        return $result && ($result instanceof Response)
+            ? $result
+            : $response;
     }
 }

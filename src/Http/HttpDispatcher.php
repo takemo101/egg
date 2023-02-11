@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Takemo101\Egg\Http\Filter\RouteActionFilter;
 use Takemo101\Egg\Http\Invoker\RouteActionInvoker;
+use Takemo101\Egg\Http\Resolver\ResponseResolvers;
 use Takemo101\Egg\Support\Shared\Handler;
 use Throwable;
 
@@ -16,23 +17,20 @@ use Throwable;
 final class HttpDispatcher implements HttpDispatcherContract
 {
     /**
-     * @var RouteActionInvoker
-     */
-    private readonly RouteActionInvoker $invoker;
-
-    /**
      * constructor
      *
      * @param RootFilters $filters
      * @param HttpErrorHandlerContract $errorHandler
+     * @param RouteActionInvoker $invoker
      * @param ContainerContract $container
      */
     public function __construct(
         private readonly RootFilters $filters,
         private readonly HttpErrorHandlerContract $errorHandler,
+        private readonly RouteActionInvoker $invoker,
         private readonly ContainerContract $container,
     ) {
-        $this->invoker = new RouteActionInvoker($container);
+        //
     }
 
     /**

@@ -22,7 +22,7 @@ return function (RouteBuilder $r) {
         ->name('home');
 
     $r->get('/test', function (Request $request, Response $response) {
-        return $response->setContent('test');
+        return 'test';
     })
         ->name('test');
 

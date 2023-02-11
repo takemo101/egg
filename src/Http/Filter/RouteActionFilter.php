@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Takemo101\Egg\Http\Exception\NotFoundHttpException;
 use Takemo101\Egg\Http\Invoker\RouteActionInvoker;
+use Takemo101\Egg\Http\Resolver\ResponseResolvers;
 use Takemo101\Egg\Routing\RouteMatchResult;
 use Takemo101\Egg\Routing\RouterContract;
 use Takemo101\Egg\Support\Hook\Hook;
@@ -19,23 +20,18 @@ use Takemo101\Egg\Support\Injector\ContainerContract;
 class RouteActionFilter
 {
     /**
-     * @var RouteActionInvoker
-     */
-    private readonly RouteActionInvoker $invoker;
-
-    /**
      * constructor
      *
-     * @param ContainerContract $container
+     * @param RouteActionInvoker $invoker
      * @param RouterContract $router
      * @param Hook $hook
      */
     public function __construct(
-        ContainerContract $container,
+        private readonly RouteActionInvoker $invoker,
         private readonly RouterContract $router,
         private readonly Hook $hook,
     ) {
-        $this->invoker = new RouteActionInvoker($container);
+        //
     }
 
     /**

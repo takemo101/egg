@@ -6,6 +6,9 @@ use Takemo101\Egg\Http\ErrorHandler\HttpErrorHandler;
 use Takemo101\Egg\Http\HttpDispatcher;
 use Takemo101\Egg\Http\HttpDispatcherContract;
 use Takemo101\Egg\Http\HttpErrorHandlerContract;
+use Takemo101\Egg\Http\Resolver\ArrayResponseResolver;
+use Takemo101\Egg\Http\Resolver\ResponseResolvers;
+use Takemo101\Egg\Http\Resolver\StringResponseResolver;
 use Takemo101\Egg\Http\ResponseSender;
 use Takemo101\Egg\Http\ResponseSenderContract;
 use Takemo101\Egg\Http\RootFilters;
@@ -46,6 +49,14 @@ final class HttpLoader implements LoaderContract
         (new CallObject($filter))->bootAndCall(
             $this->app->container,
             $filters,
+        );
+
+        $this->app->container->singleton(
+            ResponseResolvers::class,
+            fn () => new ResponseResolvers(
+                new ArrayResponseResolver(),
+                new StringResponseResolver(),
+            ),
         );
 
         $this->app->container->bind(
