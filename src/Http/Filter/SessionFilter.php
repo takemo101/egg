@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 use Takemo101\Egg\Kernel\Application;
 
 /**
@@ -27,6 +28,19 @@ class SessionFilter
     }
 
     /**
+     * セッションストレージを生成する
+     * 派生クラスでオーバーライドして利用する
+     *
+     * @return SessionStorageInterface
+     */
+    protected function createSessionStorage(): SessionStorageInterface
+    {
+        return new NativeSessionStorage(
+            config('session.options', []),
+        );
+    }
+
+    /**
      * セッションを開始する
      *
      * @param Request $request
@@ -39,7 +53,7 @@ class SessionFilter
         $session = new Session(
             $this->app->env()->is('testing')
                 ? new MockArraySessionStorage()
-                : new NativeSessionStorage(),
+                : $this->createSessionStorage(),
         );
 
         $request->setSession($session);
@@ -48,7 +62,12 @@ class SessionFilter
 
         $this->register($session);
 
-        return $next($request, $response);
+        /** @var Response */
+        $result = $next($request, $response);
+
+        $session->save();
+
+        return $result;
     }
 
     /**
