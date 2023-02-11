@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Routing\RouterContract;
@@ -100,5 +101,20 @@ if (!function_exists('session')) {
         $app = StaticContainer::get('app');
 
         return $app->container->make(Session::class);
+    }
+}
+
+if (!function_exists('request')) {
+    /**
+     * リクエストを取得する
+     *
+     * @return mixed
+     */
+    function request(): Request
+    {
+        /** @var Application */
+        $app = StaticContainer::get('app');
+
+        return $app->container->make(Request::class);
     }
 }
