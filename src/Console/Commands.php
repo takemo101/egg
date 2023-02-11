@@ -5,7 +5,7 @@ namespace Takemo101\Egg\Console;
 /**
  * コマンドのコレクション
  */
-final class CommandCollection
+final class Commands
 {
     /** @var array<class-string|object> */
     public array $commands;
@@ -39,5 +39,15 @@ final class CommandCollection
         $this->commands = $tempCommands;
 
         return $this;
+    }
+
+    /**
+     * 空のインスタンスを返す
+     *
+     * @return self
+     */
+    public static function empty(): self
+    {
+        return new self();
     }
 }

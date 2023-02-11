@@ -57,7 +57,7 @@ final class HttpDispatcher implements HttpDispatcherContract
                 request: $request,
                 response: $response,
                 action: new Handler(fn (Response $response) => $response),
-                filters: $this->filters->add(
+                filters: $this->filters->filters()->add(
                     // このフィルタを追加しないとルーティングが実行されない
                     new Handler(RouteActionFilter::class),
                 ),

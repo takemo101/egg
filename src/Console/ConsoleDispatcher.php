@@ -14,12 +14,12 @@ final class ConsoleDispatcher implements ConsoleDispatcherContract
      * constructor
      *
      * @param Application $application
-     * @param CommandCollection $commands
+     * @param Commands $commands
      * @param CommandResolver $resolver
      */
     public function __construct(
         private readonly Application $application,
-        private readonly CommandCollection $commands,
+        private readonly Commands $commands,
         private readonly CommandResolver $resolver,
     ) {
         //
