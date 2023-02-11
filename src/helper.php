@@ -93,7 +93,7 @@ if (!function_exists('session')) {
     /**
      * セッションを取得する
      *
-     * @return mixed
+     * @return Session
      */
     function session(): Session
     {
@@ -108,7 +108,7 @@ if (!function_exists('request')) {
     /**
      * リクエストを取得する
      *
-     * @return mixed
+     * @return Request
      */
     function request(): Request
     {

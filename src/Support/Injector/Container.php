@@ -215,7 +215,6 @@ class Container implements ContainerContract
         $label = $this->toAlias($label);
 
         if (!isset($this->binds[$label])) {
-
             if (class_exists($label)) {
                 return $this
                     ->bind($label)
@@ -232,7 +231,6 @@ class Container implements ContainerContract
 
         // 初期化時にフックを実行
         if (!$builded) {
-
             // 関連するラベルを取得
             $labels = $this->toLabels($label);
 

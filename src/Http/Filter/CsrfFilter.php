@@ -57,7 +57,8 @@ class CsrfFilter
             throw new CsrfTokenMismatchHttpException();
         }
 
-        return $next($request, $response);;
+        return $next($request, $response);
+        ;
     }
 
     /**
