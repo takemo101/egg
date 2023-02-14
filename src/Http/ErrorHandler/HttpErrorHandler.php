@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Takemo101\Egg\Http\Exception\HttpException;
 use Takemo101\Egg\Http\Exception\InternalServerErrorHttpException;
 use Takemo101\Egg\Kernel\ApplicationEnvironment;
+use Takemo101\Egg\Support\Injector\ContainerContract;
 use Takemo101\Egg\Support\Log\Loggers;
 use Throwable;
 
@@ -25,8 +26,11 @@ class HttpErrorHandler implements HttpErrorHandlerContract
     public function __construct(
         private readonly ApplicationEnvironment $environment,
         private readonly Loggers $loggers,
+        protected readonly ContainerContract $container,
     ) {
-        //
+        if (method_exists($this, 'boot')) {
+            $this->container->call([$this, 'boot']);
+        }
     }
 
     /**
@@ -41,10 +45,14 @@ class HttpErrorHandler implements HttpErrorHandlerContract
         $this->report($error);
 
         return match (true) {
-            $error instanceof HttpException => $this->handleHttpException($error),
+            $error instanceof HttpException => $this->handleHttpException(
+                $request,
+                $error,
+            ),
             default => $this->environment->debug
                 ? throw $error
                 : $this->handleHttpException(
+                    $request,
                     new InternalServerErrorHttpException(
                         message: $error->getMessage(),
                         previous: $error,
@@ -56,10 +64,11 @@ class HttpErrorHandler implements HttpErrorHandlerContract
     /**
      * HttpExceptionをハンドリングする
      *
+     * @param Request $request
      * @param HttpException $error
      * @return Response
      */
-    protected function handleHttpException(HttpException $error): Response
+    protected function handleHttpException(Request $request, HttpException $error): Response
     {
         return new Response(
             content: $error->getMessage(),
