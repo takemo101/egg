@@ -5,7 +5,9 @@ namespace Takemo101\Egg\Http\Filter;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
@@ -80,6 +82,8 @@ class SessionFilter
     {
         $this->app->container
             ->alias(Session::class, 'session')
+            ->alias(Session::class, FlashBagAwareSessionInterface::class)
+            ->alias(Session::class, SessionInterface::class)
             ->instance(Session::class, $session);
     }
 }
