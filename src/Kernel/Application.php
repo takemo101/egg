@@ -10,6 +10,7 @@ use Takemo101\Egg\Kernel\Loader\FunctionLoader;
 use Takemo101\Egg\Kernel\Loader\HelperLoader;
 use Takemo101\Egg\Kernel\Loader\HookLoader;
 use Takemo101\Egg\Kernel\Loader\LogLoader;
+use Takemo101\Egg\Kernel\Loader\ModuleLoader;
 use Takemo101\Egg\Kernel\Loader\RoutingLoader;
 use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
 use Takemo101\Egg\Support\Filesystem\LocalSystem;
@@ -73,6 +74,7 @@ final class Application
             FunctionLoader::class,
             RoutingLoader::class,
             LogLoader::class,
+            ModuleLoader::class,
         );
 
         $this->register();
