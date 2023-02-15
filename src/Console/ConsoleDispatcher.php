@@ -37,15 +37,27 @@ final class ConsoleDispatcher implements ConsoleDispatcherContract
         InputInterface $input,
         OutputInterface $output,
     ): int {
-        foreach ($this->commands->commands as $command) {
+        foreach ($this->commands->classes as $command) {
             $resolved = $this->resolver->resolve($command);
             if (!$resolved) {
-                throw new RuntimeException("{$command} is not command class");
+                $name = $this->getClassName($command);
+                throw new RuntimeException("{$name} is not command class");
             }
 
             $this->application->add($resolved);
         }
 
         return $this->application->run($input, $output);
+    }
+
+    /**
+     * クラス名を取得する
+     *
+     * @param string|object $class
+     * @return string
+     */
+    private function getClassName(string|object $class): string
+    {
+        return is_object($class) ? get_class($class) : $class;
     }
 }
