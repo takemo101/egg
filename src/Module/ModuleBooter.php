@@ -21,11 +21,8 @@ final class ModuleBooter
     }
 
     /**
-     * console dispatch
+     * module boot
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return integer
      * @throws RuntimeException|LogicException
      */
     public function boot(): void

@@ -15,7 +15,7 @@ abstract class Classes
      *
      * @param class-string|object ...$classes
      */
-    public function __construct(
+    final public function __construct(
         string|object ...$classes,
     ) {
         $this->classes = $classes;

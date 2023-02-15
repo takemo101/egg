@@ -28,7 +28,7 @@ abstract class Module implements ModuleContract
      */
     protected function hook(): Hook
     {
-        /** @var */
+        /** @var Hook */
         $hook = $this->app->container->make(Hook::class);
 
         return $hook;
