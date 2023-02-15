@@ -242,3 +242,20 @@ $hook->register(
 
 
 ```
+
+#### モジュール
+```./setting/module.php```では、モジュールを設定できます。
+```php
+<?php
+
+use Takemo101\Egg\Module\HelperModule;
+use Takemo101\Egg\Module\Modules;
+
+return function (Modules $modules) {
+    $modules->add(
+        HelperModule::class, // ヘルパー関数を提供するモジュール
+    );
+};
+
+```
+モジュールは```Takemo101\Egg\Module\ModuleContract```を実装 or ```Takemo101\Egg\Module\Module```を継承したクラスを作成し、```./setting/module.php```で設定することで利用できます。
