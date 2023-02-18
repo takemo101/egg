@@ -2,6 +2,7 @@
 
 namespace Takemo101\Egg\Support;
 
+use Dotenv\Repository\RepositoryInterface;
 use Takemo101\Egg\Support\Arr\ArrAccess;
 
 /**
@@ -10,19 +11,14 @@ use Takemo101\Egg\Support\Arr\ArrAccess;
 final class Environment
 {
     /**
-     * @var ArrAccess<mixed>
-     */
-    private readonly ArrAccess $env;
-
-    /**
      * constructor
      *
-     * @param array<string,mixed> $env
+     * @param RepositoryInterface $repository
      */
     public function __construct(
-        array $env,
+        private readonly RepositoryInterface $repository,
     ) {
-        $this->env = new ArrAccess($env);
+        //
     }
 
     /**
@@ -34,9 +30,12 @@ final class Environment
      */
     public function get(string $key, $default = null): mixed
     {
-        /** @var string */
-        $value = $_ENV[$key]
-            ?? $this->env->get($key, $default);
+        /** @var string|null */
+        $value = $this->repository->get($key);
+
+        if (is_null($value)) {
+            return $default;
+        }
 
         $lower = strtolower($value);
 
