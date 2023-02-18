@@ -2,6 +2,7 @@
 
 namespace Takemo101\Egg\Kernel\Loader;
 
+use Dotenv\Dotenv;
 use Dotenv\Repository\Adapter\PutenvAdapter;
 use Dotenv\Repository\RepositoryBuilder;
 use Dotenv\Repository\RepositoryInterface;
@@ -36,6 +37,13 @@ final class EnvironmentLoader implements LoaderContract
             ->addAdapter(PutenvAdapter::class)
             ->immutable()
             ->make();
+
+        Dotenv::create(
+            repository: $repository,
+            paths: $this->app->pathSetting->basePath(),
+            names: $this->app->pathSetting->dotenv,
+        )
+            ->load();
 
         $this->app->container->instance(
             RepositoryInterface::class,
