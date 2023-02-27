@@ -20,7 +20,7 @@ final class HookFilter
     /**
      * @var array<string,HookAction>
      */
-    public array $actions = [];
+    private array $actions = [];
 
     /**
      * constructor
@@ -29,10 +29,33 @@ final class HookFilter
      * @param HookAction ...$actions
      */
     public function __construct(
-        public readonly int $priority = self::DefaultPriority,
+        private int $priority = self::DefaultPriority,
         HookAction ...$actions,
     ) {
         $this->add(...$actions);
+    }
+
+    /**
+     * 優先度の調整
+     * 引数に与えた配列に優先度が含まれている場合は、
+     * 含まれてない優先度に調整するために、
+     * 優先度をインクリメントしていく
+     *
+     * @param array<integer,mixed> $array 基準となる配列
+     * @return integer
+     */
+    public function adjustPriority(array $array): int
+    {
+        $priority = $this->priority;
+
+        while (true) {
+            if (!isset($array[$priority])) {
+                break;
+            }
+            $priority++;
+        }
+
+        return $this->priority = $priority;
     }
 
     /**
@@ -75,6 +98,26 @@ final class HookFilter
         $this->actions = [];
 
         return $this;
+    }
+
+    /**
+     * getter
+     *
+     * @return integer
+     */
+    public function priority(): int
+    {
+        return $this->priority;
+    }
+
+    /**
+     * getter
+     *
+     * @return array<string,HookAction>
+     */
+    public function actions(): array
+    {
+        return $this->actions;
     }
 
     /**
