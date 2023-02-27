@@ -31,7 +31,7 @@ final class PublishResources
     ): self {
         $this->resources[$tag] = [
             ...$fromTo,
-            $this->resources[$tag] ?? [],
+            ...($this->resources[$tag] ?? []),
         ];
 
         return $this;
@@ -42,9 +42,9 @@ final class PublishResources
      *
      * @return array<string,string>
      */
-    public function resources(string $tag): array
+    public function get(string $tag): array
     {
-        return $this->resources;
+        return $this->resources[$tag] ?? [];
     }
 
     /**

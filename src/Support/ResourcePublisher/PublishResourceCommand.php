@@ -45,7 +45,7 @@ final class PublishResourceCommand extends EggCommand
             return self::FAILURE;
         }
 
-        foreach ($resources->resources($tag) as $from => $to) {
+        foreach ($resources->get($tag) as $from => $to) {
             $output->writeln("<info>publish: {$from} -> {$to}</info>");
             $publisher->publish($from, $to);
         }
