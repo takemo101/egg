@@ -3,7 +3,6 @@
 namespace Takemo101\Egg\Support;
 
 use Dotenv\Repository\RepositoryInterface;
-use Takemo101\Egg\Support\Arr\ArrAccess;
 
 /**
  * environment

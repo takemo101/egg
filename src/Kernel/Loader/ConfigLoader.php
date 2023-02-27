@@ -39,9 +39,11 @@ final class ConfigLoader implements LoaderContract
             directory: $this->app->pathSetting->configPath(),
         );
 
-        $this->app->container->instance(
-            ConfigRepositoryContract::class,
-            $repository,
-        );
+        $this->app->container
+            ->alias(ConfigRepositoryContract::class, ConfigRepository::class)
+            ->instance(
+                ConfigRepositoryContract::class,
+                $repository,
+            );
     }
 }

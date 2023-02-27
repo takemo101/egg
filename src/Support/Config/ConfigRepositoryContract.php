@@ -46,4 +46,12 @@ interface ConfigRepositoryContract extends ArrayAccess
      * @return void
      */
     public function set(string $key, $value): void;
+
+    /**
+     * データの存在チェック
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function has(string $key): bool;
 }
