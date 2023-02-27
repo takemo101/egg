@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Kernel;
+namespace Test\Kernel\Module;
 
 use PHPUnit\Framework\TestCase;
 use Takemo101\Egg\Kernel\Application;
