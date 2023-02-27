@@ -11,7 +11,7 @@ final class HookFilters
     /**
      * @var array<integer,HookFilter>
      */
-    public array $filters = [];
+    private array $filters = [];
 
     /**
      * constructor
@@ -33,7 +33,9 @@ final class HookFilters
     public function add(HookFilter ...$filters): self
     {
         foreach ($filters as $filter) {
-            $this->filters[$filter->priority] = $filter;
+            $priority = $filter->adjustPriority($this->filters);
+
+            $this->filters[$priority] = $filter;
         }
 
         ksort($this->filters);

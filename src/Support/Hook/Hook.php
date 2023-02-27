@@ -37,7 +37,14 @@ final class Hook
         object|array|string $function,
         int $priority = HookFilter::DefaultPriority,
     ): self {
-        if (!isset($this->filters[$tag])) {
+        if (isset($this->filters[$tag])) {
+            $this->filters[$tag]->add(
+                HookFilter::fromCallable(
+                    priority: $priority,
+                    function: $function,
+                ),
+            );
+        } else {
             $this->filters[$tag] = new HookFilters(
                 HookFilter::fromCallable(
                     priority: $priority,
@@ -45,13 +52,6 @@ final class Hook
                 ),
             );
         }
-
-        $this->filters[$tag]->add(
-            HookFilter::fromCallable(
-                priority: $priority,
-                function: $function,
-            ),
-        );
 
         return $this;
     }
@@ -108,8 +108,8 @@ final class Hook
 
         $filters = $this->filters[$tag];
 
-        foreach ($filters->filters as $filter) {
-            foreach ($filter->actions as $action) {
+        foreach ($filters->all() as $filter) {
+            foreach ($filter->actions() as $action) {
                 $callable = $this->creator->create($action->function);
 
                 $result = call_user_func_array(
@@ -138,8 +138,8 @@ final class Hook
 
         $filters = $this->filters[$tag];
 
-        foreach ($filters->filters as $filter) {
-            foreach ($filter->actions as $action) {
+        foreach ($filters->all() as $filter) {
+            foreach ($filter->actions() as $action) {
                 $callable = $this->creator->create($action->function);
 
                 call_user_func_array(
