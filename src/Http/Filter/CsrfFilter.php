@@ -155,7 +155,13 @@ class CsrfFilter
      */
     private function encodeToken(string $token): string
     {
-        $key = random_bytes(strlen($token));
+        $length = strlen($token);
+
+        if ($length < 1) {
+            throw new Exception('Invalid token length');
+        }
+
+        $key = random_bytes($length);
 
         return base64_encode($key . ($key ^ $token));
     }

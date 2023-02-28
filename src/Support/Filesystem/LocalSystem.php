@@ -72,7 +72,7 @@ final class LocalSystem implements LocalSystemContract
      */
     public function write(string $path, $content): bool
     {
-        return file_put_contents($path, $content);
+        return (bool)file_put_contents($path, $content);
     }
 
     /**
@@ -100,7 +100,7 @@ final class LocalSystem implements LocalSystemContract
      */
     public function append(string $path, string $content): bool
     {
-        return file_put_contents($path, $content, FILE_APPEND);
+        return (bool)file_put_contents($path, $content, FILE_APPEND);
     }
 
     /**
@@ -182,7 +182,9 @@ final class LocalSystem implements LocalSystemContract
     public function readlink(string $path): ?string
     {
         if ($this->exists($path) && $this->isLink($path)) {
-            return readlink($path);
+            $link = readlink($path);
+
+            return $link ? $link : null;
         }
 
         throw new LocalSystemException("does not exist or link at path [{$path}]");
@@ -192,11 +194,13 @@ final class LocalSystem implements LocalSystemContract
      * 正規化されたパスを返す
      *
      * @param string $path
-     * @return string
+     * @return null|string
      */
-    public function realpath(string $path): string
+    public function realpath(string $path): ?string
     {
-        return realpath($path);
+        $path = realpath($path);
+
+        return $path ? $path : null;
     }
 
     /**
@@ -204,10 +208,15 @@ final class LocalSystem implements LocalSystemContract
      *
      * @param string $path
      * @return integer
+     * @throws LocalSystemException
      */
     public function size(string $path): int
     {
-        return filesize($path);
+        if ($size = filesize($path)) {
+            return $size;
+        }
+
+        throw new LocalSystemException("does not exist at path [{$path}]");
     }
 
     /**
@@ -218,7 +227,11 @@ final class LocalSystem implements LocalSystemContract
      */
     public function time(string $path): int
     {
-        return filemtime($path);
+        if ($time = filemtime($path)) {
+            return $time;
+        }
+
+        throw new LocalSystemException("does not exist at path [{$path}]");
     }
 
     /**
@@ -282,9 +295,9 @@ final class LocalSystem implements LocalSystemContract
      * @param string $path
      * @param integer $option
      * @throws LocalSystemException
-     * @return string
+     * @return string|array{dirname?:string,basename:string,extension?:string,filename:string}
      */
-    public function extract(string $path, int $option = PATHINFO_BASENAME): string
+    public function extract(string $path, int $option = PATHINFO_BASENAME): string|array
     {
         return pathinfo($path, $option);
     }
@@ -323,7 +336,13 @@ final class LocalSystem implements LocalSystemContract
      */
     public function mimeType(string $path): ?string
     {
-        $result = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+        if ($finfo === false) {
+            return null;
+        }
+
+        $result = finfo_file($finfo, $path);
 
         return $result === false ? null : $result;
     }
@@ -384,6 +403,7 @@ final class LocalSystem implements LocalSystemContract
         $paths = $this->glob($this->helper->join($from, "*"));
 
         foreach ($paths as $path) {
+            /** @var string */
             $target = $this->extract($path);
 
             $target = $this->helper->join($to, $target);

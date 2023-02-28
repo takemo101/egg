@@ -2,18 +2,20 @@
 
 namespace Test\Kernel\Module;
 
-use PHPUnit\Framework\TestCase;
+use Test\AppTestCase;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\ApplicationPath;
+use Takemo101\Egg\Module\Module;
 use Takemo101\Egg\Module\ModuleBooter;
 use Takemo101\Egg\Module\ModuleContract;
 use Takemo101\Egg\Module\ModuleResolver;
 use Takemo101\Egg\Module\Modules;
+use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
 
 /**
  * module test
  */
-class ModuleTest extends TestCase
+class ModuleTest extends AppTestCase
 {
     /**
      * @test
@@ -50,6 +52,38 @@ class ModuleTest extends TestCase
             'モジュールが起動している',
         );
     }
+
+    /**
+     * @test
+     */
+    public function コンフィグをマージする__OK()
+    {
+        $module = $this->app->container->make(TestMergeConfigModule::class);
+
+        $config = $this->app->container->make(ConfigRepositoryContract::class);
+
+        $testKey = 'test-key';
+        $testData = 'test';
+        $baseConfig = [
+            $testKey => $testData,
+        ];
+
+        $config->set(TestMergeConfigModule::Key, $baseConfig);
+
+        $module->boot();
+
+        $this->assertEquals(
+            $testData,
+            $config->get(TestMergeConfigModule::Key . '.' . $testKey),
+            'コンフィグが設定されている',
+        );
+
+        $this->assertNotContainsEquals(
+            $baseConfig,
+            $config->get(TestMergeConfigModule::Key),
+            'コンフィグがマージされている',
+        );
+    }
 }
 
 class TestModule implements ModuleContract
@@ -65,5 +99,15 @@ class TestModule implements ModuleContract
     public function boot(): void
     {
         self::$test .= $this->addString;
+    }
+}
+
+class TestMergeConfigModule extends Module
+{
+    public const Key = 'test';
+
+    public function boot(): void
+    {
+        $this->mergeConfig(self::Key, dirname(__DIR__, 1) . '/resource/config/test.php');
     }
 }

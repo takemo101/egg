@@ -25,7 +25,7 @@ class PublishResourceTest extends TestCase
 
         $to = $resourceDirectory . '/resource/to/test.php';
 
-        $resources->add(
+        $resources->set(
             $tag,
             [
                 $resourceDirectory . '/resource/from/test.php' => $to,
@@ -36,7 +36,7 @@ class PublishResourceTest extends TestCase
 
         $publisher = new ResourcePublisher($fs);
 
-        $this->assertTrue($resources->hasTag($tag));
+        $this->assertTrue($resources->has($tag));
 
         foreach ($resources->get($tag) as $from => $to) {
             $publisher->publish($from, $to);

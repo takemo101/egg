@@ -12,14 +12,22 @@ use ArrayAccess;
 interface ConfigRepositoryContract extends ArrayAccess
 {
     /**
-     * パスをコンフィグに設定する
+     * キーに対するパスをコンフィグに設定する
      * キーを指定しない場合はファイル名がキーとなる
      *
      * @param string $key
      * @param string $path
      * @return void
      */
-    public function setLoadPath(string $key, string $path): void;
+    public function setPath(string $key, string $path): void;
+
+    /**
+     * キーに対するコンフィグが存在するか
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function hasKey(string $key): bool;
 
     /**
      * ディレクトリーからコンフィグを設定する

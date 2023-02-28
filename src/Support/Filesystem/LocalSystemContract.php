@@ -107,9 +107,9 @@ interface LocalSystemContract
      * 正規化されたパスを返す
      *
      * @param string $path
-     * @return string
+     * @return null|string
      */
-    public function realpath(string $path): string;
+    public function realpath(string $path): ?string;
 
     /**
      * ファイルサイズ
@@ -172,9 +172,10 @@ interface LocalSystemContract
      *
      * @param string $path
      * @param integer $option
-     * @return string
+     * @throws LocalSystemException
+     * @return string|array{dirname:string,basename:string,extension:string,filename:string}
      */
-    public function extract(string $path, int $option = PATHINFO_BASENAME): string;
+    public function extract(string $path, int $option = PATHINFO_BASENAME): string|array;
 
     /**
      * ファイルパーミッション取得

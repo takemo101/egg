@@ -40,7 +40,7 @@ final class PublishResourceCommand extends EggCommand
     ) {
         $tag = (string)$input->getArgument('tag');
 
-        if (!$resources->hasTag($tag)) {
+        if (!$resources->has($tag)) {
             $output->writeln('<error>Resource tag not found</error>');
             return self::FAILURE;
         }

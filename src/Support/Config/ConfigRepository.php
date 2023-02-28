@@ -14,7 +14,7 @@ class ConfigRepository implements ConfigRepositoryContract
     /**
      * @var string
      */
-    public const ConfigExt = '.php';
+    public const ConfigExtension = '.php';
 
     /**
      * @var array<string,string|mixed[]>
@@ -44,20 +44,31 @@ class ConfigRepository implements ConfigRepositoryContract
      */
     private function createKeyStringByPath(string $path): string
     {
-        return basename($path, self::ConfigExt);
+        return basename($path, self::ConfigExtension);
     }
 
     /**
-     * パスをコンフィグに設定する
+     * キーに対するパスをコンフィグに設定する
      * キーを指定しない場合はファイル名がキーとなる
      *
      * @param string $key
      * @param string $path
      * @return void
      */
-    public function setLoadPath(string $key, string $path): void
+    public function setPath(string $key, string $path): void
     {
         $this->config[$key] = $path;
+    }
+
+    /**
+     * キーに対するコンフィグが存在するか
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function hasKey(string $key): bool
+    {
+        return array_key_exists($key, $this->config);
     }
 
     /**
@@ -68,7 +79,7 @@ class ConfigRepository implements ConfigRepositoryContract
      */
     public function load(string $directory): void
     {
-        $ext = self::ConfigExt;
+        $ext = self::ConfigExtension;
 
         $paths = $this->filesystem->glob(
             $this->filesystem

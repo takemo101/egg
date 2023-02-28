@@ -7,6 +7,7 @@ use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\LoaderContract;
 use Takemo101\Egg\Module\ModuleBooter;
 use Takemo101\Egg\Module\Modules;
+use Takemo101\Egg\Module\TestModule;
 use Takemo101\Egg\Support\ResourcePublisher\PublishResourceModule;
 use Takemo101\Egg\Support\Shared\CallObject;
 
@@ -16,7 +17,7 @@ use Takemo101\Egg\Support\Shared\CallObject;
 final class ModuleLoader implements LoaderContract
 {
     /**
-     * @var string[]
+     * @var class-string[]
      */
     private array $modules = [
         PublishResourceModule::class,
