@@ -1,6 +1,6 @@
 <?php
 
-namespace Takemo101\Egg\Support\ResourcePublisher;
+namespace Takemo101\Egg\Module\Default\ResourcePublisher;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

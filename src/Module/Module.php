@@ -5,7 +5,7 @@ namespace Takemo101\Egg\Module;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
 use Takemo101\Egg\Support\Hook\Hook;
-use Takemo101\Egg\Support\ResourcePublisher\PublishResources;
+use Takemo101\Egg\Module\Default\ResourcePublisher\PublishResources;
 use RuntimeException;
 
 /**

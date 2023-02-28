@@ -8,7 +8,7 @@ use Takemo101\Egg\Kernel\LoaderContract;
 use Takemo101\Egg\Module\ModuleBooter;
 use Takemo101\Egg\Module\Modules;
 use Takemo101\Egg\Module\TestModule;
-use Takemo101\Egg\Support\ResourcePublisher\PublishResourceModule;
+use Takemo101\Egg\Module\Default\ResourcePublisher\PublishResourceModule;
 use Takemo101\Egg\Support\Shared\CallObject;
 
 /**

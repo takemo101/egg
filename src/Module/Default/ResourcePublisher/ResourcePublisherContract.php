@@ -1,6 +1,6 @@
 <?php
 
-namespace Takemo101\Egg\Support\ResourcePublisher;
+namespace Takemo101\Egg\Module\Default\ResourcePublisher;
 
 /**
  * リソースの公開をする

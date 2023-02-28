@@ -4,8 +4,8 @@ namespace Test\Kernel\PublishResource;
 
 use PHPUnit\Framework\TestCase;
 use Takemo101\Egg\Support\Filesystem\LocalSystem;
-use Takemo101\Egg\Support\ResourcePublisher\PublishResources;
-use Takemo101\Egg\Support\ResourcePublisher\ResourcePublisher;
+use Takemo101\Egg\Module\Default\ResourcePublisher\PublishResources;
+use Takemo101\Egg\Module\Default\ResourcePublisher\ResourcePublisher;
 
 /**
  * publish resource test
