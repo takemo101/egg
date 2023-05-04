@@ -6,12 +6,12 @@ use RuntimeException;
 use Takemo101\Egg\Support\Arr\ArrAccess;
 
 /**
- * 静的コンテナ
+ * サービスロケーター
  *
  * Injectorを利用できない場合に
  * オブジェクトを取得するのに利用する
  */
-final class StaticContainer
+final class ServiceLocator
 {
     /**
      * @var self|null
@@ -24,7 +24,7 @@ final class StaticContainer
      * @param ArrAccess<mixed> $container
      */
     private function __construct(
-        public readonly ArrAccess $container = new ArrAccess(),
+        private readonly ArrAccess $container = new ArrAccess(),
     ) {
         //
     }
@@ -44,7 +44,7 @@ final class StaticContainer
     }
 
     /**
-     * 値を取得する
+     * サービスを取得する
      *
      * @param string $key
      * @return object
@@ -52,7 +52,9 @@ final class StaticContainer
      */
     public static function get(string $key): object
     {
-        $object = self::instance()->container->get($key);
+        $object = self::instance()
+            ->container
+            ->get($key);
 
         if (is_object($object)) {
             return $object;
@@ -62,7 +64,7 @@ final class StaticContainer
     }
 
     /**
-     * 値をセットする
+     * サービスをセットする
      *
      * @param string $key
      * @param object $object
@@ -70,6 +72,21 @@ final class StaticContainer
      */
     public static function set(string $key, object $object): void
     {
-        self::instance()->container->set($key, $object);
+        self::instance()
+            ->container
+            ->set($key, $object);
+    }
+
+    /**
+     * サービスを削除する
+     *
+     * @param string $key
+     * @return void
+     */
+    public static function clear(string $key): void
+    {
+        self::instance()
+            ->container
+            ->forget($key);
     }
 }

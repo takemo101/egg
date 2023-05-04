@@ -3,10 +3,10 @@
 use Symfony\Component\HttpFoundation\Response;
 use Takemo101\Egg\Routing\RouteBuilder;
 use Takemo101\Egg\Support\Hook\Hook;
-use Takemo101\Egg\Support\StaticContainer;
+use Takemo101\Egg\Support\ServiceLocator;
 
 /** @var Hook */
-$hook = StaticContainer::get('hook');
+$hook = ServiceLocator::get('hook');
 
 $hook->register(
     RouteBuilder::class,

@@ -8,7 +8,7 @@ use Takemo101\Egg\Routing\RouterContract;
 use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
 use Takemo101\Egg\Support\Environment;
 use Takemo101\Egg\Support\Log\Loggers;
-use Takemo101\Egg\Support\StaticContainer;
+use Takemo101\Egg\Support\ServiceLocator;
 
 if (!function_exists('env')) {
     /**
@@ -21,7 +21,7 @@ if (!function_exists('env')) {
     function env(string $key, $default = null)
     {
         /** @var Application */
-        $app = StaticContainer::get('app');
+        $app = ServiceLocator::get('app');
 
         /** @var Environment */
         $environment = $app->container->make(Environment::class);
@@ -41,7 +41,7 @@ if (!function_exists('config')) {
     function config(string $key, $default = null)
     {
         /** @var Application */
-        $app = StaticContainer::get('app');
+        $app = ServiceLocator::get('app');
 
         /** @var Environment */
         $config = $app->container->make(ConfigRepositoryContract::class);
@@ -60,7 +60,7 @@ if (!function_exists('logger')) {
     function logger(string $key): LoggerInterface
     {
         /** @var Application */
-        $app = StaticContainer::get('app');
+        $app = ServiceLocator::get('app');
 
         /** @var Loggers */
         $loggers = $app->container->make(Loggers::class);
@@ -80,7 +80,7 @@ if (!function_exists('route')) {
     function route(string $name, array $parameter = []): string
     {
         /** @var Application */
-        $app = StaticContainer::get('app');
+        $app = ServiceLocator::get('app');
 
         /** @var RouterContract */
         $router = $app->container->make(RouterContract::class);
@@ -98,7 +98,7 @@ if (!function_exists('session')) {
     function session(): Session
     {
         /** @var Application */
-        $app = StaticContainer::get('app');
+        $app = ServiceLocator::get('app');
 
         return $app->container->make(Session::class);
     }
@@ -113,7 +113,7 @@ if (!function_exists('request')) {
     function request(): Request
     {
         /** @var Application */
-        $app = StaticContainer::get('app');
+        $app = ServiceLocator::get('app');
 
         return $app->container->make(Request::class);
     }

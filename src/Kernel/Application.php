@@ -18,7 +18,7 @@ use Takemo101\Egg\Support\Filesystem\LocalSystemContract;
 use Takemo101\Egg\Support\Filesystem\PathHelper;
 use Takemo101\Egg\Support\Injector\Container;
 use Takemo101\Egg\Support\Injector\ContainerContract;
-use Takemo101\Egg\Support\StaticContainer;
+use Takemo101\Egg\Support\ServiceLocator;
 
 /**
  * application
@@ -87,8 +87,8 @@ final class Application
      */
     private function register(): void
     {
-        StaticContainer::set('app', $this);
-        StaticContainer::set('container', $this->container);
+        ServiceLocator::set('app', $this);
+        ServiceLocator::set('container', $this->container);
 
         $this->container->instance(
             ContainerContract::class,

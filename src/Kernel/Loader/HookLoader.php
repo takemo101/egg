@@ -8,7 +8,7 @@ use Takemo101\Egg\Support\Hook\Hook;
 use Takemo101\Egg\Support\Hook\HookDefinitionDataFilter;
 use Takemo101\Egg\Support\Injector\DefinitionDataFilters;
 use Takemo101\Egg\Support\Shared\CallableCreator;
-use Takemo101\Egg\Support\StaticContainer;
+use Takemo101\Egg\Support\ServiceLocator;
 
 /**
  * フック処理関連
@@ -37,7 +37,7 @@ final class HookLoader implements LoaderContract
 
         $this->app->container->instance(Hook::class, $hook);
 
-        StaticContainer::set('hook', $hook);
+        ServiceLocator::set('hook', $hook);
 
         /** @var DefinitionDataFilters */
         $filters = $this->app->container->make(DefinitionDataFilters::class);
