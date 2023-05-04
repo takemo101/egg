@@ -34,7 +34,7 @@ final class ServiceLocator
      *
      * @return self
      */
-    public static function instance(): self
+    private static function instance(): self
     {
         if (self::$instance) {
             return self::$instance;
@@ -68,25 +68,38 @@ final class ServiceLocator
      *
      * @param string $key
      * @param object $object
-     * @return void
+     * @return self
      */
-    public static function set(string $key, object $object): void
+    public static function set(string $key, object $object): self
     {
         self::instance()
             ->container
             ->set($key, $object);
+
+        $class = get_class($object);
+
+        // クラス名とキーが異なる場合はクラス名でも登録する
+        if ($key !== $class) {
+            self::instance()
+                ->container
+                ->set($class, $object);
+        }
+
+        return self::instance();
     }
 
     /**
      * サービスを削除する
      *
      * @param string $key
-     * @return void
+     * @return self
      */
-    public static function clear(string $key): void
+    public static function clear(string $key): self
     {
         self::instance()
             ->container
             ->forget($key);
+
+        return self::instance();
     }
 }
