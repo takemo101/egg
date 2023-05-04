@@ -9,8 +9,8 @@ use Takemo101\Egg\Http\HttpErrorHandlerContract;
 use Takemo101\Egg\Http\Resolver\ArrayResponseResolver;
 use Takemo101\Egg\Http\Resolver\ResponseResolvers;
 use Takemo101\Egg\Http\Resolver\StringResponseResolver;
-use Takemo101\Egg\Http\ResponseSender;
-use Takemo101\Egg\Http\ResponseSenderContract;
+use Takemo101\Egg\Http\ResponseResponder;
+use Takemo101\Egg\Http\ResponseResponderContract;
 use Takemo101\Egg\Http\RootFilters;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\LoaderContract;
@@ -65,8 +65,8 @@ final class HttpLoader implements LoaderContract
         );
 
         $this->app->container->bind(
-            ResponseSenderContract::class,
-            fn () => new ResponseSender(),
+            ResponseResponderContract::class,
+            fn () => new ResponseResponder(),
         );
 
         $this->app->container->bind(
