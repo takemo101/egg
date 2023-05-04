@@ -36,7 +36,7 @@ final class ConfigLoader implements LoaderContract
 
         $repository = new ConfigRepository(
             filesystem: $filesystem,
-            directory: $this->app->pathSetting->configPath(),
+            directory: $this->app->path->getConfigPath(),
         );
 
         $this->app->container

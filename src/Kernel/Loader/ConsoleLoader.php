@@ -38,8 +38,8 @@ final class ConsoleLoader implements LoaderContract
 
         /** @var object */
         $command = require $this->app
-            ->pathSetting
-            ->settingPath('command.php');
+            ->path
+            ->getSettingPath('command.php');
 
         (new CallObject($command))->bootAndCall(
             $this->app->container,

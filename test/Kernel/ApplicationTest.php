@@ -17,8 +17,8 @@ class ApplicationTest extends TestCase
     public function Applicationを実行する__OK()
     {
         $app = new Application(
-            pathSetting: new ApplicationPath(
-                basePath: dirname(__DIR__, 2),
+            path: new ApplicationPath(
+                base: dirname(__DIR__, 2),
                 dotenv: '.testing.env',
             ),
         );

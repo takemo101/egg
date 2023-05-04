@@ -86,7 +86,7 @@ final class FileLoggerFactory implements LoggerFactoryContract
      */
     protected function createPath(): string
     {
-        return $this->applicationPath->storagePath(
+        return $this->applicationPath->getStoragePath(
             sprintf(
                 '%s/%s',
                 $this->path,

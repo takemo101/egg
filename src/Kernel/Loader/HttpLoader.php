@@ -43,8 +43,8 @@ final class HttpLoader implements LoaderContract
 
         /** @var object */
         $filter = require $this->app
-            ->pathSetting
-            ->settingPath('filter.php');
+            ->path
+            ->getSettingPath('filter.php');
 
         (new CallObject($filter))->bootAndCall(
             $this->app->container,

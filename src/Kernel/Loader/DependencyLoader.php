@@ -31,8 +31,8 @@ final class DependencyLoader implements LoaderContract
     {
         /** @var object */
         $dependency = require $this->app
-            ->pathSetting
-            ->settingPath('dependency.php');
+            ->path
+            ->getSettingPath('dependency.php');
 
         (new CallObject($dependency))->call($this->app->container);
     }

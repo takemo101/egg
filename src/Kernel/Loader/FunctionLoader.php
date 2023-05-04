@@ -29,7 +29,7 @@ final class FunctionLoader implements LoaderContract
     public function load(): void
     {
         require $this->app
-            ->pathSetting
-            ->settingPath('function.php');
+            ->path
+            ->getSettingPath('function.php');
     }
 }

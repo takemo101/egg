@@ -10,7 +10,7 @@ require __DIR__ . '/vendor/autoload.php';
 Takemo101\Egg\Console\ConsoleProcess::fromApplication(
     new Takemo101\Egg\Kernel\Application(
         pathSetting: new Takemo101\Egg\Kernel\ApplicationPath(
-            basePath: $_ENV['APP_BASE_PATH'] ?? __DIR__,
+            base: $_ENV['APP_BASE_PATH'] ?? __DIR__,
         ),
     ),
 )->run();

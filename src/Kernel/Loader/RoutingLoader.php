@@ -38,8 +38,8 @@ final class RoutingLoader implements LoaderContract
     {
         /** @var object */
         $routing = require $this->app
-            ->pathSetting
-            ->settingPath('routing.php');
+            ->path
+            ->getSettingPath('routing.php');
 
         $builder = new RouteBuilder();
 

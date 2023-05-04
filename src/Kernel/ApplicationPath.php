@@ -14,17 +14,17 @@ final class ApplicationPath
     /**
      * constructor
      *
-     * @param string $basePath ベースフルパス
-     * @param string $settingPath 設定ディレクトリのベースからの相対パス
-     * @param string $configPath コンフィグディレクトリのベースからの相対パス
-     * @param string $storagePath ストレージディレクトリのベースからの相対パス
+     * @param string $base ベースフルパス
+     * @param string $setting 設定ディレクトリのベースからの相対パス
+     * @param string $config コンフィグディレクトリのベースからの相対パス
+     * @param string $storage ストレージディレクトリのベースからの相対パス
      * @param string|null $dotenv dotenvファイルのベースからの相対パス（ファイル名を含む）
      */
     public function __construct(
-        public readonly string $basePath,
-        public readonly string $settingPath = 'setting',
-        public readonly string $configPath = 'config',
-        public readonly string $storagePath = 'storage',
+        public readonly string $base,
+        public readonly string $setting = 'setting',
+        public readonly string $config = 'config',
+        public readonly string $storage = 'storage',
         public readonly ?string $dotenv = null,
     ) {
         $this->helper = new PathHelper();
@@ -36,11 +36,11 @@ final class ApplicationPath
      * @param string|null $path
      * @return string
      */
-    public function basePath(?string $path = null): string
+    public function getBasePath(?string $path = null): string
     {
         return $path
-            ? $this->helper->join($this->basePath, $path)
-            : $this->basePath;
+            ? $this->helper->join($this->base, $path)
+            : $this->base;
     }
 
     /**
@@ -49,11 +49,15 @@ final class ApplicationPath
      * @param string|null $path
      * @return string
      */
-    public function settingPath(?string $path = null): string
+    public function getSettingPath(?string $path = null): string
     {
-        return $path
-            ? $this->helper->join($this->basePath, $this->settingPath, $path)
-            : $this->helper->join($this->basePath, $this->settingPath);
+        $extendPath = $path
+            ? [$this->setting, $path]
+            : [$this->setting];
+
+        return $this->getBasePath(
+            $this->helper->join(...$extendPath),
+        );
     }
 
     /**
@@ -62,11 +66,15 @@ final class ApplicationPath
      * @param string|null $path
      * @return string
      */
-    public function configPath(?string $path = null): string
+    public function getConfigPath(?string $path = null): string
     {
-        return $path
-            ? $this->helper->join($this->basePath, $this->configPath, $path)
-            : $this->helper->join($this->basePath, $this->configPath);
+        $extendPath = $path
+            ? [$this->config, $path]
+            : [$this->config];
+
+        return $this->getBasePath(
+            $this->helper->join(...$extendPath),
+        );
     }
 
     /**
@@ -75,10 +83,14 @@ final class ApplicationPath
      * @param string|null $path
      * @return string
      */
-    public function storagePath(?string $path = null): string
+    public function getStoragePath(?string $path = null): string
     {
-        return $path
-            ? $this->helper->join($this->basePath, $this->storagePath, $path)
-            : $this->helper->join($this->basePath, $this->storagePath);
+        $extendPath = $path
+            ? [$this->storage, $path]
+            : [$this->storage];
+
+        return $this->getBasePath(
+            $this->helper->join(...$extendPath),
+        );
     }
 }

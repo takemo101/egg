@@ -40,8 +40,8 @@ final class EnvironmentLoader implements LoaderContract
 
         Dotenv::create(
             repository: $repository,
-            paths: $this->app->pathSetting->basePath(),
-            names: $this->app->pathSetting->dotenv,
+            paths: $this->app->path->getBasePath(),
+            names: $this->app->path->dotenv,
         )
             ->load();
 

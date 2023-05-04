@@ -45,8 +45,8 @@ final class ModuleLoader implements LoaderContract
 
         /** @var object */
         $module = require $this->app
-            ->pathSetting
-            ->settingPath('module.php');
+            ->path
+            ->getSettingPath('module.php');
 
         (new CallObject($module))->bootAndCall(
             $this->app->container,

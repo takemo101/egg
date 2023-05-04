@@ -53,10 +53,10 @@ final class Application
     /**
      * constructor
      *
-     * @param ApplicationPath $pathSetting
+     * @param ApplicationPath $path
      */
     public function __construct(
-        public readonly ApplicationPath $pathSetting,
+        public readonly ApplicationPath $path,
     ) {
         $this->container = new Container();
 
@@ -102,7 +102,7 @@ final class Application
 
         $this->container->instance(
             ApplicationPath::class,
-            $this->pathSetting,
+            $this->path,
         );
 
         $this->container->singleton(
@@ -158,6 +158,26 @@ final class Application
         $environment = $this->container->make(ApplicationEnvironment::class);
 
         return $environment;
+    }
+
+    /**
+     * アプリケーションのパス設定を返す
+     *
+     * @return ApplicationPath
+     */
+    public function path(): ApplicationPath
+    {
+        return $this->path;
+    }
+
+    /**
+     * コンテナを返す
+     *
+     * @return ContainerContract
+     */
+    public function container(): ContainerContract
+    {
+        return $this->container;
     }
 
     /**

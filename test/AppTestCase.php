@@ -21,8 +21,8 @@ class AppTestCase extends PHPUnitTestCase
     protected function setUp(): void
     {
         $this->app = new Application(
-            pathSetting: new ApplicationPath(
-                basePath: dirname(__DIR__),
+            path: new ApplicationPath(
+                base: dirname(__DIR__),
                 dotenv: '.testing.env',
             ),
         );
