@@ -45,13 +45,16 @@ final class ConsoleProcess
      * 起動してプロセスを生成する
      *
      * @param Application $app
+     * @param class-string ...$loaders LoaderContractを実装したクラス文字列
      * @return self
      */
     public static function fromApplication(
         Application $app,
+        string ...$loaders,
     ): self {
         $app->addLoader(
             ConsoleLoader::class,
+            ...$loaders,
         )->boot();
 
         /** @var self */

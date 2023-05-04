@@ -47,13 +47,16 @@ final class HttpProcess
      * 起動してプロセスを生成する
      *
      * @param Application $app
+     * @param class-string ...$loaders LoaderContractを実装したクラス文字列
      * @return self
      */
     public static function fromApplication(
         Application $app,
+        string ...$loaders,
     ): self {
         $app->addLoader(
             HttpLoader::class,
+            ...$loaders,
         )->boot();
 
         /** @var self */
