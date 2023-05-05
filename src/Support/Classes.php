@@ -25,9 +25,9 @@ abstract class Classes
      * クラスを追加
      *
      * @param class-string|object ...$classes
-     * @return self
+     * @return static
      */
-    public function add(string|object ...$classes): self
+    public function add(string|object ...$classes): static
     {
         /** @var array<class-string|object> */
         $tempClasses = [
