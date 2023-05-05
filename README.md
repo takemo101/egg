@@ -29,26 +29,15 @@ composer require takemo101/egg
 
 require __DIR__ . '/../vendor/autoload.php';
 
-// アプリケーションのインスタンスを作成
-$app = new Takemo101\Egg\Kernel\Application(
-    pathSetting: new Takemo101\Egg\Kernel\ApplicationPath(
-        basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__),
+// アプリケーションを起動して
+// Httpリクエストとレスポンスを扱うプロセスを実行する
+Takemo101\Egg\Http\HttpProcess::fromApplication(
+    new Takemo101\Egg\Kernel\Application(
+        path: new Takemo101\Egg\Kernel\ApplicationPath(
+            base: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__),
+        ),
     ),
-);
-
-// Http用のローダー（Httpで必要な読み込み処理をするクラス）を追加
-$app->addLoader(
-    Takemo101\Egg\Kernel\Loader\HttpLoader::class,
-);
-
-// アプリケーションを起動
-$app->boot();
-
-// Httpリクエストとレスポンスを扱うプロセスを実行
-// プロセスのインスタンスはDIコンテナから取得する
-/** @var Takemo101\Egg\Http\HttpSimpleProcess */
-$process = $app->container->make(Takemo101\Egg\Http\HttpSimpleProcess::class);
-$process->process();
+)->run();
 ```
 
 #### コンソールを扱う機能
@@ -58,26 +47,16 @@ $process->process();
 
 require __DIR__ . '/vendor/autoload.php';
 
-// アプリケーションを起動する
-$app = new Takemo101\Egg\Kernel\Application(
-    pathSetting: new Takemo101\Egg\Kernel\ApplicationPath(
-        basePath: $_ENV['APP_BASE_PATH'] ?? __DIR__,
-    ),
-);
-
-// Console用のローダー（Consoleで必要な読み込み処理をするクラス）を追加
-// ちなみにコンソールの処理は、おなじみのsymfony/consoleを利用しています
-$app->addLoader(
-    Takemo101\Egg\Kernel\Loader\ConsoleLoader::class,
-);
-
-$app->boot();
-
+// アプリケーションを起動して
 // コンソールコマンドのプロセスを実行
-// プロセスのインスタンスはDIコンテナから取得する
-/** @var Takemo101\Egg\Console\ConsoleSimpleProcess */
-$process = $app->container->make(Takemo101\Egg\Console\ConsoleSimpleProcess::class);
-$process->process();
+// ちなみにコンソールの処理は、おなじみのsymfony/consoleを利用しています
+Takemo101\Egg\Console\ConsoleProcess::fromApplication(
+    new Takemo101\Egg\Kernel\Application(
+        path: new Takemo101\Egg\Kernel\ApplicationPath(
+            base: $_ENV['APP_BASE_PATH'] ?? __DIR__,
+        ),
+    ),
+)->run();
 ```
 
 ## その他サポート
@@ -206,16 +185,16 @@ return function (Commands $commands) {
 use Symfony\Component\HttpFoundation\Response;
 use Takemo101\Egg\Routing\RouteBuilder;
 use Takemo101\Egg\Support\Hook\Hook;
-use Takemo101\Egg\Support\StaticContainer;
+use Takemo101\Egg\Support\ServiceLocator;
 
 /** 
- * StaticContainerからは特定のインスタンスをキーワードで取得できる
+ * ServiceLocatorからは特定のインスタンスをキーワードで取得できる
  * 'hook'キーワードでHookインスタンスを取得する
  * Hookインスタンスはフック処理を登録するためのものです
  * 
  * @var Hook
  */
-$hook = StaticContainer::get('hook');
+$hook = ServiceLocator::get('hook');
 
 // RouteBuilderに処理をフックすることで
 // ルートを追加できる

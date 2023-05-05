@@ -87,6 +87,8 @@ final class Application
      */
     private function register(): void
     {
+        ServiceLocator::init();
+
         ServiceLocator::set('app', $this);
         ServiceLocator::set('container', $this->container);
 

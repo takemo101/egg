@@ -30,6 +30,16 @@ final class ServiceLocator
     }
 
     /**
+     * インスタンス初期化
+     *
+     * @return self
+     */
+    public static function init(): self
+    {
+        return self::$instance = new self();
+    }
+
+    /**
      * シングルトンのインスタンスを取得する
      *
      * @return self
@@ -40,7 +50,7 @@ final class ServiceLocator
             return self::$instance;
         }
 
-        return self::$instance = new self();
+        return self::init();
     }
 
     /**
@@ -65,41 +75,49 @@ final class ServiceLocator
 
     /**
      * サービスをセットする
+     * 既に同じキーが存在する場合は例外を投げる
      *
      * @param string $key
      * @param object $object
-     * @return self
+     * @return void
+     * @throws RuntimeException
      */
-    public static function set(string $key, object $object): self
+    public static function set(string $key, object $object): void
     {
-        self::instance()
-            ->container
-            ->set($key, $object);
+        $container = self::instance()->container;
 
-        $class = get_class($object);
-
-        // クラス名とキーが異なる場合はクラス名でも登録する
-        if ($key !== $class) {
-            self::instance()
-                ->container
-                ->set($class, $object);
+        if ($container->has($key)) {
+            throw new RuntimeException("{$key} is already set");
         }
 
-        return self::instance();
+        $container->set($key, $object);
     }
+
+
+    /**
+     * キーに対するサービスが存在するか
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public static function has(string $key): bool
+    {
+        return self::instance()
+            ->container
+            ->has($key);
+    }
+
 
     /**
      * サービスを削除する
      *
      * @param string $key
-     * @return self
+     * @return void
      */
-    public static function clear(string $key): self
+    public static function clear(string $key): void
     {
         self::instance()
             ->container
             ->forget($key);
-
-        return self::instance();
     }
 }

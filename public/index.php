@@ -8,7 +8,7 @@ require __DIR__ . '/../vendor/autoload.php';
 // リクエストを処理をする
 Takemo101\Egg\Http\HttpProcess::fromApplication(
     new Takemo101\Egg\Kernel\Application(
-        pathSetting: new Takemo101\Egg\Kernel\ApplicationPath(
+        path: new Takemo101\Egg\Kernel\ApplicationPath(
             base: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__),
         ),
     ),
