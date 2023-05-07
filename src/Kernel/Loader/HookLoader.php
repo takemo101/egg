@@ -35,7 +35,7 @@ final class HookLoader implements LoaderContract
     {
         $hook = new Hook(new CallableCreator($this->app->container));
 
-        $this->app->container->instance(Hook::class, $hook);
+        $this->app->instance(Hook::class, $hook);
 
         ServiceLocator::set('hook', $hook);
 

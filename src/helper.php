@@ -24,7 +24,7 @@ if (!function_exists('env')) {
         $app = ServiceLocator::get('app');
 
         /** @var Environment */
-        $environment = $app->container->make(Environment::class);
+        $environment = $app->make(Environment::class);
 
         return $environment->get($key, $default);
     }
@@ -44,7 +44,7 @@ if (!function_exists('config')) {
         $app = ServiceLocator::get('app');
 
         /** @var Environment */
-        $config = $app->container->make(ConfigRepositoryContract::class);
+        $config = $app->make(ConfigRepositoryContract::class);
 
         return $config->get($key, $default);
     }
@@ -63,7 +63,7 @@ if (!function_exists('logger')) {
         $app = ServiceLocator::get('app');
 
         /** @var Loggers */
-        $loggers = $app->container->make(Loggers::class);
+        $loggers = $app->make(Loggers::class);
 
         return $loggers->get($key);
     }
@@ -83,7 +83,7 @@ if (!function_exists('route')) {
         $app = ServiceLocator::get('app');
 
         /** @var RouterContract */
-        $router = $app->container->make(RouterContract::class);
+        $router = $app->make(RouterContract::class);
 
         return $router->route($name, $parameter);
     }
@@ -100,7 +100,7 @@ if (!function_exists('session')) {
         /** @var Application */
         $app = ServiceLocator::get('app');
 
-        return $app->container->make(Session::class);
+        return $app->make(Session::class);
     }
 }
 
@@ -115,6 +115,6 @@ if (!function_exists('request')) {
         /** @var Application */
         $app = ServiceLocator::get('app');
 
-        return $app->container->make(Request::class);
+        return $app->make(Request::class);
     }
 }

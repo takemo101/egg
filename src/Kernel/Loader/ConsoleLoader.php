@@ -33,12 +33,12 @@ final class ConsoleLoader implements LoaderContract
      */
     public function load(): void
     {
-        $this->app->container->bind(
+        $this->app->bind(
             Commands::class,
             fn () => Commands::empty(),
         );
 
-        $this->app->container->bind(
+        $this->app->bind(
             SymphonyConsoleApplication::class,
             function () {
                 $application = new SymphonyConsoleApplication(
@@ -52,11 +52,11 @@ final class ConsoleLoader implements LoaderContract
             },
         );
 
-        $this->app->container->bind(
+        $this->app->bind(
             ConsoleDispatcherContract::class,
             fn () => new ConsoleDispatcher(
-                application: $this->app->container->make(SymphonyConsoleApplication::class),
-                commands: $this->app->container->make(Commands::class),
+                application: $this->app->make(SymphonyConsoleApplication::class),
+                commands: $this->app->make(Commands::class),
                 resolver: new CommandResolver($this->app->container),
             ),
         );

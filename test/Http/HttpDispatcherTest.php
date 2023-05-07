@@ -18,7 +18,7 @@ class HttpDispatcherTest extends AppTestCase
     public function HttpDispatcherを実行する__OK()
     {
         /** @var HttpDispatcher */
-        $dispatcher = $this->app->container->make(HttpDispatcher::class);
+        $dispatcher = $this->app->make(HttpDispatcher::class);
 
         $response = $dispatcher->dispatch(
             request: Request::create('http://localhost/test'),

@@ -58,9 +58,9 @@ class ModuleTest extends AppTestCase
      */
     public function コンフィグをマージする__OK()
     {
-        $module = $this->app->container->make(TestMergeConfigModule::class);
+        $module = $this->app->make(TestMergeConfigModule::class);
 
-        $config = $this->app->container->make(ConfigRepositoryContract::class);
+        $config = $this->app->make(ConfigRepositoryContract::class);
 
         $testKey = 'test-key';
         $testData = 'test';

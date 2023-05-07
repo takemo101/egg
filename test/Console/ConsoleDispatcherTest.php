@@ -20,7 +20,7 @@ class ConsoleDispatcherTest extends AppTestCase
     public function ConsoleDispatcherを実行する__OK()
     {
         /** @var ConsoleDispatcher */
-        $dispatcher = $this->app->container->make(ConsoleDispatcher::class);
+        $dispatcher = $this->app->make(ConsoleDispatcher::class);
 
         $exitCode = $dispatcher->dispatch(
             input: new StringInput('version'),

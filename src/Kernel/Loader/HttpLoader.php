@@ -38,7 +38,7 @@ final class HttpLoader implements LoaderContract
      */
     public function load(): void
     {
-        $this->app->container->singleton(
+        $this->app->singleton(
             ResponseResolvers::class,
             fn () => new ResponseResolvers(
                 new ArrayResponseResolver(),
@@ -46,22 +46,22 @@ final class HttpLoader implements LoaderContract
             ),
         );
 
-        $this->app->container->bind(
+        $this->app->bind(
             RootFilters::class,
             fn () => new RootFilters(),
         );
 
-        $this->app->container->bind(
+        $this->app->bind(
             ResponseResponderContract::class,
             fn () => new ResponseResponder(),
         );
 
-        $this->app->container->bind(
+        $this->app->bind(
             HttpErrorHandlerContract::class,
             HttpErrorHandler::class,
         );
 
-        $this->app->container->bind(
+        $this->app->bind(
             HttpDispatcherContract::class,
             HttpDispatcher::class,
         );

@@ -37,7 +37,7 @@ final class RoutingLoader implements LoaderContract
      */
     public function load(): void
     {
-        $this->app->container->singleton(
+        $this->app->singleton(
             RouteBuilder::class,
             function (ContainerContract $container) {
 
@@ -53,7 +53,7 @@ final class RoutingLoader implements LoaderContract
             },
         );
 
-        $this->app->container->singleton(
+        $this->app->singleton(
             URLSetting::class,
             function (ContainerContract $container) {
                 /** @var ConfigRepositoryContract */
@@ -66,7 +66,7 @@ final class RoutingLoader implements LoaderContract
             },
         );
 
-        $this->app->container->singleton(
+        $this->app->singleton(
             RouterFactoryContract::class,
             function (ContainerContract $container): RouterFactoryContract {
                 /** @var URLSetting */
@@ -78,7 +78,7 @@ final class RoutingLoader implements LoaderContract
             },
         );
 
-        $this->app->container->singleton(
+        $this->app->singleton(
             RouterContract::class,
             function (ContainerContract $container): RouterContract {
                 /** @var RouterFactoryContract */
@@ -93,7 +93,7 @@ final class RoutingLoader implements LoaderContract
 
         ServiceLocator::factory(
             'router',
-            fn () => $this->app->container->make(RouterContract::class),
+            fn () => $this->app->make(RouterContract::class),
         );
     }
 }

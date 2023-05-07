@@ -58,7 +58,7 @@ final class ConsoleProcess
         )->boot();
 
         /** @var self */
-        $process = $app->container->make(
+        $process = $app->make(
             self::class,
         );
 

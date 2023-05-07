@@ -45,12 +45,12 @@ final class EnvironmentLoader implements LoaderContract
         )
             ->load();
 
-        $this->app->container->instance(
+        $this->app->instance(
             RepositoryInterface::class,
             $repository,
         );
 
-        $this->app->container->instance(
+        $this->app->instance(
             Environment::class,
             new Environment($repository),
         );

@@ -32,7 +32,7 @@ abstract class Module implements ModuleContract
     protected function hook(): Hook
     {
         /** @var Hook */
-        $hook = $this->app->container->make(Hook::class);
+        $hook = $this->app->make(Hook::class);
 
         return $hook;
     }
@@ -47,7 +47,7 @@ abstract class Module implements ModuleContract
     protected function publishes(string $tag, array $fromTo): void
     {
         /** @var PublishResources */
-        $resources = $this->app->container->make(PublishResources::class);
+        $resources = $this->app->make(PublishResources::class);
 
         $resources->set($tag, $fromTo);
     }
@@ -63,7 +63,7 @@ abstract class Module implements ModuleContract
     protected function mergeConfig(string $key, string $path): void
     {
         /** @var ConfigRepositoryContract */
-        $config = $this->app->container->make(ConfigRepositoryContract::class);
+        $config = $this->app->make(ConfigRepositoryContract::class);
 
         // キーに対するコンフィグがある場合はマージする
         if ($config->hasKey($key)) {

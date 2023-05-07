@@ -37,7 +37,7 @@ final class LogLoader implements LoaderContract
      */
     public function load(): void
     {
-        $this->app->container->singleton(
+        $this->app->singleton(
             Loggers::class,
             function (ContainerContract $container): Loggers {
                 /** @var ConfigRepositoryContract */
@@ -70,7 +70,7 @@ final class LogLoader implements LoaderContract
             }
         );
 
-        $this->app->container->singleton(
+        $this->app->singleton(
             LoggerInterface::class,
             function (ContainerContract $container) {
 
@@ -89,7 +89,7 @@ final class LogLoader implements LoaderContract
 
         ServiceLocator::factory(
             'logger',
-            fn () => $this->app->container->make(LoggerInterface::class),
+            fn () => $this->app->make(LoggerInterface::class),
         );
     }
 }

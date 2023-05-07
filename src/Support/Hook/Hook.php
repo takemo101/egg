@@ -82,11 +82,14 @@ final class Hook
 
         $type = $parameter->getType();
 
+        if (!($type instanceof ReflectionNamedType)) {
+            throw new RuntimeException('error: invalid function parameter type');
+        }
+
         return $this->on(
             tag: match (true) {
                 $type->isBuiltin() => $parameter->getName(),
-                $type instanceof ReflectionNamedType => $type->getName(),
-                default => throw new RuntimeException('error: invalid function parameter type'),
+                default => $type->getName(),
             },
             function: $function,
             priority: $priority,

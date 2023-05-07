@@ -41,16 +41,16 @@ final class ModuleLoader implements LoaderContract
      */
     public function load(): void
     {
-        $this->app->container->singleton(
+        $this->app->singleton(
             Modules::class,
             fn () => new Modules(...$this->modules),
         );
 
         /** @var ModuleResolver */
-        $resolver = $this->app->container->make(ModuleResolver::class);
+        $resolver = $this->app->make(ModuleResolver::class);
 
         /** @var Modules */
-        $modules = $this->app->container->make(Modules::class);
+        $modules = $this->app->make(Modules::class);
 
         (new ModuleBooter(
             $modules,

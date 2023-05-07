@@ -222,14 +222,17 @@ final class Application
      * コンテナからメソッドを呼び出す
      *
      * @param string $name
-     * @param array $arguments
-     * @return void
+     * @param mixed[] $arguments
+     * @return mixed
      * @throws BadMethodCallException
      */
     public function __call(string $name, array $arguments)
     {
         if (method_exists($this->container, $name)) {
-            return $this->container->{$name}(...$arguments);
+            return call_user_func_array(
+                [$this->container, $name],
+                $arguments,
+            );
         }
 
         throw new BadMethodCallException("method not found: {$name}");
