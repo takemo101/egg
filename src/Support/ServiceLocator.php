@@ -21,10 +21,12 @@ final class ServiceLocator
     /**
      * constructor
      *
-     * @param ArrAccess<mixed> $container
+     * @param ArrAccess<mixed> $services
+     * @param ArrAccess<callable> $factories
      */
     private function __construct(
-        private readonly ArrAccess $container = new ArrAccess(),
+        private readonly ArrAccess $services = new ArrAccess(),
+        private readonly ArrAccess $factories = new ArrAccess(),
     ) {
         //
     }
@@ -62,9 +64,19 @@ final class ServiceLocator
      */
     public static function get(string $key): object
     {
-        $object = self::instance()
-            ->container
-            ->get($key);
+        $services = self::instance()->services;
+        $factories = self::instance()->factories;
+
+        if ($services->has($key)) {
+            $object = $services->get($key);
+        } else if ($factories->has($key)) {
+            $factory = $factories->get($key);
+
+            $object = call_user_func($factory);
+            $services->set($key, $object);
+        } else {
+            throw new RuntimeException("{$key} is not found");
+        }
 
         if (is_object($object)) {
             return $object;
@@ -84,13 +96,32 @@ final class ServiceLocator
      */
     public static function set(string $key, object $object): void
     {
-        $container = self::instance()->container;
+        $services = self::instance()->services;
 
-        if ($container->has($key)) {
+        if ($services->has($key)) {
             throw new RuntimeException("{$key} is already set");
         }
 
-        $container->set($key, $object);
+        $services->set($key, $object);
+    }
+
+    /**
+     * サービスの生成処理をセットする
+     * 既に同じキーが存在する場合は例外を投げる
+     *
+     * @param string $key
+     * @param callable $factory
+     * @return void
+     */
+    public static function factory(string $key, callable $factory): void
+    {
+        $factories = self::instance()->factories;
+
+        if ($factories->has($key)) {
+            throw new RuntimeException("{$key} is already set");
+        }
+
+        $factories->set($key, $factory);
     }
 
 
@@ -103,7 +134,10 @@ final class ServiceLocator
     public static function has(string $key): bool
     {
         return self::instance()
-            ->container
+            ->services
+            ->has($key)
+            || self::instance()
+            ->factories
             ->has($key);
     }
 
@@ -117,7 +151,11 @@ final class ServiceLocator
     public static function clear(string $key): void
     {
         self::instance()
-            ->container
+            ->services
+            ->forget($key);
+
+        self::instance()
+            ->factories
             ->forget($key);
     }
 }

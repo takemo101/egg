@@ -79,4 +79,17 @@ final class AltoRouterAdapter implements RouterContract
     ): string {
         return $this->router->generate($name, $parameters);
     }
+
+    /**
+     * マッチパターンを追加する
+     *
+     * @param array<string,string> $matchTypes
+     * @return static
+     */
+    public function addMatchTypes(array $matchTypes): static
+    {
+        $this->router->addMatchTypes($matchTypes);
+
+        return $this;
+    }
 }

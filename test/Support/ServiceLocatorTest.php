@@ -36,6 +36,30 @@ class ServiceLocatorTest extends TestCase
     /**
      * @test
      */
+    public function サービスの生成を登録して取り出す__OK()
+    {
+        $key = 'test';
+
+        ServiceLocator::factory($key, fn () => new TestService());
+
+        $service = ServiceLocator::get($key);
+
+        $this->assertInstanceOf(
+            TestService::class,
+            $service,
+            'サービスを生成して取得できる',
+        );
+
+        $this->assertSame(
+            $service,
+            ServiceLocator::get($key),
+            'サービスを取得できる',
+        );
+    }
+
+    /**
+     * @test
+     */
     public function サービスを登録して削除する__OK()
     {
         $service = new TestService();

@@ -3,17 +3,16 @@
 namespace Takemo101\Egg\Kernel\Loader;
 
 use Monolog\Level;
+use Psr\Log\LoggerInterface;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\ApplicationPath;
 use Takemo101\Egg\Kernel\LoaderContract;
-use Takemo101\Egg\Support\Config\ConfigRepository;
 use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
-use Takemo101\Egg\Support\Filesystem\LocalSystem;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 use Takemo101\Egg\Support\Log\FileLoggerFactory;
-use Takemo101\Egg\Support\Log\LoggerContract;
 use Takemo101\Egg\Support\Log\LoggerFactoryContract;
 use Takemo101\Egg\Support\Log\Loggers;
+use Takemo101\Egg\Support\ServiceLocator;
 
 /**
  * ログ関連
@@ -69,6 +68,28 @@ final class LogLoader implements LoaderContract
 
                 return new Loggers($factories);
             }
+        );
+
+        $this->app->container->singleton(
+            LoggerInterface::class,
+            function (ContainerContract $container) {
+
+                /** @var ConfigRepositoryContract */
+                $config = $container->make(ConfigRepositoryContract::class);
+
+                /** @var Loggers */
+                $loggers =  $container->make(Loggers::class);
+
+                /** @var string */
+                $defaultKey = $config->get('log.default', 'app');
+
+                return $loggers->get($defaultKey);
+            }
+        );
+
+        ServiceLocator::factory(
+            'logger',
+            fn () => $this->app->container->make(LoggerInterface::class),
         );
     }
 }

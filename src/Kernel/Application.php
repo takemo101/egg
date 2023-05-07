@@ -3,7 +3,6 @@
 namespace Takemo101\Egg\Kernel;
 
 use Takemo101\Egg\Kernel\Loader\ConfigLoader;
-use Takemo101\Egg\Kernel\Loader\DependencyLoader;
 use Takemo101\Egg\Kernel\Loader\EnvironmentLoader;
 use Takemo101\Egg\Kernel\Loader\ErrorLoader;
 use Takemo101\Egg\Kernel\Loader\FunctionLoader;
@@ -68,12 +67,11 @@ final class Application
             EnvironmentLoader::class,
             ErrorLoader::class,
             HookLoader::class,
-            DependencyLoader::class,
             HelperLoader::class,
             ConfigLoader::class,
+            LogLoader::class,
             FunctionLoader::class,
             RoutingLoader::class,
-            LogLoader::class,
             ModuleLoader::class,
         );
 

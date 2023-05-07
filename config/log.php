@@ -7,6 +7,10 @@
 use Monolog\Level;
 
 return [
+
+    // デフォルトのロガー
+    'default' => 'app',
+
     // ログを格納するベースディレクトリからの相対パス
     'path' => 'log',
 

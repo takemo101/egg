@@ -38,7 +38,7 @@ final class PublishResourceModule implements ModuleContract
             fn () => new PublishResources(),
         );
 
-        $this->hook->add(
+        $this->hook->on(
             Commands::class,
             fn (Commands $commands) => $commands->add(
                 PublishResourceCommand::class,

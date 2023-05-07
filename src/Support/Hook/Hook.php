@@ -35,7 +35,7 @@ final class Hook
      * @param integer $priority
      * @return self
      */
-    public function add(
+    public function on(
         string $tag,
         object|array|string $function,
         int $priority = HookFilter::DefaultPriority,
@@ -67,7 +67,7 @@ final class Hook
      * @return self
      * @throws RuntimeException
      */
-    public function addBy(
+    public function onBy(
         Closure $function,
         int $priority = HookFilter::DefaultPriority,
     ): self {
@@ -83,7 +83,7 @@ final class Hook
         $type = $parameter->getType();
 
         if ($type instanceof ReflectionNamedType) {
-            return $this->add(
+            return $this->on(
                 tag: $type->getName(),
                 function: $function,
                 priority: $priority,
