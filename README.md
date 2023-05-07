@@ -198,7 +198,7 @@ $hook = ServiceLocator::get('hook');
 
 // RouteBuilderに処理をフックすることで
 // ルートを追加できる
-$hook->register(
+$hook->add(
     RouteBuilder::class,
     function (RouteBuilder $r) {
         $r->get('/phpinfo', function (Response $response) {
@@ -212,7 +212,7 @@ $hook->register(
 
 // レスポンス返却前に処理をフックすることで
 // レスポンスを加工できる
-$hook->register(
+$hook->add(
     'after-response',
     function (Response $response) {
         return $response;

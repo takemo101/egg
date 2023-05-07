@@ -8,8 +8,7 @@ use Takemo101\Egg\Support\ServiceLocator;
 /** @var Hook */
 $hook = ServiceLocator::get('hook');
 
-$hook->register(
-    RouteBuilder::class,
+$hook->addBy(
     function (RouteBuilder $r) {
         $r->get('/phpinfo', function (Response $response) {
             phpinfo();
@@ -20,7 +19,7 @@ $hook->register(
     },
 );
 
-$hook->register(
+$hook->add(
     'after-response',
     function (Response $response) {
         return $response;

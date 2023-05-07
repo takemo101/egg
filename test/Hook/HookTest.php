@@ -31,9 +31,9 @@ class HookTest extends TestCase
         $testA = 'a';
         $testB = 'b';
 
-        $this->hook->register('test-a', fn (string $value) => $value);
+        $this->hook->add('test-a', fn (string $value) => $value);
 
-        $this->hook->register('test-b', fn (string $value) => $value);
+        $this->hook->add('test-b', fn (string $value) => $value);
 
         $testAResult = $this->hook->applyFilter('test-a', $testA);
 
@@ -52,9 +52,9 @@ class HookTest extends TestCase
         $testA = 'a';
         $testB = 'b';
 
-        $this->hook->register('test-a', fn (string $value) => $this->result = $value);
+        $this->hook->add('test-a', fn (string $value) => $this->result = $value);
 
-        $this->hook->register('test-b', fn (string $value) => $this->result = $value);
+        $this->hook->add('test-b', fn (string $value) => $this->result = $value);
 
         $this->hook->doAction('test-a', $testA);
 
@@ -76,7 +76,7 @@ class HookTest extends TestCase
 
         $data = 'b';
 
-        $hook->register(HookTargetClass::class, fn (HookTargetClass $target) => $target->setA($data));
+        $hook->add(HookTargetClass::class, fn (HookTargetClass $target) => $target->setA($data));
 
         $target = $container->make(HookTargetClass::class);
 
@@ -99,7 +99,7 @@ class HookTest extends TestCase
 
         $data = 'b';
 
-        $hook->register('target', fn (HookTargetClass $target) => $target->setA($data));
+        $hook->add('target', fn (HookTargetClass $target) => $target->setA($data));
 
 
         $target = $container->make(HookTargetClass::class);
@@ -119,7 +119,7 @@ class HookTest extends TestCase
         [$container, $hook] = $this->createMockInstance();
 
         $data = 'b';
-        $hook->register('target', fn (HookTargetClass $target) => $target->setA($data));
+        $hook->add('target', fn (HookTargetClass $target) => $target->setA($data));
 
         $container->alias(HookTargetClass::class, 'target');
         $container->instance(HookTargetClass::class, new HookTargetClass('a'));

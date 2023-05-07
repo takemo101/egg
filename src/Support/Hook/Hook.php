@@ -5,6 +5,9 @@ namespace Takemo101\Egg\Support\Hook;
 use RuntimeException;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 use Takemo101\Egg\Support\Shared\CallableCreator;
+use ReflectionFunction;
+use ReflectionNamedType;
+use Closure;
 
 /**
  * フック
@@ -25,14 +28,14 @@ final class Hook
     }
 
     /**
-     * フックの登録
+     * フックの追加
      *
      * @param string $tag
      * @param object|mixed[]|string $function
      * @param integer $priority
      * @return self
      */
-    public function register(
+    public function add(
         string $tag,
         object|array|string $function,
         int $priority = HookFilter::DefaultPriority,
@@ -55,6 +58,41 @@ final class Hook
 
         return $this;
     }
+
+    /**
+     * 関数の引数を解析してフックを追加する
+     *
+     * @param Closure $function
+     * @param integer $priority
+     * @return self
+     * @throws RuntimeException
+     */
+    public function addBy(
+        Closure $function,
+        int $priority = HookFilter::DefaultPriority,
+    ): self {
+        $parameters = (new ReflectionFunction($function))
+            ->getParameters();
+
+        if (count($parameters) !== 1) {
+            throw new RuntimeException('error: invalid function parameter');
+        }
+
+        $parameter = $parameters[0];
+
+        $type = $parameter->getType();
+
+        if ($type instanceof ReflectionNamedType) {
+            return $this->add(
+                tag: $type->getName(),
+                function: $function,
+                priority: $priority,
+            );
+        }
+
+        throw new RuntimeException('error: invalid function parameter type');
+    }
+
 
     /**
      * フックの削除
