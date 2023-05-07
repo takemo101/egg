@@ -67,7 +67,7 @@ final class Hook
      * @return self
      * @throws RuntimeException
      */
-    public function onBy(
+    public function onByType(
         Closure $function,
         int $priority = HookFilter::DefaultPriority,
     ): self {
@@ -82,15 +82,15 @@ final class Hook
 
         $type = $parameter->getType();
 
-        if ($type instanceof ReflectionNamedType) {
-            return $this->on(
-                tag: $type->getName(),
-                function: $function,
-                priority: $priority,
-            );
-        }
-
-        throw new RuntimeException('error: invalid function parameter type');
+        return $this->on(
+            tag: match (true) {
+                $type->isBuiltin() => $parameter->getName(),
+                $type instanceof ReflectionNamedType => $type->getName(),
+                default => throw new RuntimeException('error: invalid function parameter type'),
+            },
+            function: $function,
+            priority: $priority,
+        );
     }
 
 

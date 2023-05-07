@@ -20,13 +20,13 @@ Container::bind('a', fn () => 'a');
 
 LoggerAccessor::info(Container::make('a'));
 
-Hook::onBy(
+Hook::onByType(
     fn (Commands $commands) => $commands->add(
         VersionCommand::class,
     ),
 );
 
-Hook::onBy(
+Hook::onByType(
     fn (RootFilters $filters) => $filters->add(
         MethodOverrideFilter::class,
         SessionFilter::class,
@@ -34,7 +34,7 @@ Hook::onBy(
     ),
 );
 
-Hook::onBy(
+Hook::onByType(
     function (RouteBuilder $r) {
         $r->get('/phpinfo', function (Response $response) {
             phpinfo();

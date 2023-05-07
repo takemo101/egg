@@ -90,6 +90,46 @@ class HookTest extends TestCase
     /**
      * @test
      */
+    public function DIでの引数の型によるフィルタの実行__OK()
+    {
+        [$container, $hook] = $this->createMockInstance();
+
+        $container->bind(HookTargetClass::class, fn () => new HookTargetClass('a'));
+
+        $data = 'b';
+
+        $hook->onByType(fn (HookTargetClass $target) => $target->setA($data));
+
+        $target = $container->make(HookTargetClass::class);
+
+        $this->assertEquals(
+            $data,
+            $target->getA(),
+            'フィルタの実行値と結果が一致する',
+        );
+
+        $label = 'test';
+
+        $container->bind($label, fn () => $data);
+
+        $this->assertEquals(
+            $data,
+            $container->make($label),
+            'bindした値と一致する',
+        );
+
+        $hook->onByType(fn (string $test) => $label);
+
+        $this->assertEquals(
+            $label,
+            $container->make($label),
+            'フィルタの実行値と結果が一致する',
+        );
+    }
+
+    /**
+     * @test
+     */
     public function DIでのフィルタを別名で実行__OK()
     {
         [$container, $hook] = $this->createMockInstance();
