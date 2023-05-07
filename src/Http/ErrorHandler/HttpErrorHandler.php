@@ -40,10 +40,29 @@ class HttpErrorHandler implements HttpErrorHandlerContract
      * @param Throwable $error
      * @return Response
      */
-    public function handle(Request $request, Throwable $error): Response
-    {
+    public function handle(
+        Request $request,
+        Throwable $error,
+    ): Response {
         $this->report($error);
 
+        return $this->respond(
+            $request,
+            $error,
+        );
+    }
+
+    /**
+     * Errorのレスポンスを返す
+     *
+     * @param Request $request
+     * @param Throwable $error
+     * @return Response
+     */
+    protected function respond(
+        Request $request,
+        Throwable $error,
+    ): Response {
         return match (true) {
             $error instanceof HttpException => $this->handleHttpException(
                 $request,
@@ -68,8 +87,10 @@ class HttpErrorHandler implements HttpErrorHandlerContract
      * @param HttpException $error
      * @return Response
      */
-    protected function handleHttpException(Request $request, HttpException $error): Response
-    {
+    protected function handleHttpException(
+        Request $request,
+        HttpException $error,
+    ): Response {
         return new Response(
             content: $error->getMessage(),
             status: $error->getStatusCode(),

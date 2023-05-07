@@ -12,13 +12,7 @@ use Takemo101\Egg\Http\RootFilters;
 use Takemo101\Egg\Console\Commands;
 use Takemo101\Egg\Console\Command\VersionCommand;
 use Takemo101\Egg\Support\Log\Loggers;
-use Takemo101\Egg\Support\ServiceAccessor\ContainerAccessor as Container;
 use Takemo101\Egg\Support\ServiceAccessor\HookAccessor as Hook;
-use Takemo101\Egg\Support\ServiceAccessor\LoggerAccessor;
-
-Container::bind('a', fn () => 'a');
-
-LoggerAccessor::info(Container::make('a'));
 
 Hook::onByType(
     fn (Commands $commands) => $commands->add(
@@ -36,6 +30,11 @@ Hook::onByType(
 
 Hook::onByType(
     function (RouteBuilder $r) {
+
+        $r->addMatchTypes([
+            'a' => '[a-z]',
+        ]);
+
         $r->get('/phpinfo', function (Response $response) {
             phpinfo();
         })
@@ -79,7 +78,7 @@ Hook::onByType(
             })
                 ->name('index');
 
-            $r->get('/[i:id]', function (int $id) {
+            $r->get('/[a:id]', function (string $id) {
                 echo $id;
             })
                 ->name('show');

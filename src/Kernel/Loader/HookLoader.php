@@ -40,7 +40,7 @@ final class HookLoader implements LoaderContract
         ServiceLocator::set('hook', $hook);
 
         /** @var DefinitionDataFilters */
-        $filters = $this->app->container->make(DefinitionDataFilters::class);
+        $filters = $this->app->make(DefinitionDataFilters::class);
 
         $filters->add(
             new HookDefinitionDataFilter($hook),

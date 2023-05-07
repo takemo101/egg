@@ -31,11 +31,9 @@ final class AltoRouterFactory implements RouterFactoryContract
      * constructor
      *
      * @param string $baseURL
-     * @param array<string,string> $matchTypes
      */
     public function __construct(
         private readonly string $baseURL = self::DefaultBaseURL,
-        private readonly array $matchTypes = [],
     ) {
         //
     }
@@ -55,7 +53,7 @@ final class AltoRouterFactory implements RouterFactoryContract
 
         $router = new AltoRouter(
             basePath: StringHelper::parseProtocol($this->baseURL) ?? 'http://',
-            matchTypes: $this->matchTypes,
+            matchTypes: $builder->matchTypes(),
         );
 
         foreach ($routes->routes as $route) {

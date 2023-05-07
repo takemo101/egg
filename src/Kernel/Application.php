@@ -18,9 +18,21 @@ use Takemo101\Egg\Support\Filesystem\PathHelper;
 use Takemo101\Egg\Support\Injector\Container;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 use Takemo101\Egg\Support\ServiceLocator;
+use BadMethodCallException;
+use Closure;
 
 /**
  * application
+ *
+ * @method ContainerContract alias(string $class, string $alias)
+ * @method ContainerContract instance(string $label, mixed $instance)
+ * @method ContainerContract singleton(string $label, Closure|string|null $callback = null)
+ * @method ContainerContract bind(string $label, Closure|string|null $callback = null)
+ * @method boolean has(string $label)
+ * @method void clear()
+ * @method mixed make(string $label, mixed[] $options = [])
+ * @method mixed call(callable $callback, mixed[] $options = [])
+ * @see ContainerContract
  */
 final class Application
 {
@@ -204,5 +216,22 @@ final class Application
         $this->bootstrap->boot();
 
         $this->isBooted = true;
+    }
+
+    /**
+     * コンテナからメソッドを呼び出す
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return void
+     * @throws BadMethodCallException
+     */
+    public function __call(string $name, array $arguments)
+    {
+        if (method_exists($this->container, $name)) {
+            return $this->container->{$name}(...$arguments);
+        }
+
+        throw new BadMethodCallException("method not found: {$name}");
     }
 }

@@ -33,12 +33,4 @@ interface RouterContract
         string $name,
         array $parameter = [],
     ): string;
-
-    /**
-     * マッチパターンを追加する
-     *
-     * @param array<string,string> $matchTypes
-     * @return static
-     */
-    public function addMatchTypes(array $matchTypes): static;
 }
