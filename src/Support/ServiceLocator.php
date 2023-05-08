@@ -69,7 +69,7 @@ final class ServiceLocator
 
         if ($services->has($key)) {
             $object = $services->get($key);
-        } else if ($factories->has($key)) {
+        } elseif ($factories->has($key)) {
             $factory = $factories->get($key);
 
             $object = call_user_func($factory);
