@@ -53,6 +53,8 @@ final class LogLoader implements LoaderContract
                 $factories = [];
 
                 /** @var string */
+                $defaultKey = $config->get('log.default', 'app');
+                /** @var string */
                 $path = $config->get('log.path', 'log');
                 /** @var Level */
                 $level = $config->get('log.level', Level::Debug);
@@ -66,7 +68,10 @@ final class LogLoader implements LoaderContract
                     );
                 }
 
-                return new Loggers($factories);
+                return new Loggers(
+                    factories: $factories,
+                    defaultKey: $defaultKey,
+                );
             }
         );
 
@@ -74,16 +79,10 @@ final class LogLoader implements LoaderContract
             LoggerInterface::class,
             function (ContainerContract $container) {
 
-                /** @var ConfigRepositoryContract */
-                $config = $container->make(ConfigRepositoryContract::class);
-
                 /** @var Loggers */
                 $loggers =  $container->make(Loggers::class);
 
-                /** @var string */
-                $defaultKey = $config->get('log.default', 'app');
-
-                return $loggers->get($defaultKey);
+                return $loggers->default();
             }
         );
 

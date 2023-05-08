@@ -4,11 +4,27 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Takemo101\Egg\Kernel\Application;
+use Takemo101\Egg\Kernel\ApplicationPath;
 use Takemo101\Egg\Routing\RouterContract;
 use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
 use Takemo101\Egg\Support\Environment;
 use Takemo101\Egg\Support\Log\Loggers;
 use Takemo101\Egg\Support\ServiceLocator;
+
+if (!function_exists('app')) {
+    /**
+     * アプリケーションのパス情報を取得する
+     *
+     * @return Application
+     */
+    function app(): Application
+    {
+        /** @var Application */
+        $app = ServiceLocator::get('app');
+
+        return $app;
+    }
+}
 
 if (!function_exists('env')) {
     /**
@@ -50,14 +66,31 @@ if (!function_exists('config')) {
     }
 }
 
+if (!function_exists('app_path')) {
+    /**
+     * アプリケーションのパス情報を取得する
+     *
+     * @return ApplicationPath|string
+     */
+    function app_path(?string $path = null): ApplicationPath|string
+    {
+        /** @var Application */
+        $app = ServiceLocator::get('app');
+
+        return is_null($path)
+            ? $app->path()
+            : $app->path()->getBasePath($path);
+    }
+}
+
 if (!function_exists('logger')) {
     /**
      * キーからロガーを取得する
      *
-     * @param string $key
+     * @param ?string $key
      * @return LoggerInterface
      */
-    function logger(string $key): LoggerInterface
+    function logger(?string $key = null): LoggerInterface
     {
         /** @var Application */
         $app = ServiceLocator::get('app');
@@ -65,7 +98,9 @@ if (!function_exists('logger')) {
         /** @var Loggers */
         $loggers = $app->make(Loggers::class);
 
-        return $loggers->get($key);
+        return $key
+            ? $loggers->get($key)
+            : $loggers->default();
     }
 }
 
