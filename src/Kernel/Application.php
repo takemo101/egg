@@ -44,7 +44,7 @@ final class Application
     /**
      * @var string
      */
-    public const Version = '0.0.3';
+    public const Version = '0.1.0';
 
     /**
      * @var ContainerContract

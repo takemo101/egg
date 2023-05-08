@@ -11,6 +11,8 @@ use Takemo101\Egg\Http\Filter\SessionFilter;
 use Takemo101\Egg\Http\RootFilters;
 use Takemo101\Egg\Console\Commands;
 use Takemo101\Egg\Console\Command\VersionCommand;
+use Takemo101\Egg\Module\HelperModule;
+use Takemo101\Egg\Module\Modules;
 use Takemo101\Egg\Support\Log\Loggers;
 use Takemo101\Egg\Support\ServiceAccessor\HookAccessor as Hook;
 
@@ -93,6 +95,12 @@ Hook::onByType(
 
         return $r;
     },
+);
+
+Hook::onByType(
+    fn (Modules $modules) => $modules->add(
+        HelperModule::class,
+    ),
 );
 
 Hook::on(
