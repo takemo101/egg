@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * レスポンスを送信する
  */
-final class ResponseSender implements ResponseSenderContract
+final class ResponseResponder implements ResponseResponderContract
 {
     /**
      * レスポンスを送信する
@@ -15,7 +15,7 @@ final class ResponseSender implements ResponseSenderContract
      * @param Response $response
      * @return void
      */
-    public function send(Response $response): void
+    public function respond(Response $response): void
     {
         $response->send();
     }

@@ -3,17 +3,16 @@
 namespace Takemo101\Egg\Kernel\Loader;
 
 use Monolog\Level;
+use Psr\Log\LoggerInterface;
 use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\ApplicationPath;
 use Takemo101\Egg\Kernel\LoaderContract;
-use Takemo101\Egg\Support\Config\ConfigRepository;
 use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
-use Takemo101\Egg\Support\Filesystem\LocalSystem;
 use Takemo101\Egg\Support\Injector\ContainerContract;
 use Takemo101\Egg\Support\Log\FileLoggerFactory;
-use Takemo101\Egg\Support\Log\LoggerContract;
 use Takemo101\Egg\Support\Log\LoggerFactoryContract;
 use Takemo101\Egg\Support\Log\Loggers;
+use Takemo101\Egg\Support\ServiceLocator;
 
 /**
  * ログ関連
@@ -38,7 +37,7 @@ final class LogLoader implements LoaderContract
      */
     public function load(): void
     {
-        $this->app->container->singleton(
+        $this->app->singleton(
             Loggers::class,
             function (ContainerContract $container): Loggers {
                 /** @var ConfigRepositoryContract */
@@ -54,6 +53,8 @@ final class LogLoader implements LoaderContract
                 $factories = [];
 
                 /** @var string */
+                $defaultKey = $config->get('log.default', 'app');
+                /** @var string */
                 $path = $config->get('log.path', 'log');
                 /** @var Level */
                 $level = $config->get('log.level', Level::Debug);
@@ -67,8 +68,27 @@ final class LogLoader implements LoaderContract
                     );
                 }
 
-                return new Loggers($factories);
+                return new Loggers(
+                    factories: $factories,
+                    defaultKey: $defaultKey,
+                );
             }
+        );
+
+        $this->app->singleton(
+            LoggerInterface::class,
+            function (ContainerContract $container) {
+
+                /** @var Loggers */
+                $loggers =  $container->make(Loggers::class);
+
+                return $loggers->default();
+            }
+        );
+
+        ServiceLocator::factory(
+            'logger',
+            fn () => $this->app->make(LoggerInterface::class),
         );
     }
 }

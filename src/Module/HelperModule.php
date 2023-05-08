@@ -12,7 +12,8 @@ final class HelperModule extends Module
     public function boot(): void
     {
         // ヘルパーを読み込む
-        require $this->app->pathSetting
-            ->settingPath('helper.php');
+        require $this->app
+            ->path
+            ->getSettingPath('helper.php');
     }
 }

@@ -3,7 +3,6 @@
 namespace Takemo101\Egg\Kernel;
 
 use Takemo101\Egg\Kernel\Loader\ConfigLoader;
-use Takemo101\Egg\Kernel\Loader\DependencyLoader;
 use Takemo101\Egg\Kernel\Loader\EnvironmentLoader;
 use Takemo101\Egg\Kernel\Loader\ErrorLoader;
 use Takemo101\Egg\Kernel\Loader\FunctionLoader;
@@ -18,10 +17,22 @@ use Takemo101\Egg\Support\Filesystem\LocalSystemContract;
 use Takemo101\Egg\Support\Filesystem\PathHelper;
 use Takemo101\Egg\Support\Injector\Container;
 use Takemo101\Egg\Support\Injector\ContainerContract;
-use Takemo101\Egg\Support\StaticContainer;
+use Takemo101\Egg\Support\ServiceLocator;
+use BadMethodCallException;
+use Closure;
 
 /**
  * application
+ *
+ * @method ContainerContract alias(string $class, string $alias)
+ * @method ContainerContract instance(string $label, mixed $instance)
+ * @method ContainerContract singleton(string $label, Closure|string|null $callback = null)
+ * @method ContainerContract bind(string $label, Closure|string|null $callback = null)
+ * @method boolean has(string $label)
+ * @method void clear()
+ * @method mixed make(string $label, mixed[] $options = [])
+ * @method mixed call(callable $callback, mixed[] $options = [])
+ * @see ContainerContract
  */
 final class Application
 {
@@ -33,7 +44,7 @@ final class Application
     /**
      * @var string
      */
-    public const Version = '0.0.3';
+    public const Version = '0.1.0';
 
     /**
      * @var ContainerContract
@@ -53,10 +64,10 @@ final class Application
     /**
      * constructor
      *
-     * @param ApplicationPath $pathSetting
+     * @param ApplicationPath $path
      */
     public function __construct(
-        public readonly ApplicationPath $pathSetting,
+        public readonly ApplicationPath $path,
     ) {
         $this->container = new Container();
 
@@ -68,12 +79,11 @@ final class Application
             EnvironmentLoader::class,
             ErrorLoader::class,
             HookLoader::class,
-            DependencyLoader::class,
             HelperLoader::class,
             ConfigLoader::class,
+            LogLoader::class,
             FunctionLoader::class,
             RoutingLoader::class,
-            LogLoader::class,
             ModuleLoader::class,
         );
 
@@ -87,8 +97,10 @@ final class Application
      */
     private function register(): void
     {
-        StaticContainer::set('app', $this);
-        StaticContainer::set('container', $this->container);
+        ServiceLocator::init();
+
+        ServiceLocator::set('app', $this);
+        ServiceLocator::set('container', $this->container);
 
         $this->container->instance(
             ContainerContract::class,
@@ -102,7 +114,7 @@ final class Application
 
         $this->container->instance(
             ApplicationPath::class,
-            $this->pathSetting,
+            $this->path,
         );
 
         $this->container->singleton(
@@ -161,6 +173,26 @@ final class Application
     }
 
     /**
+     * アプリケーションのパス設定を返す
+     *
+     * @return ApplicationPath
+     */
+    public function path(): ApplicationPath
+    {
+        return $this->path;
+    }
+
+    /**
+     * コンテナを返す
+     *
+     * @return ContainerContract
+     */
+    public function container(): ContainerContract
+    {
+        return $this->container;
+    }
+
+    /**
      * アプリケーションが実行済みか？
      *
      * @return boolean
@@ -184,5 +216,25 @@ final class Application
         $this->bootstrap->boot();
 
         $this->isBooted = true;
+    }
+
+    /**
+     * コンテナからメソッドを呼び出す
+     *
+     * @param string $name
+     * @param mixed[] $arguments
+     * @return mixed
+     * @throws BadMethodCallException
+     */
+    public function __call(string $name, array $arguments)
+    {
+        if (method_exists($this->container, $name)) {
+            return call_user_func_array(
+                [$this->container, $name],
+                $arguments,
+            );
+        }
+
+        throw new BadMethodCallException("method not found: {$name}");
     }
 }

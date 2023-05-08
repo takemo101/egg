@@ -29,26 +29,15 @@ composer require takemo101/egg
 
 require __DIR__ . '/../vendor/autoload.php';
 
-// アプリケーションのインスタンスを作成
-$app = new Takemo101\Egg\Kernel\Application(
-    pathSetting: new Takemo101\Egg\Kernel\ApplicationPath(
-        basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__),
+// アプリケーションを起動して
+// Httpリクエストとレスポンスを扱うプロセスを実行する
+Takemo101\Egg\Http\HttpProcess::fromApplication(
+    new Takemo101\Egg\Kernel\Application(
+        path: new Takemo101\Egg\Kernel\ApplicationPath(
+            base: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__),
+        ),
     ),
-);
-
-// Http用のローダー（Httpで必要な読み込み処理をするクラス）を追加
-$app->addLoader(
-    Takemo101\Egg\Kernel\Loader\HttpLoader::class,
-);
-
-// アプリケーションを起動
-$app->boot();
-
-// Httpリクエストとレスポンスを扱うプロセスを実行
-// プロセスのインスタンスはDIコンテナから取得する
-/** @var Takemo101\Egg\Http\HttpSimpleProcess */
-$process = $app->container->make(Takemo101\Egg\Http\HttpSimpleProcess::class);
-$process->process();
+)->run();
 ```
 
 #### コンソールを扱う機能
@@ -58,26 +47,16 @@ $process->process();
 
 require __DIR__ . '/vendor/autoload.php';
 
-// アプリケーションを起動する
-$app = new Takemo101\Egg\Kernel\Application(
-    pathSetting: new Takemo101\Egg\Kernel\ApplicationPath(
-        basePath: $_ENV['APP_BASE_PATH'] ?? __DIR__,
-    ),
-);
-
-// Console用のローダー（Consoleで必要な読み込み処理をするクラス）を追加
-// ちなみにコンソールの処理は、おなじみのsymfony/consoleを利用しています
-$app->addLoader(
-    Takemo101\Egg\Kernel\Loader\ConsoleLoader::class,
-);
-
-$app->boot();
-
+// アプリケーションを起動して
 // コンソールコマンドのプロセスを実行
-// プロセスのインスタンスはDIコンテナから取得する
-/** @var Takemo101\Egg\Console\ConsoleSimpleProcess */
-$process = $app->container->make(Takemo101\Egg\Console\ConsoleSimpleProcess::class);
-$process->process();
+// ちなみにコンソールの処理は、おなじみのsymfony/consoleを利用しています
+Takemo101\Egg\Console\ConsoleProcess::fromApplication(
+    new Takemo101\Egg\Kernel\Application(
+        path: new Takemo101\Egg\Kernel\ApplicationPath(
+            base: $_ENV['APP_BASE_PATH'] ?? __DIR__,
+        ),
+    ),
+)->run();
 ```
 
 ## その他サポート
@@ -98,74 +77,73 @@ return [
 以上のような、連想配列を返すファイルを作成すると、```config('xxx.key')```のように、アプリケーション内で設定を参照することができます。
 
 #### DIコンテナ
-```./setting/dependency.php```では、DIコンテナのインスタンスを受け取る関数を記述することができるので、インスタンスに依存関係を設定してください。
+```./setting/function.php```では、``ContainerAccessor``に依存関係を設定できます。
 ```php
 <?php
 
-use Takemo101\Egg\Support\Injector\ContainerContract;
+use Takemo101\Egg\Support\ServiceAccessor\ContainerAccessor as Container;
 
-return function (ContainerContract $c) {
-    // 単純にインスタンスを作成する依存設定の場合は、bindメソッドを利用する
-    $c->bind(
-        XXXRepository::class,
-        fn () => new XXXRepositoryImpl(
-            db: $c->make(DB::class),
-        ),
-    );
+Container::bind(
+    XXXRepository::class,
+    fn () => new XXXRepositoryImpl(
+        db: $c->make(DB::class),
+    ),
+);
 
-    // シングルトンでインスタンスを作成する依存設定の場合は、singletonメソッドを利用する
-    $c->singleton(
-        XXXQueryService::class,
-        fn () => new XXXQueryServiceImpl(
-            db: $c->make(DB::class),
-        ),
-    );
-};
+// シングルトンでインスタンスを作成する依存設定の場合は、singletonメソッドを利用する
+Container::singleton(
+    XXXQueryService::class,
+    fn () => new XXXQueryServiceImpl(
+        db: $c->make(DB::class),
+    ),
+);
 
 ```
 
 #### ルーティング
-```./setting/routing.php```では、ルーティングを構築するインスタンスを受け取る関数を記述することができるので、インスタンスにルートを設定してください。
+```./setting/function.php```では、``HookAccessor``を利用したフック処理により、``RouteBuilder``にルートを設定できます。
 ```php
 <?php
 
 use Takemo101\Egg\Routing\RouteBuilder;
+use Takemo101\Egg\Support\ServiceAccessor\HookAccessor as Hook;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-return function (RouteBuilder $r) {
+Hook::onByType(
+    function (RouteBuilder $r) {
+        // リクエストとレスポンスはSymfonyのものを利用しています
+        $r->get(
+            '/', 
+            function (Request $request, Response $response) {
+                return $response->setContent('home');
+            },
+        )
+            ->filter(XXXFilter::class) // フィルタ（ミドルウェア）を設定することができます
+            ->name('home'); // 名付けておくと、ルート名を利用してURLを生成することができます
 
-    // リクエストとレスポンスはSymfonyのものを利用しています
-    $r->get(
-        '/', 
-        function (Request $request, Response $response) {
-            return $response->setContent('home');
-        },
-    )
-        ->filter(XXXFilter::class) // フィルタ（ミドルウェア）を設定することができます
-        ->name('home'); // 名付けておくと、ルート名を利用してURLを生成することができます
+        // ルートのグルーピングもできます
+        $r->group(function (RouteBuilder $r) {
+            // ルート解析はAltoRouterを利用しているので
+            // プレースホルダーを利用してパラメータを取得することができます
+            $r->get('/[i:id]', function (int $id) {
+                echo $id;
+            })
+                ->name('show'); 
 
-    // ルートのグルーピングもできます
-    $r->group(function (RouteBuilder $r) {
-        // ルート解析はAltoRouterを利用しているので
-        // プレースホルダーを利用してパラメータを取得することができます
-        $r->get('/[i:id]', function (int $id) {
-            echo $id;
+            // 配列（callable）でコントローラーを指定することもできます
+            $r->put('/[i:id]/edit', [EditController::class, 'edit']])
+                ->name('edit');
         })
-            ->name('show'); 
-
-        // 配列（callable）でコントローラーを指定することもできます
-        $r->put('/[i:id]/edit', [EditController::class, 'edit']])
-            ->name('edit');
-    })
-        ->path('group') // ルートグループのパスプレフィックスを設定できます。
-        ->name('group.');
-};
+            ->path('group') // ルートグループのパスプレフィックスを設定できます。
+            ->name('group.');
+    },
+);
 
 ```
 
 #### フィルタ（ミドルウェア）
-```./setting/filter.php```では、ルート全体に適用するフィルタ（ミドルウェア）を設定することができます。
+```./setting/function.php```では、``HookAccessor``を利用したフック処理により、``RootFilters``へルート全体で適用するフィルタ（ミドルウェア）を設定できます。
 ```php
 <?php
 
@@ -173,67 +151,57 @@ use Takemo101\Egg\Http\Filter\CsrfFilter;
 use Takemo101\Egg\Http\Filter\MethodOverrideFilter;
 use Takemo101\Egg\Http\Filter\SessionFilter;
 use Takemo101\Egg\Http\RootFilters;
+use Takemo101\Egg\Support\ServiceAccessor\HookAccessor as Hook;
 
-return function (RootFilters $filters) {
-    $filters->add(
+Hook::onByType(
+    fn (RootFilters $filters) => $filters->add(
         MethodOverrideFilter::class, // リクエストメソッドを上書きするフィルタ
         SessionFilter::class, // Sessionを利用するフィルタ
         CsrfFilter::class, // Csrf対策のフィルタ
-    );
-};
+    ),
+);
+
 ```
 
 #### コマンド
-```./setting/command.php```では、コマンドを設定できます。
+```./setting/function.php```では、``HookAccessor``を利用したフック処理により、``Commands``へコマンドを設定できます。
 ```php
 <?php
 
 use Takemo101\Egg\Console\Command\VersionCommand;
 use Takemo101\Egg\Console\Commands;
+use Takemo101\Egg\Support\ServiceAccessor\HookAccessor as Hook;
 
-return function (Commands $commands) {
-    $commands->add(
+Hook::onByType(
+    fn (Commands $commands) => $commands->add(
         VersionCommand::class,　// バージョンを表示するコマンド
-    );
-};
+    ),
+);
 
 ```
 
 #### フック
-```./setting/function.php```では、フック処理などを設定できます（WordPressのfunctions.phpのようなイメージ）
+```./setting/function.php```では、フック処理を設定できます（WordPressのfunctions.phpのようなイメージ）
 ```php
 
 use Symfony\Component\HttpFoundation\Response;
-use Takemo101\Egg\Routing\RouteBuilder;
 use Takemo101\Egg\Support\Hook\Hook;
-use Takemo101\Egg\Support\StaticContainer;
+use Takemo101\Egg\Support\ServiceLocator;
 
 /** 
- * StaticContainerからは特定のインスタンスをキーワードで取得できる
- * 'hook'キーワードでHookインスタンスを取得する
- * Hookインスタンスはフック処理を登録するためのものです
+ * ServiceLocatorからは特定のインスタンスをキーワードで取得できる
+ * 'hook'キーワードでHookインスタンスを取得できる
+ * もちろんServiceAccessorからもHookインスタンスを取得しても良い
+ * 
+ * ※ Hookインスタンスはフック処理を登録するためのものです
  * 
  * @var Hook
  */
-$hook = StaticContainer::get('hook');
-
-// RouteBuilderに処理をフックすることで
-// ルートを追加できる
-$hook->register(
-    RouteBuilder::class,
-    function (RouteBuilder $r) {
-        $r->get('/phpinfo', function (Response $response) {
-            phpinfo();
-        })
-            ->name('phpinfo');
-
-        return $r;
-    },
-);
+$hook = ServiceLocator::get('hook');
 
 // レスポンス返却前に処理をフックすることで
 // レスポンスを加工できる
-$hook->register(
+$hook->on(
     'after-response',
     function (Response $response) {
         return $response;
@@ -244,17 +212,18 @@ $hook->register(
 ```
 
 #### モジュール
-```./setting/module.php```では、モジュールを設定できます。
+```./setting/function.php```では、``HookAccessor``を利用したフック処理により、``Modules``へモジュールを設定できます。
 ```php
 <?php
 
 use Takemo101\Egg\Module\HelperModule;
 use Takemo101\Egg\Module\Modules;
+use Takemo101\Egg\Support\ServiceAccessor\HookAccessor as Hook;
 
-return function (Modules $modules) {
-    $modules->add(
+Hook::onByType(
+    fn (Modules $modules) => $modules->add(
         HelperModule::class, // ヘルパー関数を提供するモジュール
-    );
+    ),
 };
 
 ```

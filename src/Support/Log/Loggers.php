@@ -24,9 +24,11 @@ final class Loggers
      * constructor
      *
      * @param array<string,LoggerFactoryContract> $factories
+     * @param string $defaultKey
      */
     public function __construct(
         array $factories = [],
+        private $defaultKey = 'app',
     ) {
         foreach ($factories as $key => $factory) {
             $this->addFactory($key, $factory);
@@ -69,5 +71,15 @@ final class Loggers
         $this->loggers[$key] = $logger;
 
         return $logger;
+    }
+
+    /**
+     * デフォルトのロガーを取得する
+     *
+     * @return LoggerInterface
+     */
+    public function default(): LoggerInterface
+    {
+        return $this->get($this->defaultKey);
     }
 }

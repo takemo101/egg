@@ -41,25 +41,16 @@ final class ModuleLoader implements LoaderContract
      */
     public function load(): void
     {
-        $modules = new Modules(...$this->modules);
-
-        /** @var object */
-        $module = require $this->app
-            ->pathSetting
-            ->settingPath('module.php');
-
-        (new CallObject($module))->bootAndCall(
-            $this->app->container,
-            $modules,
-        );
-
-        $this->app->container->bind(
+        $this->app->singleton(
             Modules::class,
-            fn () => $modules,
+            fn () => new Modules(...$this->modules),
         );
 
         /** @var ModuleResolver */
-        $resolver = $this->app->container->make(ModuleResolver::class);
+        $resolver = $this->app->make(ModuleResolver::class);
+
+        /** @var Modules */
+        $modules = $this->app->make(Modules::class);
 
         (new ModuleBooter(
             $modules,

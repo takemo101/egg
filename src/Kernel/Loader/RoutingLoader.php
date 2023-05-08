@@ -11,6 +11,7 @@ use Takemo101\Egg\Routing\RouterContract;
 use Takemo101\Egg\Routing\RouterFactoryContract;
 use Takemo101\Egg\Support\Config\ConfigRepositoryContract;
 use Takemo101\Egg\Support\Injector\ContainerContract;
+use Takemo101\Egg\Support\ServiceLocator;
 use Takemo101\Egg\Support\Shared\CallObject;
 
 /**
@@ -36,24 +37,23 @@ final class RoutingLoader implements LoaderContract
      */
     public function load(): void
     {
-        /** @var object */
-        $routing = require $this->app
-            ->pathSetting
-            ->settingPath('routing.php');
-
-        $builder = new RouteBuilder();
-
-        $this->app->container->instance(
+        $this->app->singleton(
             RouteBuilder::class,
-            $builder,
+            function (ContainerContract $container) {
+
+                /** @var ConfigRepositoryContract */
+                $repository = $container->make(ConfigRepositoryContract::class);
+
+                /** @var array<string,string> */
+                $matchTypes = $repository->get('app.routing.match-types', []);
+
+                return new RouteBuilder(
+                    matchTypes: $matchTypes,
+                );
+            },
         );
 
-        (new CallObject($routing))->bootAndCall(
-            $this->app->container,
-            $builder,
-        );
-
-        $this->app->container->singleton(
+        $this->app->singleton(
             URLSetting::class,
             function (ContainerContract $container) {
                 /** @var ConfigRepositoryContract */
@@ -66,26 +66,19 @@ final class RoutingLoader implements LoaderContract
             },
         );
 
-        $this->app->container->singleton(
+        $this->app->singleton(
             RouterFactoryContract::class,
             function (ContainerContract $container): RouterFactoryContract {
-                /** @var ConfigRepositoryContract */
-                $repository = $container->make(ConfigRepositoryContract::class);
-
-                /** @var array<string,string> */
-                $matchTypes = $repository->get('app.routing.match-types', []);
-
                 /** @var URLSetting */
                 $setting = $container->make(URLSetting::class);
 
                 return new AltoRouterFactory(
                     baseURL: $setting->url(),
-                    matchTypes: $matchTypes,
                 );
             },
         );
 
-        $this->app->container->singleton(
+        $this->app->singleton(
             RouterContract::class,
             function (ContainerContract $container): RouterContract {
                 /** @var RouterFactoryContract */
@@ -96,6 +89,11 @@ final class RoutingLoader implements LoaderContract
 
                 return $factory->create($builder);
             },
+        );
+
+        ServiceLocator::factory(
+            'router',
+            fn () => $this->app->make(RouterContract::class),
         );
     }
 }

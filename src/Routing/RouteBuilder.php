@@ -24,9 +24,11 @@ final class RouteBuilder
      * constructor
      *
      * @param RouteGroup $root ルートツリーのroot
+     * @param array<string,string> $matchTypes
      */
     public function __construct(
         public RouteGroup $root = new RouteGroup(),
+        private array $matchTypes = [],
     ) {
         $this->current = $root;
     }
@@ -177,5 +179,31 @@ final class RouteBuilder
             handler: new Handler($handler),
             domain: Domain::nothing(),
         ));
+    }
+
+    /**
+     * マッチタイプを追加する
+     *
+     * @param array<string,string> $matchTypes
+     * @return self
+     */
+    public function addMatchTypes(array $matchTypes): self
+    {
+        $this->matchTypes = array_merge(
+            $this->matchTypes,
+            $matchTypes,
+        );
+
+        return $this;
+    }
+
+    /**
+     * マッチタイプを取得する
+     *
+     * @return array<string,string>
+     */
+    public function matchTypes(): array
+    {
+        return $this->matchTypes;
     }
 }

@@ -9,7 +9,6 @@ use Takemo101\Egg\Kernel\Application;
 use Takemo101\Egg\Kernel\LoaderContract;
 use Symfony\Component\Console\Application as SymphonyConsoleApplication;
 use Takemo101\Egg\Console\CommandResolver;
-use Takemo101\Egg\Support\Shared\CallObject;
 
 /**
  * Console関連
@@ -34,24 +33,12 @@ final class ConsoleLoader implements LoaderContract
      */
     public function load(): void
     {
-        $commands = Commands::empty();
-
-        /** @var object */
-        $command = require $this->app
-            ->pathSetting
-            ->settingPath('command.php');
-
-        (new CallObject($command))->bootAndCall(
-            $this->app->container,
-            $commands,
-        );
-
-        $this->app->container->bind(
+        $this->app->bind(
             Commands::class,
-            fn () => $commands,
+            fn () => Commands::empty(),
         );
 
-        $this->app->container->bind(
+        $this->app->bind(
             SymphonyConsoleApplication::class,
             function () {
                 $application = new SymphonyConsoleApplication(
@@ -65,11 +52,11 @@ final class ConsoleLoader implements LoaderContract
             },
         );
 
-        $this->app->container->bind(
+        $this->app->bind(
             ConsoleDispatcherContract::class,
             fn () => new ConsoleDispatcher(
-                application: $this->app->container->make(SymphonyConsoleApplication::class),
-                commands: $this->app->container->make(Commands::class),
+                application: $this->app->make(SymphonyConsoleApplication::class),
+                commands: $this->app->make(Commands::class),
                 resolver: new CommandResolver($this->app->container),
             ),
         );

@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * レスポンス送信
  */
-interface ResponseSenderContract
+interface ResponseResponderContract
 {
-    public function send(Response $response): void;
+    public function respond(Response $response): void;
 }

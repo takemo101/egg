@@ -31,9 +31,9 @@ class HookTest extends TestCase
         $testA = 'a';
         $testB = 'b';
 
-        $this->hook->register('test-a', fn (string $value) => $value);
+        $this->hook->on('test-a', fn (string $value) => $value);
 
-        $this->hook->register('test-b', fn (string $value) => $value);
+        $this->hook->on('test-b', fn (string $value) => $value);
 
         $testAResult = $this->hook->applyFilter('test-a', $testA);
 
@@ -52,9 +52,9 @@ class HookTest extends TestCase
         $testA = 'a';
         $testB = 'b';
 
-        $this->hook->register('test-a', fn (string $value) => $this->result = $value);
+        $this->hook->on('test-a', fn (string $value) => $this->result = $value);
 
-        $this->hook->register('test-b', fn (string $value) => $this->result = $value);
+        $this->hook->on('test-b', fn (string $value) => $this->result = $value);
 
         $this->hook->doAction('test-a', $testA);
 
@@ -76,13 +76,53 @@ class HookTest extends TestCase
 
         $data = 'b';
 
-        $hook->register(HookTargetClass::class, fn (HookTargetClass $target) => $target->setA($data));
+        $hook->on(HookTargetClass::class, fn (HookTargetClass $target) => $target->setA($data));
 
         $target = $container->make(HookTargetClass::class);
 
         $this->assertEquals(
             $data,
             $target->getA(),
+            'フィルタの実行値と結果が一致する',
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function DIでの引数の型によるフィルタの実行__OK()
+    {
+        [$container, $hook] = $this->createMockInstance();
+
+        $container->bind(HookTargetClass::class, fn () => new HookTargetClass('a'));
+
+        $data = 'b';
+
+        $hook->onByType(fn (HookTargetClass $target) => $target->setA($data));
+
+        $target = $container->make(HookTargetClass::class);
+
+        $this->assertEquals(
+            $data,
+            $target->getA(),
+            'フィルタの実行値と結果が一致する',
+        );
+
+        $label = 'test';
+
+        $container->bind($label, fn () => $data);
+
+        $this->assertEquals(
+            $data,
+            $container->make($label),
+            'bindした値と一致する',
+        );
+
+        $hook->onByType(fn (string $test) => $label);
+
+        $this->assertEquals(
+            $label,
+            $container->make($label),
             'フィルタの実行値と結果が一致する',
         );
     }
@@ -99,7 +139,7 @@ class HookTest extends TestCase
 
         $data = 'b';
 
-        $hook->register('target', fn (HookTargetClass $target) => $target->setA($data));
+        $hook->on('target', fn (HookTargetClass $target) => $target->setA($data));
 
 
         $target = $container->make(HookTargetClass::class);
@@ -119,7 +159,7 @@ class HookTest extends TestCase
         [$container, $hook] = $this->createMockInstance();
 
         $data = 'b';
-        $hook->register('target', fn (HookTargetClass $target) => $target->setA($data));
+        $hook->on('target', fn (HookTargetClass $target) => $target->setA($data));
 
         $container->alias(HookTargetClass::class, 'target');
         $container->instance(HookTargetClass::class, new HookTargetClass('a'));

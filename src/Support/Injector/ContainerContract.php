@@ -66,16 +66,17 @@ interface ContainerContract
      * クラスまたはラベル名から依存性を解決した値を取得する
      *
      * @param string $label
+     * @param mixed[] $options
      * @return mixed
      */
-    public function make(string $label);
+    public function make(string $label, array $options = []);
 
     /**
      * callableから依存性を解決した値を取得する
      *
      * @param callable $callable
      * @param mixed[] $options
-     * @return mixed[]
+     * @return mixed
      */
     public function call(callable $callable, array $options = []);
 }

@@ -32,11 +32,11 @@ final class ConfigLoader implements LoaderContract
     public function load(): void
     {
         /** @var LocalSystem */
-        $filesystem = $this->app->container->make(LocalSystem::class);
+        $filesystem = $this->app->make(LocalSystem::class);
 
         $repository = new ConfigRepository(
             filesystem: $filesystem,
-            directory: $this->app->pathSetting->configPath(),
+            directory: $this->app->path->getConfigPath(),
         );
 
         $this->app->container
