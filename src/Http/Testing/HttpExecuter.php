@@ -6,9 +6,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Takemo101\Egg\Http\HttpDispatcherContract;
 
 /**
- * テストのためのRequestを実行する
+ * テストのためのHttpRequestを実行する
  */
-final class RequestExecuter
+final class HttpExecuter
 {
     /**
      * constructor

@@ -52,11 +52,15 @@ class SessionFilter
      */
     public function handle(Request $request, Response $response, Closure $next): Response
     {
-        $session = new Session(
-            $this->app->env()->is('testing')
-                ? new MockArraySessionStorage()
-                : $this->createSessionStorage(),
-        );
+        /** @var Session */
+        $session = match (true) {
+            $this->app->has(Session::class) => $this->app->make(Session::class),
+            default => new Session(
+                $this->app->env()->is('testing')
+                    ? new MockArraySessionStorage()
+                    : $this->createSessionStorage()
+            ),
+        };
 
         $request->setSession($session);
 
@@ -80,7 +84,7 @@ class SessionFilter
      */
     private function register(Session $session): void
     {
-        $this->app->container
+        $this->app
             ->alias(Session::class, 'session')
             ->alias(Session::class, FlashBagAwareSessionInterface::class)
             ->alias(Session::class, SessionInterface::class)
