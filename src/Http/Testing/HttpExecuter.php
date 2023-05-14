@@ -37,7 +37,7 @@ final class HttpExecuter
      * Get リクエスト
      *
      * @param string $uri
-     * @param array $headers
+     * @param array<string,string> $headers
      * @return Response
      */
     public function get(
@@ -58,7 +58,7 @@ final class HttpExecuter
      * Get jsonリクエスト
      *
      * @param string $uri
-     * @param array $headers
+     * @param array<string,string> $headers
      * @return Response
      */
     public function getJson(
@@ -79,8 +79,8 @@ final class HttpExecuter
      * Post リクエスト
      *
      * @param string $uri
-     * @param array $data
-     * @param array $headers
+     * @param array<string,mixed> $data
+     * @param array<string,string> $headers
      * @return Response
      */
     public function post(
@@ -103,8 +103,8 @@ final class HttpExecuter
      * Post jsonリクエスト
      *
      * @param string $uri
-     * @param array $data
-     * @param array $headers
+     * @param array<string,mixed> $data
+     * @param array<string,string> $headers
      * @return Response
      */
     public function postJson(
@@ -127,8 +127,8 @@ final class HttpExecuter
      * Put リクエスト
      *
      * @param string $uri
-     * @param array $data
-     * @param array $headers
+     * @param array<string,mixed> $data
+     * @param array<string,string> $headers
      * @return Response
      */
     public function put(
@@ -151,8 +151,8 @@ final class HttpExecuter
      * Put jsonリクエスト
      *
      * @param string $uri
-     * @param array $data
-     * @param array $headers
+     * @param array<string,mixed> $data
+     * @param array<string,string> $headers
      * @return Response
      */
     public function putJson(
@@ -175,8 +175,8 @@ final class HttpExecuter
      * Patch リクエスト
      *
      * @param string $uri
-     * @param array $data
-     * @param array $headers
+     * @param array<string,mixed> $data
+     * @param array<string,string> $headers
      * @return Response
      */
     public function patch(
@@ -199,8 +199,8 @@ final class HttpExecuter
      * Patch jsonリクエスト
      *
      * @param string $uri
-     * @param array $data
-     * @param array $headers
+     * @param array<string,mixed> $data
+     * @param array<string,string> $headers
      * @return Response
      */
     public function patchJson(
@@ -223,8 +223,8 @@ final class HttpExecuter
      * Delete リクエスト
      *
      * @param string $uri
-     * @param array $data
-     * @param array $headers
+     * @param array<string,mixed> $data
+     * @param array<string,string> $headers
      * @return Response
      */
     public function delete(
@@ -247,8 +247,8 @@ final class HttpExecuter
      * Delete jsonリクエスト
      *
      * @param string $uri
-     * @param array $data
-     * @param array $headers
+     * @param array<string,mixed> $data
+     * @param array<string,string> $headers
      * @return Response
      */
     public function deleteJson(
@@ -271,7 +271,7 @@ final class HttpExecuter
      * Options リクエスト
      *
      * @param string $uri
-     * @param array $headers
+     * @param array<string,string> $headers
      * @return Response
      */
     public function options(
@@ -292,7 +292,7 @@ final class HttpExecuter
      * Options jsonリクエスト
      *
      * @param string $uri
-     * @param array $headers
+     * @param array<string,string> $headers
      * @return Response
      */
     public function optionsJson(
@@ -313,7 +313,7 @@ final class HttpExecuter
      * Head リクエスト
      *
      * @param string $uri
-     * @param array $headers
+     * @param array<string,string> $headers
      * @return Response
      */
     public function head(

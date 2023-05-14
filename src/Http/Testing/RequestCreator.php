@@ -16,7 +16,8 @@ final class RequestCreator
      * @param string $method
      * @param string $uri
      * @param array<string,mixed> $data
-     * @param array<string,mixed> $server
+     * @param array<string,string> $cookies
+     * @param array<string,string> $server
      * @return Request
      */
     public function createJsonRequest(
