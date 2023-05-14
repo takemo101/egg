@@ -54,6 +54,13 @@ Hook::onByType(
         })
             ->name('home');
 
+        $r->get('/json', function (Request $request) {
+            return new JsonResponse([
+                'a' => 'b',
+            ]);
+        })
+            ->name('json');
+
         $r->get('/test', function (Request $request, Response $response) {
             return 'test';
         })
